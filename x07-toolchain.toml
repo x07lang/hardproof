@@ -1,0 +1,4 @@
+[toolchain]
+channel = "v0.1.106"
+components = ["docs", "skills"]
+

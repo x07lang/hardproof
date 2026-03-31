@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  X07_TOOLCHAIN_TAG: "v0.1.106"
+
+jobs:
+  check:
+    name: ci / check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache X07 toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.x07
+          key: x07-${{ runner.os }}-${{ env.X07_TOOLCHAIN_TAG }}
+      - name: Install X07 (pinned)
+        shell: bash
+        run: ./scripts/ci/install_x07_toolchain.sh
+      - name: Check
+        shell: bash
+        run: ./scripts/ci/check_all.sh
+
