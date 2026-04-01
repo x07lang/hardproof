@@ -52,14 +52,15 @@ runs:
           --tag "${{ inputs.version }}" \
           --install-dir "${install_dir}"
         echo "${install_dir}" >>"${GITHUB_PATH}"
-        x07-mcp-test --help >/dev/null
+        echo "X07_MCP_TEST_BIN=${install_dir}/x07-mcp-test" >>"${GITHUB_ENV}"
+        "${install_dir}/x07-mcp-test" --help >/dev/null
 
     - name: Doctor (environment diagnostics)
       shell: bash
       run: |
         set -euo pipefail
         mkdir -p out
-        x07-mcp-test doctor --machine json > out/doctor.json
+        "${X07_MCP_TEST_BIN}" doctor --machine json > out/doctor.json
 
     - name: Conformance run
       id: conformance
@@ -80,7 +81,7 @@ runs:
         fi
 
         set +e
-        x07-mcp-test "${args[@]}" >"${out_dir}/summary.stdout.json"
+        "${X07_MCP_TEST_BIN}" "${args[@]}" >"${out_dir}/summary.stdout.json"
         exit_code="$?"
         set -e
 
