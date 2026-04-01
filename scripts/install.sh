@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO="x07lang/x07-mcp-test"
+
+usage() {
+  cat <<'USAGE'
+Install the x07-mcp-test private alpha verifier binary from GitHub Releases.
+
+Usage:
+  install.sh --tag <v0.1.0-alpha.N>
+  install.sh --tag latest-alpha
+
+Options:
+  --tag <TAG>         Git tag to install from (example: v0.1.0-alpha.4, or latest-alpha)
+  --install-dir <DIR> Install directory (default: ~/.local/bin)
+
+Notes:
+  - Windows is supported via WSL2. Run this script inside WSL2 to install the linux-x64 artifact.
+USAGE
+}
+
+tag=""
+install_dir="${HOME}/.local/bin"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --tag)
+      tag="${2:?missing value for --tag}"
+      shift 2
+      ;;
+    --install-dir)
+      install_dir="${2:?missing value for --install-dir}"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+if [[ -z "${tag}" ]]; then
+  echo "ERROR: missing --tag" >&2
+  usage >&2
+  exit 2
+fi
+
+if [[ "${tag}" == "latest-alpha" || "${tag}" == "latest-alpha"* ]]; then
+  echo "==> resolve latest alpha tag for ${REPO}"
+  curl_args=(
+    -fsSL
+    "https://api.github.com/repos/${REPO}/releases"
+  )
+  if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    curl_args=(
+      -fsSL
+      -H "Authorization: Bearer ${GITHUB_TOKEN}"
+      -H "X-GitHub-Api-Version: 2022-11-28"
+      "https://api.github.com/repos/${REPO}/releases"
+    )
+  fi
+  releases_json="$(curl "${curl_args[@]}")"
+  tag="$(
+    python3 - <<'PY' "${releases_json}"
+import json, re, sys
+data = json.loads(sys.argv[1])
+for r in data:
+  t = r.get("tag_name","")
+  if re.match(r"^v0\.1\.\d+-alpha\.\d+$", t):
+    print(t)
+    sys.exit(0)
+print("", end="")
+sys.exit(0)
+PY
+  )"
+  if [[ -z "${tag}" ]]; then
+    echo "ERROR: failed to resolve latest alpha tag; pass --tag v0.1.0-alpha.N explicitly." >&2
+    exit 1
+  fi
+fi
+
+if [[ "${tag}" != v* ]]; then
+  tag="v${tag}"
+fi
+
+platform="$(uname -s)"
+arch="$(uname -m)"
+
+artifact_platform=""
+case "${platform}-${arch}" in
+  Linux-x86_64) artifact_platform="linux-x64" ;;
+  Darwin-arm64) artifact_platform="darwin-arm64" ;;
+  Darwin-x86_64) artifact_platform="darwin-x64" ;;
+  *)
+    echo "ERROR: unsupported platform/arch: ${platform}-${arch}" >&2
+    echo "NOTE: on Windows, use WSL2 and install from inside your Linux distro." >&2
+    exit 2
+    ;;
+esac
+
+asset="x07-mcp-test-${tag}-${artifact_platform}.tar.gz"
+base_url="https://github.com/${REPO}/releases/download/${tag}"
+
+install_path="${install_dir}/x07-mcp-test"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "${tmp_dir}"' EXIT
+
+archive_path="${tmp_dir}/${asset}"
+checksums_path="${tmp_dir}/checksums.txt"
+
+echo "==> download ${asset}"
+curl -fSL \
+  --connect-timeout 10 \
+  --max-time 600 \
+  --retry 3 \
+  --retry-delay 2 \
+  --retry-all-errors \
+  --output "${archive_path}" \
+  "${base_url}/${asset}"
+
+echo "==> download checksums.txt"
+curl -fSL \
+  --connect-timeout 10 \
+  --max-time 600 \
+  --retry 3 \
+  --retry-delay 2 \
+  --retry-all-errors \
+  --output "${checksums_path}" \
+  "${base_url}/checksums.txt"
+
+expected_line="$(grep -E "^[a-f0-9]{64}  ${asset}$" "${checksums_path}" | head -n 1 || true)"
+if [[ -z "${expected_line}" ]]; then
+  echo "ERROR: checksums.txt does not contain an entry for ${asset}" >&2
+  exit 2
+fi
+
+echo "==> verify checksum"
+if command -v sha256sum >/dev/null 2>&1; then
+  (
+    cd "${tmp_dir}"
+    printf '%s\n' "${expected_line}" | sha256sum -c - >/dev/null
+  )
+elif command -v shasum >/dev/null 2>&1; then
+  expected_hash="$(printf '%s\n' "${expected_line}" | awk '{print $1}')"
+  actual_hash="$(shasum -a 256 "${archive_path}" | awk '{print $1}')"
+  if [[ "${expected_hash}" != "${actual_hash}" ]]; then
+    echo "ERROR: sha256 mismatch for ${asset}" >&2
+    exit 2
+  fi
+else
+  echo "WARN: sha256sum/shasum not found; skipping checksum verification" >&2
+fi
+
+echo "==> install ${install_path}"
+mkdir -p "${install_dir}"
+tar -xzf "${archive_path}" -C "${tmp_dir}"
+cp "${tmp_dir}/x07-mcp-test" "${install_path}"
+chmod +x "${install_path}"
+
+echo "==> ok: ${install_path}"
+echo
+echo "Next:"
+echo "  x07-mcp-test --help"
+echo "  x07-mcp-test doctor"
+echo "  x07-mcp-test conformance run --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json"

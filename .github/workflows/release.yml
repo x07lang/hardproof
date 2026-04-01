@@ -21,7 +21,6 @@ jobs:
   build:
     name: release / build (${{ matrix.platform }})
     runs-on: ${{ matrix.runs_on }}
-    continue-on-error: ${{ matrix.allow_failure || false }}
     strategy:
       fail-fast: false
       matrix:
@@ -32,10 +31,11 @@ jobs:
             runs_on: macos-latest
           - platform: darwin-x64
             runs_on: macos-13
-            allow_failure: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
 
       - name: Install system deps (Linux)
         if: runner.os == 'Linux'
@@ -43,52 +43,28 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y build-essential
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            pkg-config \
+            libssl-dev \
+            libcurl4-openssl-dev
           cc --version
 
-      - name: Ensure C toolchain (macOS)
+      - name: Install deps (macOS)
         if: runner.os == 'macOS'
         shell: bash
         run: |
           set -euo pipefail
 
-          if command -v cc >/dev/null 2>&1; then
-            cc --version
-            exit 0
-          fi
-
-          if command -v clang >/dev/null 2>&1; then
-            mkdir -p "${RUNNER_TEMP}/ccshim"
-            cat >"${RUNNER_TEMP}/ccshim/cc" <<'SH'
-          #!/usr/bin/env bash
-          exec clang "$@"
-          SH
-            chmod +x "${RUNNER_TEMP}/ccshim/cc"
-            echo "${RUNNER_TEMP}/ccshim" >>"${GITHUB_PATH}"
-            cc --version
-            exit 0
-          fi
-
           if command -v brew >/dev/null 2>&1; then
-            brew install llvm
-            llvm_bin="$(brew --prefix llvm)/bin"
-            echo "${llvm_bin}" >>"${GITHUB_PATH}"
-            export PATH="${llvm_bin}:${PATH}"
-            if command -v clang >/dev/null 2>&1; then
-              mkdir -p "${RUNNER_TEMP}/ccshim"
-              cat >"${RUNNER_TEMP}/ccshim/cc" <<'SH'
-          #!/usr/bin/env bash
-          exec clang "$@"
-          SH
-              chmod +x "${RUNNER_TEMP}/ccshim/cc"
-              echo "${RUNNER_TEMP}/ccshim" >>"${GITHUB_PATH}"
-              cc --version
-              exit 0
-            fi
+            brew install openssl@3 pkg-config
           fi
 
-          echo "ERROR: missing C compiler required for x07 bundle (expected cc or clang on PATH)" >&2
-          exit 1
+          if ! command -v cc >/dev/null 2>&1; then
+            echo "ERROR: missing C compiler required for x07 bundle (expected cc on PATH)" >&2
+            exit 1
+          fi
+          cc --version
 
       - name: Cache X07 toolchain
         uses: actions/cache@v4
@@ -106,6 +82,18 @@ jobs:
           X07_MCP_TEST_TAG: ${{ inputs.tag || github.ref_name }}
         run: ./scripts/ci/build_release_binaries.sh
 
+      - name: Smoke release archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$(ls -1 dist/x07-mcp-test-*.tar.gz | head -n 1)"
+          tmp_dir="$(mktemp -d)"
+          trap 'rm -rf "${tmp_dir}"' EXIT
+          tar -xzf "${archive}" -C "${tmp_dir}"
+          "${tmp_dir}/x07-mcp-test" --help >/dev/null
+          "${tmp_dir}/x07-mcp-test" doctor --help >/dev/null
+          "${tmp_dir}/x07-mcp-test" conformance run --help >/dev/null
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -113,10 +101,15 @@ jobs:
           path: dist/x07-mcp-test-*.tar.gz
 
   checksums:
-    name: release / checksums
+    name: release / checksums + install script
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
@@ -132,11 +125,17 @@ jobs:
           sha256sum x07-mcp-test-*.tar.gz | LC_ALL=C sort > checksums.txt
           cat checksums.txt
 
-      - name: Upload checksums
+      - name: Add install script
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp scripts/install.sh upload/install.sh
+
+      - name: Upload release assets
         uses: actions/upload-artifact@v4
         with:
-          name: x07-mcp-test-${{ inputs.tag || github.ref_name }}-checksums
-          path: upload/checksums.txt
+          name: x07-mcp-test-${{ inputs.tag || github.ref_name }}-release-assets
+          path: upload/
 
   publish:
     name: release / publish (prerelease)
@@ -144,20 +143,11 @@ jobs:
     needs: checksums
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifacts
+      - name: Download release assets
         uses: actions/download-artifact@v4
         with:
-          path: dist
-
-      - name: Flatten dist/
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p upload
-          find dist -type f -name 'x07-mcp-test-*.tar.gz' -print0 | xargs -0 -I{} cp "{}" upload/
-          checksum_src="$(find dist -type f -name 'checksums.txt' | head -n 1)"
-          cp "${checksum_src}" upload/checksums.txt
-          ls -la upload
+          name: x07-mcp-test-${{ github.ref_name }}-release-assets
+          path: upload
 
       - name: Create prerelease
         uses: softprops/action-gh-release@v2
@@ -167,7 +157,21 @@ jobs:
           files: |
             upload/x07-mcp-test-*.tar.gz
             upload/checksums.txt
+            upload/install.sh
           body: |
-            Private alpha skeleton release for `x07-mcp-test`.
+            Private alpha release for `x07-mcp-test` (M1).
 
-            Windows support is via WSL2; use the `linux-x64` artifact.
+            What works:
+            - `doctor`
+            - `conformance run` (official MCP conformance via `npx`)
+            - `replay record` / `replay verify` (HTTP cassette)
+            - `trust verify`
+            - `bundle verify`
+
+            Install:
+            - Download the `x07-mcp-test-...tar.gz` for your OS/arch + verify via `checksums.txt`, or run:
+              - `curl -fsSL https://github.com/x07lang/x07-mcp-test/releases/download/${{ github.ref_name }}/install.sh | bash -s -- --tag ${{ github.ref_name }}`
+
+            Known limitations:
+            - Windows support is via WSL2 (use the `linux-x64` artifact inside WSL2).
+            - Conformance requires Node/npm/npx on PATH.

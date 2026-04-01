@@ -45,3 +45,71 @@ jobs:
       - name: Check
         shell: bash
         run: ./scripts/ci/check_all.sh
+
+  check_macos:
+    name: ci / check (macos)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: fixtures/servers/package-lock.json
+      - name: Install deps (macOS)
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew install openssl@3 pkg-config
+          cc --version
+      - name: Cache X07 toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.x07
+          key: x07-${{ runner.os }}-${{ env.X07_TOOLCHAIN_TAG }}
+      - name: Install X07 (pinned)
+        shell: bash
+        run: ./scripts/ci/install_x07_toolchain.sh
+      - name: Check
+        shell: bash
+        run: ./scripts/ci/check_all.sh
+
+  check_windows_wsl2:
+    name: ci / check (windows, wsl2)
+    runs-on: windows-latest
+    timeout-minutes: 75
+    defaults:
+      run:
+        shell: wsl-bash {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up WSL2 (Ubuntu-24.04)
+        uses: Vampire/setup-wsl@v6
+        with:
+          distribution: Ubuntu-24.04
+          update: "true"
+          additional-packages: >-
+            bash
+            build-essential
+            ca-certificates
+            curl
+            git
+            openssl
+            libcurl4-openssl-dev
+            libssl-dev
+            pkg-config
+            python3
+            python3-venv
+            xz-utils
+            nodejs
+            npm
+
+      - name: Install X07 (pinned)
+        run: ./scripts/ci/install_x07_toolchain.sh
+
+      - name: Check
+        run: ./scripts/ci/check_all.sh

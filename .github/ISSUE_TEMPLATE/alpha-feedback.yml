@@ -1,0 +1,69 @@
+name: Alpha feedback
+description: Private alpha feedback for x07-mcp-test (install, conformance, replay, trust, bundle).
+title: "alpha: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying the private alpha. The most useful reports include:
+        - your OS + arch
+        - the exact commands you ran
+        - the JSON output from `--machine json`
+        - any logs/artifacts produced under `out/`
+
+  - type: input
+    id: tag
+    attributes:
+      label: Release tag
+      description: The tag you installed (example: v0.1.0-alpha.4).
+    validations:
+      required: false
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: Example: macOS 14.6 arm64; Ubuntu 24.04 x86_64; Windows 11 + WSL2 (Ubuntu 24.04).
+    validations:
+      required: true
+
+  - type: textarea
+    id: install
+    attributes:
+      label: Install steps
+      description: Paste the exact commands you used to install.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: run
+    attributes:
+      label: Commands run
+      description: Paste the exact commands you ran after installing.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: reports
+    attributes:
+      label: Machine reports (JSON)
+      description: Paste JSON output from x07-mcp-test commands (stdout) or attach files.
+      render: json
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

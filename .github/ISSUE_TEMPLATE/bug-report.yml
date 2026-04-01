@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a concrete, reproducible bug in x07-mcp-test.
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include a minimal repro and the machine-readable JSON output (`--machine json`) when available.
+
+  - type: input
+    id: tag
+    attributes:
+      label: Release tag
+      description: The tag you installed (example: v0.1.0-alpha.4).
+    validations:
+      required: false
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: OS + version + arch (example: macOS 14.6 arm64; Ubuntu 24.04 x86_64; Windows 11 + WSL2).
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands run
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: reports
+    attributes:
+      label: Machine reports (JSON)
+      description: Paste JSON output from x07-mcp-test commands (stdout) or attach files.
+      render: json
+    validations:
+      required: false

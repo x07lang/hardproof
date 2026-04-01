@@ -6,7 +6,7 @@ cd "${repo_root}"
 
 tag="${X07_MCP_TEST_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set X07_MCP_TEST_TAG (example: v0.1.0-alpha.0)" >&2
+  echo "ERROR: missing release tag; set X07_MCP_TEST_TAG (example: v0.1.0-alpha.4)" >&2
   exit 2
 fi
 

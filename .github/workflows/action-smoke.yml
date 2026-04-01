@@ -1,0 +1,63 @@
+name: Action smoke
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: fixtures/servers/package-lock.json
+
+      - name: Start fixture server (good-http)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          conformance/scripts/spawn_reference_http.sh good-http noauth > out/action-smoke.server.log 2>&1 &
+          echo "$!" > out/action-smoke.server.pid
+          conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null
+
+      - name: Run x07-mcp-test Action
+        uses: ./action
+        with:
+          url: http://127.0.0.1:18080/mcp
+          full-suite: "false"
+          version: latest-alpha
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: action-smoke-reports
+          path: |
+            out/doctor.json
+            out/conformance/summary.json
+            out/conformance/summary.junit.xml
+            out/conformance/summary.html
+            out/conformance/summary.stdout.json
+            out/action-smoke.server.log
+
+      - name: Stop fixture server
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f out/action-smoke.server.pid ]]; then
+            pid="$(cat out/action-smoke.server.pid)"
+            kill "${pid}" >/dev/null 2>&1 || true
+            wait "${pid}" >/dev/null 2>&1 || true
+          fi

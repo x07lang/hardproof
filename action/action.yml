@@ -1,0 +1,105 @@
+name: x07-mcp-test (alpha)
+description: Run MCP conformance checks using the x07-mcp-test alpha release binary.
+
+inputs:
+  url:
+    description: MCP server base URL (example: http://127.0.0.1:3000/mcp)
+    required: true
+  full-suite:
+    description: Run the full official conformance suite (default false)
+    required: false
+    default: "false"
+  baseline:
+    description: Path to a conformance expected-failures YAML file (optional)
+    required: false
+    default: ""
+  version:
+    description: x07-mcp-test release tag (example: v0.1.0-alpha.4) or latest-alpha
+    required: false
+    default: latest-alpha
+
+outputs:
+  ok:
+    description: "true if conformance passed (exit 0)"
+    value: ${{ steps.conformance.outputs.ok }}
+  json_report:
+    description: Path to JSON summary report
+    value: ${{ steps.conformance.outputs.json_report }}
+  junit_report:
+    description: Path to JUnit XML report
+    value: ${{ steps.conformance.outputs.junit_report }}
+  html_report:
+    description: Path to HTML report
+    value: ${{ steps.conformance.outputs.html_report }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node (for official conformance via npx)
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Install x07-mcp-test (release binary)
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        install_dir="${RUNNER_TEMP}/x07-mcp-test/bin"
+        mkdir -p "${install_dir}"
+        bash "${GITHUB_ACTION_PATH}/../scripts/install.sh" \
+          --tag "${{ inputs.version }}" \
+          --install-dir "${install_dir}"
+        echo "${install_dir}" >>"${GITHUB_PATH}"
+        x07-mcp-test --help >/dev/null
+
+    - name: Doctor (environment diagnostics)
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p out
+        x07-mcp-test doctor --machine json > out/doctor.json
+
+    - name: Conformance run
+      id: conformance
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        out_dir="out/conformance"
+        rm -rf "${out_dir}"
+        mkdir -p "${out_dir}"
+
+        args=(conformance run --url "${{ inputs.url }}" --out "${out_dir}" --machine json)
+        if [[ "${{ inputs.full-suite }}" == "true" ]]; then
+          args+=(--full-suite)
+        fi
+        if [[ -n "${{ inputs.baseline }}" ]]; then
+          args+=(--baseline "${{ inputs.baseline }}")
+        fi
+
+        set +e
+        x07-mcp-test "${args[@]}" >"${out_dir}/summary.stdout.json"
+        exit_code="$?"
+        set -e
+
+        ok="false"
+        if [[ "${exit_code}" == "0" ]]; then
+          ok="true"
+        fi
+
+        echo "ok=${ok}" >>"${GITHUB_OUTPUT}"
+        echo "json_report=${out_dir}/summary.json" >>"${GITHUB_OUTPUT}"
+        echo "junit_report=${out_dir}/summary.junit.xml" >>"${GITHUB_OUTPUT}"
+        echo "html_report=${out_dir}/summary.html" >>"${GITHUB_OUTPUT}"
+
+        if [[ "${exit_code}" == "2" ]]; then
+          echo "ERROR: conformance run failed due to invocation/config/runtime precondition (exit 2)." >&2
+          exit 2
+        fi
+
+        if [[ "${exit_code}" == "1" ]]; then
+          echo "ERROR: one or more required conformance scenarios failed (exit 1)." >&2
+          exit 1
+        fi
