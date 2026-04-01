@@ -37,8 +37,20 @@ mkdir -p "${work_dir}"
 bin_name="x07-mcp-test"
 bin_path="${work_dir}/${bin_name}"
 
+if ! command -v cc >/dev/null 2>&1; then
+  echo "ERROR: missing C compiler (cc) required for x07 bundle packaging." >&2
+  echo "On Ubuntu: sudo apt-get install -y build-essential" >&2
+  echo "On macOS: install Xcode Command Line Tools (xcode-select --install) or provide a cc shim." >&2
+  exit 2
+fi
+
 echo "==> bundle ${bin_name} (${artifact_platform})"
-x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >/dev/null
+bundle_log="${work_dir}/bundle.log"
+if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >"${bundle_log}" 2>&1; then
+  echo "ERROR: x07 bundle failed." >&2
+  cat "${bundle_log}" >&2 || true
+  exit 1
+fi
 chmod +x "${bin_path}"
 
 archive_base="${bin_name}-${tag}-${artifact_platform}"
@@ -48,4 +60,3 @@ echo "==> package ${archive_path}"
 tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}"
 
 echo "${archive_path}"
-

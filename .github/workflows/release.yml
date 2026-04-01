@@ -35,6 +35,59 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install system deps (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          cc --version
+
+      - name: Ensure C toolchain (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if command -v cc >/dev/null 2>&1; then
+            cc --version
+            exit 0
+          fi
+
+          if command -v clang >/dev/null 2>&1; then
+            mkdir -p "${RUNNER_TEMP}/ccshim"
+            cat >"${RUNNER_TEMP}/ccshim/cc" <<'SH'
+          #!/usr/bin/env bash
+          exec clang "$@"
+          SH
+            chmod +x "${RUNNER_TEMP}/ccshim/cc"
+            echo "${RUNNER_TEMP}/ccshim" >>"${GITHUB_PATH}"
+            cc --version
+            exit 0
+          fi
+
+          if command -v brew >/dev/null 2>&1; then
+            brew install llvm
+            llvm_bin="$(brew --prefix llvm)/bin"
+            echo "${llvm_bin}" >>"${GITHUB_PATH}"
+            export PATH="${llvm_bin}:${PATH}"
+            if command -v clang >/dev/null 2>&1; then
+              mkdir -p "${RUNNER_TEMP}/ccshim"
+              cat >"${RUNNER_TEMP}/ccshim/cc" <<'SH'
+          #!/usr/bin/env bash
+          exec clang "$@"
+          SH
+              chmod +x "${RUNNER_TEMP}/ccshim/cc"
+              echo "${RUNNER_TEMP}/ccshim" >>"${GITHUB_PATH}"
+              cc --version
+              exit 0
+            fi
+          fi
+
+          echo "ERROR: missing C compiler required for x07 bundle (expected cc or clang on PATH)" >&2
+          exit 1
+
       - name: Cache X07 toolchain
         uses: actions/cache@v4
         with:

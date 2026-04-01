@@ -19,7 +19,12 @@ tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
 bin_path="${tmp_dir}/x07-mcp-test"
-x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >/dev/null
+bundle_log="${tmp_dir}/bundle.log"
+if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >"${bundle_log}" 2>&1; then
+  echo "ERROR: x07 bundle failed." >&2
+  cat "${bundle_log}" >&2 || true
+  exit 1
+fi
 chmod +x "${bin_path}"
 
 echo "==> cli smoke"
