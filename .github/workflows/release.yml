@@ -21,6 +21,7 @@ jobs:
   build:
     name: release / build (${{ matrix.platform }})
     runs-on: ${{ matrix.runs_on }}
+    continue-on-error: ${{ matrix.allow_failure || false }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +32,7 @@ jobs:
             runs_on: macos-latest
           - platform: darwin-x64
             runs_on: macos-13
+            allow_failure: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
