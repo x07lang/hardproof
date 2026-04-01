@@ -1,0 +1,32 @@
+{
+  "targets": [
+    {
+      "id": "good-http",
+      "kind": "http",
+      "url": "http://127.0.0.1:18080/mcp",
+      "spawn": {
+        "script": "conformance/scripts/spawn_reference_http.sh",
+        "args": ["good-http", "noauth"]
+      }
+    },
+    {
+      "id": "auth-http",
+      "kind": "http",
+      "url": "http://127.0.0.1:18081/mcp",
+      "spawn": {
+        "script": "conformance/scripts/spawn_reference_http.sh",
+        "args": ["auth-http", "oauth"]
+      }
+    },
+    {
+      "id": "broken-http",
+      "kind": "http",
+      "url": "http://127.0.0.1:18082/mcp",
+      "spawn": {
+        "script": "conformance/scripts/spawn_reference_http.sh",
+        "args": ["broken-http", "noauth"]
+      }
+    }
+  ]
+}
+

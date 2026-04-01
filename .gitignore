@@ -1,8 +1,8 @@
 .DS_Store
 .x07/
 dist/
+out/
 tmp/
 .tmp/
 target/
 node_modules/
-

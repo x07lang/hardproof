@@ -1,0 +1,10 @@
+{
+  "name": "@x07lang/x07-mcp-test-fixtures",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0"
+  }
+}
+
