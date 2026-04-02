@@ -1,11 +1,9 @@
-# Corpus runner (skeleton)
+# Corpus runner
 
 The corpus runner exists to make the public quality report reproducible:
 
 - a checked-in manifest defines **what** was tested and under which assumptions
-- `x07-mcp-test corpus run` produces per-target outputs plus an aggregate `index.json`
-
-This is intentionally a **skeleton**: it enumerates targets and emits stub outputs/paths so downstream consumers (website/report pages) can depend on a frozen shape before implementation fans out.
+- `x07-mcp-test corpus run` executes conformance per target and emits per-target outputs plus an aggregate `index.json`
 
 ## Manifest
 
@@ -26,9 +24,21 @@ Each `targets[]` entry captures:
 
 - `<DIR>/index.json` (`x07.mcp.corpus.summary@0.1.0`)
 - `<DIR>/<server_id>/result.json` (`x07.mcp.corpus.result@0.1.0`)
-- stub per-target artifact paths (summary JSON/JUnit/HTML/SARIF) for later wiring
+- `<DIR>/<server_id>/summary.json` (`x07.mcp.conformance.summary@0.2.0`)
+- `<DIR>/<server_id>/summary.junit.xml`
+- `<DIR>/<server_id>/summary.html`
+- `<DIR>/<server_id>/summary.sarif.json` (`x07.mcp.sarif@0.1.0`, stub until SARIF renderer ships)
+
+## Exclusions
+
+`exclusions.skip_scenarios` is recorded in the per-target `result.json` warnings as `corpus.exclusions.skip_scenarios` and is not applied to the conformance runner yet.
+
+## Exit codes
+
+- `0` all targets passed required scenarios
+- `1` one or more targets failed conformance
+- `2` invocation/config/runtime precondition failure
 
 ## Notes
 
-- The skeleton emits `ok=false` and exits `1` with a `corpus.stub` error explaining the placeholder status.
-- Replace the CI fixture manifest contents with the real report target set before generating the public dataset.
+- `corpus/manifests/quality-report-001.json` is a CI smoke manifest using local fixtures; replace targets before generating the public dataset.

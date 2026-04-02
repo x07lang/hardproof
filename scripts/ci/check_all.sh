@@ -47,24 +47,45 @@ echo "==> cli smoke"
 echo "==> schema fixtures"
 "${bin_path}" ci validate-fixtures
 
-echo "==> corpus skeleton smoke"
+echo "==> corpus smoke"
 
 corpus_out="${tmp_dir}/corpus"
 rm -rf "${corpus_out}"
 mkdir -p "${corpus_out}"
 
-set +e
-"${bin_path}" corpus run \
-  --manifest corpus/manifests/quality-report-001.json \
-  --out "${corpus_out}" \
-  --machine json >"${tmp_dir}/corpus.run.stdout.json"
-corpus_exit="$?"
-set -e
-if [[ "${corpus_exit}" != "1" ]]; then
-  echo "ERROR: expected corpus run skeleton to exit 1 (got ${corpus_exit})" >&2
-  cat "${tmp_dir}/corpus.run.stdout.json" >&2 || true
-  exit 1
-fi
+run_corpus_smoke() (
+  local server_log="${tmp_dir}/corpus.server.log"
+  conformance/scripts/spawn_reference_http.sh good-http noauth >"${server_log}" 2>&1 &
+  local server_pid="$!"
+
+  cleanup() {
+    kill "${server_pid}" >/dev/null 2>&1 || true
+    wait "${server_pid}" >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  if ! conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null; then
+    echo "ERROR: corpus fixture failed to start: good-http (http://127.0.0.1:18080/mcp)" >&2
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  set +e
+  "${bin_path}" corpus run \
+    --manifest corpus/manifests/quality-report-001.json \
+    --out "${corpus_out}" \
+    --machine json >"${tmp_dir}/corpus.run.stdout.json"
+  local corpus_exit="$?"
+  set -e
+  if [[ "${corpus_exit}" != "0" ]]; then
+    echo "ERROR: corpus run exit code mismatch (expected 0, got ${corpus_exit})" >&2
+    cat "${tmp_dir}/corpus.run.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+)
+
+run_corpus_smoke
 
 test -s "${corpus_out}/index.json"
 "${bin_path}" ci validate-json \
@@ -80,6 +101,13 @@ test -s "${corpus_out}/good-http/summary.json"
 "${bin_path}" ci validate-json \
   --schema schemas/x07.mcp.conformance.summary.schema.json \
   --input "${corpus_out}/good-http/summary.json"
+test -s "${corpus_out}/good-http/summary.junit.xml"
+python3 scripts/ci/assert_junit_xml.py "${corpus_out}/good-http/summary.junit.xml"
+test -s "${corpus_out}/good-http/summary.html"
+test -s "${corpus_out}/good-http/summary.sarif.json"
+"${bin_path}" ci validate-json \
+  --schema schemas/x07.mcp.sarif.schema.json \
+  --input "${corpus_out}/good-http/summary.sarif.json"
 
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"
