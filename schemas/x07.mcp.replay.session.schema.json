@@ -51,10 +51,27 @@
     "replay_session_details": {
       "type": "object",
       "additionalProperties": true,
-      "required": ["scenario", "http_session"],
+      "required": ["scenario"],
       "properties": {
         "scenario": { "type": "string", "minLength": 1 },
-        "http_session": { "$ref": "#/$defs/http_session" }
+        "http_session": { "$ref": "#/$defs/http_session" },
+        "stdio_session": { "$ref": "#/$defs/stdio_session" }
+      },
+      "anyOf": [{ "required": ["http_session"] }, { "required": ["stdio_session"] }]
+    },
+    "stdio_session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "profile", "cmd", "cwd", "env_file", "c2s_jsonl", "s2c_jsonl"],
+      "properties": {
+        "schema_version": { "const": "x07.mcp.rr.stdio_jsonl@0.1.0" },
+        "id": { "type": "string", "minLength": 1 },
+        "profile": { "type": "string", "minLength": 1 },
+        "cmd": { "type": "string", "minLength": 1 },
+        "cwd": { "type": "string" },
+        "env_file": { "type": "string" },
+        "c2s_jsonl": { "type": "string", "minLength": 1 },
+        "s2c_jsonl": { "type": "string", "minLength": 1 }
       }
     },
     "http_session": {

@@ -2,12 +2,16 @@
 
 Replay support lets `x07-mcp-test` produce deterministic, reviewable evidence:
 
-- `x07-mcp-test replay record` records a small deterministic HTTP session into a session file (`x07.mcp.replay.session@0.2.0`).
+- `x07-mcp-test replay record` records a small deterministic session (HTTP or stdio) into a session file (`x07.mcp.replay.session@0.2.0`).
 - `x07-mcp-test replay verify` replays the recorded cassette against a target server and emits a pass/fail verification report (`x07.mcp.replay.verify@0.2.0`).
 
-The recorded cassette lives inside the session file at `details.http_session` and is schema-versioned as `x07.mcp.rr.http_session@0.1.0`.
+The recorded cassette lives inside the session file:
+- HTTP: `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`)
+- stdio: `details.stdio_session` (schema `x07.mcp.rr.stdio_jsonl@0.1.0`, plus sidecar JSONL transcript files)
 
 ## Cassette format (v1)
+
+### HTTP
 
 `x07.mcp.rr.http_session@0.1.0` contains:
 
@@ -17,6 +21,16 @@ The recorded cassette lives inside the session file at `details.http_session` an
 - `steps[]`: ordered request/response steps with normalized headers and JSON payloads
 
 HTTP+SSE targets (Streamable HTTP) are supported by extracting and canonicalizing JSON payloads from `data: ...` event lines.
+
+### stdio
+
+`x07.mcp.rr.stdio_jsonl@0.1.0` contains:
+
+- `id`: scenario id (example: `smoke.basic`)
+- `cmd`: stdio command used to spawn the server
+- `cwd` / `env_file`: optional process inputs
+- `c2s_jsonl`: path to canonical client→server JSON-RPC lines
+- `s2c_jsonl`: path to canonical server→client JSON-RPC lines
 
 ## Sanitization
 

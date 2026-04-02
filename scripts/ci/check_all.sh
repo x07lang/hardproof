@@ -333,6 +333,66 @@ run_replay_broken() (
 run_replay_good
 run_replay_broken
 
+echo "==> replay fixtures (stdio)"
+
+record_stdio_session="${tmp_dir}/replay.stdio.session.json"
+rm -f "${record_stdio_session}"
+
+run_replay_stdio_good() (
+  local verify_out_dir="${tmp_dir}/replay-verify-stdio"
+  rm -rf "${verify_out_dir}"
+  mkdir -p "${verify_out_dir}"
+
+  "${bin_path}" replay record \
+    --cmd "bash conformance/scripts/spawn_reference_stdio.sh good-stdio" \
+    --scenario smoke/basic \
+    --sanitize auth,token \
+    --out "${record_stdio_session}" \
+    --machine json >"${tmp_dir}/replay.record.stdio.stdout.json"
+
+  test -s "${record_stdio_session}"
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.replay.session.schema.json \
+    --input "${record_stdio_session}"
+
+  test -s "${record_stdio_session}.c2s.jsonl"
+  test -s "${record_stdio_session}.s2c.jsonl"
+
+  "${bin_path}" replay verify \
+    --session "${record_stdio_session}" \
+    --cmd "bash conformance/scripts/spawn_reference_stdio.sh good-stdio" \
+    --out "${verify_out_dir}" \
+    --machine json >"${tmp_dir}/replay.verify.stdio.good.stdout.json"
+
+  test -s "${verify_out_dir}/verify.json"
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.replay.verify.schema.json \
+    --input "${verify_out_dir}/verify.json"
+)
+
+run_replay_stdio_broken() (
+  set +e
+  "${bin_path}" replay verify \
+    --session "${record_stdio_session}" \
+    --cmd "bash conformance/scripts/spawn_reference_stdio.sh broken-stdio" \
+    --machine json >"${tmp_dir}/replay.verify.stdio.broken.stdout.json"
+  local broken_exit="$?"
+  set -e
+  if [[ "${broken_exit}" != "1" ]]; then
+    echo "ERROR: expected replay verify to fail against broken-stdio (exit 1), got ${broken_exit}" >&2
+    cat "${tmp_dir}/replay.verify.stdio.broken.stdout.json" >&2 || true
+    exit 1
+  fi
+
+  test -s "${tmp_dir}/replay.verify.stdio.broken.stdout.json"
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.replay.verify.schema.json \
+    --input "${tmp_dir}/replay.verify.stdio.broken.stdout.json"
+)
+
+run_replay_stdio_good
+run_replay_stdio_broken
+
 echo "==> trust fixtures"
 
 trust_good_out="${tmp_dir}/trust.good.json"
