@@ -96,7 +96,8 @@ See `docs/schema-versioning.md`.
 
 ## Notes
 
-- Conformance runs the official MCP suite via `npx`; use `x07-mcp-test doctor` to confirm Node/npm/npx preconditions.
+- HTTP conformance runs the official MCP suite via `npx` (requires Node/npm/npx); use `x07-mcp-test doctor` to confirm preconditions.
+- Stdio conformance runs via an internal harness that emits the same `checks.json` shape and IDs as the pinned official package, so reports stay comparable across transports.
 - For now, `replay record` records the `smoke/basic` HTTP scenario and stores the cassette at `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`). See `rr/README.md`.
 - Trust and bundle verification operate on registry artifacts (`server.json` and `.mcpb`) rather than a running HTTP server. See `trust/README.md`.
 - Output paths should be **relative** (example: `out/...`). Absolute paths are rejected by the current filesystem capability model.
@@ -150,7 +151,7 @@ Stdio fixtures:
 ## Known limitations (alpha)
 
 - Windows support is via WSL2 (run inside a Linux distro and use `linux-x64`).
-- Conformance requires Node/npm/npx.
+- HTTP conformance requires Node/npm/npx.
 - Some stdio target flows are still being stabilized; use the stdio fixtures as the reference shape.
 
 ## Feedback

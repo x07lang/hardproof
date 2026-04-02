@@ -172,6 +172,46 @@ run_conformance_fixture good-http noauth http://127.0.0.1:18080/mcp 0
 run_conformance_fixture auth-http oauth http://127.0.0.1:18081/mcp 1
 run_conformance_fixture broken-http noauth http://127.0.0.1:18082/mcp 1
 
+run_conformance_stdio_fixture() (
+  local fixture_id="${1:?missing fixture_id}"
+  local target_id="${2:?missing target_id}"
+  local expected_exit="${3:?missing expected_exit}"
+
+  local fixture_out_dir="out/ci-conformance/${fixture_id}"
+  rm -rf "${fixture_out_dir}"
+  mkdir -p "${fixture_out_dir}"
+
+  set +e
+  "${bin_path}" conformance run \
+    --cmd "bash conformance/scripts/spawn_reference_stdio.sh ${target_id}" \
+    --baseline conformance/pinned/conformance-baseline.yml \
+    --out "${fixture_out_dir}" \
+    --machine json >"${fixture_out_dir}/summary.stdout.json"
+  local exit_code="$?"
+  set -e
+
+  if [[ "${exit_code}" != "${expected_exit}" ]]; then
+    echo "ERROR: conformance run exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
+    if [[ -f "${fixture_out_dir}/summary.stdout.json" ]]; then
+      echo "---- begin conformance stdout ----" >&2
+      cat "${fixture_out_dir}/summary.stdout.json" >&2 || true
+      echo "---- end conformance stdout ----" >&2
+    fi
+    exit 1
+  fi
+
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.conformance.summary.schema.json \
+    --input "${fixture_out_dir}/summary.json"
+
+  test -s "${fixture_out_dir}/summary.junit.xml"
+  python3 scripts/ci/assert_junit_xml.py "${fixture_out_dir}/summary.junit.xml"
+  test -s "${fixture_out_dir}/summary.html"
+)
+
+run_conformance_stdio_fixture good-stdio good-stdio 0
+run_conformance_stdio_fixture broken-stdio broken-stdio 1
+
 echo "==> stdio fixture smoke"
 
 (
