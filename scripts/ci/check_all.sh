@@ -35,27 +35,17 @@ if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >
 fi
 chmod +x "${bin_path}"
 
-echo "==> legacy alias smoke"
-legacy_bin_path="${tmp_dir}/x07-mcp-test"
-cat >"${legacy_bin_path}" <<'SH'
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo "x07-mcp-test is now Hardproof. Legacy commands remain available during beta." >&2
-echo "Try: hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json" >&2
-
-exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/hardproof" "$@"
-SH
-chmod +x "${legacy_bin_path}"
-
-legacy_err="${tmp_dir}/legacy.help.stderr.txt"
-rm -f "${legacy_err}"
-"${legacy_bin_path}" --help >/dev/null 2>"${legacy_err}"
-if ! grep -q '^x07-mcp-test is now Hardproof' "${legacy_err}"; then
-  echo "ERROR: legacy alias did not emit expected migration hint" >&2
-  cat "${legacy_err}" >&2 || true
-  exit 1
-fi
+echo "==> release packaging smoke"
+release_dist_dir="${tmp_dir}/release-dist"
+rm -rf "${release_dist_dir}"
+mkdir -p "${release_dist_dir}"
+HARDPROOF_TAG="v0.0.0-alpha.0" DIST_DIR="${release_dist_dir}" ./scripts/ci/build_release_binaries.sh >/dev/null
+release_archive="$(ls -1 "${release_dist_dir}"/hardproof_*.tar.gz | head -n 1)"
+release_extract_dir="${tmp_dir}/release-extract"
+rm -rf "${release_extract_dir}"
+mkdir -p "${release_extract_dir}"
+tar -xzf "${release_archive}" -C "${release_extract_dir}"
+"${release_extract_dir}/hardproof" --help >/dev/null
 
 echo "==> cli smoke"
 "${bin_path}" --help >/dev/null
@@ -248,9 +238,23 @@ run_conformance_fixture() (
   fi
 )
 
-run_conformance_fixture good-http noauth http://127.0.0.1:18080/mcp 0
-run_conformance_fixture auth-http oauth http://127.0.0.1:18081/mcp 1
-run_conformance_fixture broken-http noauth http://127.0.0.1:18082/mcp 1
+fixture_pids=()
+run_conformance_fixture good-http noauth http://127.0.0.1:18080/mcp 0 &
+fixture_pids+=("$!")
+run_conformance_fixture auth-http oauth http://127.0.0.1:18081/mcp 1 &
+fixture_pids+=("$!")
+run_conformance_fixture broken-http noauth http://127.0.0.1:18082/mcp 1 &
+fixture_pids+=("$!")
+
+fixture_failed=0
+for pid in "${fixture_pids[@]}"; do
+  if ! wait "${pid}"; then
+    fixture_failed=1
+  fi
+done
+if [[ "${fixture_failed}" == "1" ]]; then
+  exit 1
+fi
 
 run_conformance_stdio_fixture() (
   local fixture_id="${1:?missing fixture_id}"
@@ -293,8 +297,21 @@ run_conformance_stdio_fixture() (
     --input "${fixture_out_dir}/summary.sarif.json"
 )
 
-run_conformance_stdio_fixture good-stdio good-stdio 0
-run_conformance_stdio_fixture broken-stdio broken-stdio 1
+stdio_pids=()
+run_conformance_stdio_fixture good-stdio good-stdio 0 &
+stdio_pids+=("$!")
+run_conformance_stdio_fixture broken-stdio broken-stdio 1 &
+stdio_pids+=("$!")
+
+stdio_failed=0
+for pid in "${stdio_pids[@]}"; do
+  if ! wait "${pid}"; then
+    stdio_failed=1
+  fi
+done
+if [[ "${stdio_failed}" == "1" ]]; then
+  exit 1
+fi
 
 echo "==> replay fixtures"
 

@@ -4,9 +4,6 @@ Deterministic verification for MCP servers.
 
 Hardproof is a standalone verifier for MCP servers. It runs deterministic checks for conformance, replay, trust, and release-grade evidence. Hardproof is built with x07, but you do not need to adopt x07 to use it.
 
-> **Beta transition note**
-> Hardproof is the new public name for the private-alpha tool previously released as `x07-mcp-test`. The repo and legacy commands remain available during beta for compatibility.
-
 ## Who it's for
 
 - MCP server developers (any language) who want CI-grade verification evidence.
@@ -55,16 +52,6 @@ See `docs/doctor.md`.
 See `docs/targets.md`.
 See `corpus/README.md`.
 
-## Legacy command compatibility (beta)
-
-If you already installed the private alpha as `x07-mcp-test`, legacy commands continue to work during the beta transition:
-
-```sh
-x07-mcp-test conformance run --url "http://127.0.0.1:3000/mcp"
-```
-
-Hardproof is the public brand and CLI. The legacy alias remains available during beta for compatibility.
-
 ## Install (alpha)
 
 Release artifacts are built via GitHub Actions on tags like `v0.1.*-alpha*`.
@@ -76,14 +63,14 @@ On Windows, run inside WSL2 and use the `linux_x86_64` artifact.
 Each alpha release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.6/install.sh" \
-  | bash -s -- --tag "v0.1.0-alpha.6"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.7/install.sh" \
+  | bash -s -- --tag "v0.1.0-alpha.7"
 ```
 
 You can also resolve the latest alpha tag (requires GitHub API access):
 
 ```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.6/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.7/install.sh" \
   | bash -s -- --tag latest-alpha
 ```
 
@@ -138,7 +125,7 @@ The Action downloads a `hardproof` release binary and runs `hardproof scan` (HTT
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.1.0-alpha.6
+  uses: x07lang/hardproof/hardproof-scan@v0.1.0-alpha.7
   with:
     url: http://127.0.0.1:3000/mcp
     full-suite: "false"

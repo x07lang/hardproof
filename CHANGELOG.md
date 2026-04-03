@@ -4,9 +4,15 @@
 
 - (none yet)
 
+## v0.1.0-alpha.7
+
+- Fix release packaging to emit `hardproof_<version>_<os>_<arch>.tar.gz` deterministically on all supported runners.
+- Update `install.sh` to resolve the correct platform artifact from GitHub Release assets (supports both legacy and current archive naming).
+- Remove the legacy compatibility alias surface from the install flow and CI smoke.
+
 ## v0.1.0-alpha.6
 
-- Rename release archives to `hardproof_<version>_<os>_<arch>.tar.gz` and include a `x07-mcp-test` compatibility binary in the archive.
+- Rename release archives to `hardproof_<version>_<os>_<arch>.tar.gz`.
 - Add `hardproof-scan` as the preferred GitHub Action path (legacy `action/` path remains available during beta).
 - Normalize Action outputs (`scan_ok`, `report_json`, `report_junit`, `report_html`, `report_sarif`) with compatibility aliases.
 

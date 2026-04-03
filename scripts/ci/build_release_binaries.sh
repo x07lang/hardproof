@@ -36,8 +36,6 @@ mkdir -p "${work_dir}"
 
 bin_name="hardproof"
 bin_path="${work_dir}/${bin_name}"
-legacy_bin_name="x07-mcp-test"
-legacy_bin_path="${work_dir}/${legacy_bin_name}"
 readme_name="README-beta.txt"
 readme_path="${work_dir}/${readme_name}"
 
@@ -56,7 +54,7 @@ if ! x07 pkg lock --project x07.json --check --json=off >"${lock_log}" 2>&1; the
   exit 1
 fi
 
-echo "==> bundle ${bin_name} (${artifact_platform})"
+echo "==> bundle ${bin_name} (${artifact_suffix})"
 bundle_log="${work_dir}/bundle.log"
 if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >"${bundle_log}" 2>&1; then
   echo "ERROR: x07 bundle failed." >&2
@@ -65,17 +63,8 @@ if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >
 fi
 chmod +x "${bin_path}"
 
-cp "${bin_path}" "${legacy_bin_path}"
-chmod +x "${legacy_bin_path}"
-
 cat >"${readme_path}" <<'TXT'
-Hardproof beta transition
-
-Hardproof is the new public name for the private-alpha tool previously released as x07-mcp-test.
-
-Included binaries:
-- hardproof (primary)
-- x07-mcp-test (legacy compatibility alias during beta)
+Hardproof beta
 
 Next:
   ./hardproof --help
@@ -88,6 +77,6 @@ archive_base="hardproof_${version}_${artifact_suffix}"
 archive_path="${dist_dir}/${archive_base}.tar.gz"
 
 echo "==> package ${archive_path}"
-tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}" "${legacy_bin_name}" "${readme_name}"
+tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}" "${readme_name}"
 
 echo "${archive_path}"

@@ -105,19 +105,95 @@ case "${platform}-${arch}" in
 esac
 
 version="${tag#v}"
-asset="hardproof_${version}_${artifact_suffix}.tar.gz"
 base_url="https://github.com/${REPO}/releases/download/${tag}"
 
 install_path="${install_dir}/hardproof"
-legacy_alias_path="${install_dir}/x07-mcp-test"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
-archive_path="${tmp_dir}/${asset}"
 checksums_path="${tmp_dir}/checksums.txt"
 
-echo "==> download ${asset}"
+echo "==> resolve release assets for ${tag}"
+release_url="https://api.github.com/repos/${REPO}/releases/tags/${tag}"
+release_curl_args=(
+  -fsSL
+  "${release_url}"
+)
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+  release_curl_args=(
+    -fsSL
+    -H "Authorization: Bearer ${GITHUB_TOKEN}"
+    -H "X-GitHub-Api-Version: 2022-11-28"
+    "${release_url}"
+  )
+fi
+release_json="$(curl "${release_curl_args[@]}")"
+
+asset_info="$(
+  python3 -c '
+import json
+import re
+import sys
+
+tag = sys.argv[1]
+platform = sys.argv[2]
+arch = sys.argv[3]
+version = tag[1:] if tag.startswith("v") else tag
+
+release = json.loads(sys.stdin.read() or "{}")
+assets = release.get("assets") or []
+
+patterns: list[re.Pattern[str]] = []
+if platform == "Linux" and arch == "x86_64":
+    patterns.append(re.compile(rf"^hardproof_{re.escape(version)}_linux_x86_64\.tar\.gz$"))
+    patterns.append(re.compile(rf"^hardproof-{re.escape(tag)}-linux-x64\.tar\.gz$"))
+elif platform == "Darwin" and arch == "arm64":
+    patterns.append(re.compile(rf"^hardproof_{re.escape(version)}_macos_arm64\.tar\.gz$"))
+    patterns.append(re.compile(rf"^hardproof-{re.escape(tag)}-darwin-arm64\.tar\.gz$"))
+elif platform == "Darwin" and arch == "x86_64":
+    patterns.append(re.compile(rf"^hardproof_{re.escape(version)}_macos_x86_64\.tar\.gz$"))
+    patterns.append(re.compile(rf"^hardproof-{re.escape(tag)}-darwin-x64\.tar\.gz$"))
+else:
+    raise SystemExit(f"unsupported platform/arch: {platform}-{arch}")
+
+asset_name = ""
+asset_url = ""
+for pat in patterns:
+    for asset in assets:
+        name = asset.get("name", "")
+        if pat.match(name):
+            asset_name = name
+            asset_url = asset.get("browser_download_url", "")
+            break
+    if asset_name:
+        break
+
+checksums_url = ""
+for asset in assets:
+    if asset.get("name", "") == "checksums.txt":
+        checksums_url = asset.get("browser_download_url", "")
+        break
+
+if not asset_name or not asset_url:
+    available = ", ".join(sorted(a.get("name", "") for a in assets if a.get("name")))
+    raise SystemExit(f"missing release artifact for {platform}-{arch} (tag={tag}); assets=[{available}]")
+
+print(asset_name)
+print(asset_url)
+print(checksums_url)
+' "${tag}" "${platform}" "${arch}" <<<"${release_json}"
+)"
+
+asset_name="$(printf '%s\n' "${asset_info}" | sed -n '1p')"
+asset_url="$(printf '%s\n' "${asset_info}" | sed -n '2p')"
+checksums_url="$(printf '%s\n' "${asset_info}" | sed -n '3p')"
+if [[ -z "${checksums_url}" ]]; then
+  checksums_url="${base_url}/checksums.txt"
+fi
+archive_path="${tmp_dir}/${asset_name}"
+
+echo "==> download ${asset_name}"
 curl -fSL \
   --connect-timeout 10 \
   --max-time 600 \
@@ -125,7 +201,7 @@ curl -fSL \
   --retry-delay 2 \
   --retry-all-errors \
   --output "${archive_path}" \
-  "${base_url}/${asset}"
+  "${asset_url}"
 
 echo "==> download checksums.txt"
 curl -fSL \
@@ -135,11 +211,11 @@ curl -fSL \
   --retry-delay 2 \
   --retry-all-errors \
   --output "${checksums_path}" \
-  "${base_url}/checksums.txt"
+  "${checksums_url}"
 
-expected_line="$(grep -E "^[a-f0-9]{64}  ${asset}$" "${checksums_path}" | head -n 1 || true)"
+expected_line="$(grep -E "^[a-f0-9]{64}  ${asset_name}$" "${checksums_path}" | head -n 1 || true)"
 if [[ -z "${expected_line}" ]]; then
-  echo "ERROR: checksums.txt does not contain an entry for ${asset}" >&2
+  echo "ERROR: checksums.txt does not contain an entry for ${asset_name}" >&2
   exit 2
 fi
 
@@ -153,7 +229,7 @@ elif command -v shasum >/dev/null 2>&1; then
   expected_hash="$(printf '%s\n' "${expected_line}" | awk '{print $1}')"
   actual_hash="$(shasum -a 256 "${archive_path}" | awk '{print $1}')"
   if [[ "${expected_hash}" != "${actual_hash}" ]]; then
-    echo "ERROR: sha256 mismatch for ${asset}" >&2
+    echo "ERROR: sha256 mismatch for ${asset_name}" >&2
     exit 2
   fi
 else
@@ -165,17 +241,6 @@ mkdir -p "${install_dir}"
 tar -xzf "${archive_path}" -C "${tmp_dir}"
 cp "${tmp_dir}/hardproof" "${install_path}"
 chmod +x "${install_path}"
-
-cat >"${legacy_alias_path}" <<'SH'
-#!/usr/bin/env bash
-set -euo pipefail
-
-echo "x07-mcp-test is now Hardproof. Legacy commands remain available during beta." >&2
-echo "Try: hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json" >&2
-
-exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/hardproof" "$@"
-SH
-chmod +x "${legacy_alias_path}"
 
 echo "==> ok: ${install_path}"
 echo
