@@ -1,9 +1,9 @@
 # Replay / record (rr)
 
-Replay support lets `x07-mcp-test` produce deterministic, reviewable evidence:
+Replay support lets `hardproof` produce deterministic, reviewable evidence:
 
-- `x07-mcp-test replay record` records a small deterministic session (HTTP or stdio) into a session file (`x07.mcp.replay.session@0.2.0`).
-- `x07-mcp-test replay verify` replays the recorded cassette against a target server and emits a pass/fail verification report (`x07.mcp.replay.verify@0.2.0`).
+- `hardproof replay record` records a small deterministic session (HTTP or stdio) into a session file (`x07.mcp.replay.session@0.2.0`).
+- `hardproof replay verify` replays the recorded cassette against a target server and emits a pass/fail verification report (`x07.mcp.replay.verify@0.2.0`).
 
 The recorded cassette lives inside the session file:
 - HTTP: `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`)

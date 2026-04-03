@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 env:
-  X07_TOOLCHAIN_TAG: "v0.1.107"
+  X07_TOOLCHAIN_TAG: "v0.1.108"
 
 jobs:
   build:
@@ -79,26 +79,26 @@ jobs:
       - name: Build release artifact
         shell: bash
         env:
-          X07_MCP_TEST_TAG: ${{ inputs.tag || github.ref_name }}
+          HARDPROOF_TAG: ${{ inputs.tag || github.ref_name }}
         run: ./scripts/ci/build_release_binaries.sh
 
       - name: Smoke release archive
         shell: bash
         run: |
           set -euo pipefail
-          archive="$(ls -1 dist/x07-mcp-test-*.tar.gz | head -n 1)"
+          archive="$(ls -1 dist/hardproof-*.tar.gz | head -n 1)"
           tmp_dir="$(mktemp -d)"
           trap 'rm -rf "${tmp_dir}"' EXIT
           tar -xzf "${archive}" -C "${tmp_dir}"
-          "${tmp_dir}/x07-mcp-test" --help >/dev/null
-          "${tmp_dir}/x07-mcp-test" doctor --help >/dev/null
-          "${tmp_dir}/x07-mcp-test" conformance run --help >/dev/null
+          "${tmp_dir}/hardproof" --help >/dev/null
+          "${tmp_dir}/hardproof" doctor --help >/dev/null
+          "${tmp_dir}/hardproof" scan --help >/dev/null
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: x07-mcp-test-${{ inputs.tag || github.ref_name }}-${{ matrix.platform }}
-          path: dist/x07-mcp-test-*.tar.gz
+          name: hardproof-${{ inputs.tag || github.ref_name }}-${{ matrix.platform }}
+          path: dist/hardproof-*.tar.gz
 
   checksums:
     name: release / checksums + install script
@@ -120,9 +120,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p upload
-          find dist -type f -name 'x07-mcp-test-*.tar.gz' -print0 | xargs -0 -I{} cp "{}" upload/
+          find dist -type f -name 'hardproof-*.tar.gz' -print0 | xargs -0 -I{} cp "{}" upload/
           cd upload
-          sha256sum x07-mcp-test-*.tar.gz | LC_ALL=C sort > checksums.txt
+          sha256sum hardproof-*.tar.gz | LC_ALL=C sort > checksums.txt
           cat checksums.txt
 
       - name: Add install script
@@ -134,7 +134,7 @@ jobs:
       - name: Upload release assets
         uses: actions/upload-artifact@v4
         with:
-          name: x07-mcp-test-${{ inputs.tag || github.ref_name }}-release-assets
+          name: hardproof-${{ inputs.tag || github.ref_name }}-release-assets
           path: upload/
 
   publish:
@@ -146,7 +146,7 @@ jobs:
       - name: Download release assets
         uses: actions/download-artifact@v4
         with:
-          name: x07-mcp-test-${{ github.ref_name }}-release-assets
+          name: hardproof-${{ github.ref_name }}-release-assets
           path: upload
 
       - name: Create prerelease
@@ -155,21 +155,21 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            upload/x07-mcp-test-*.tar.gz
+            upload/hardproof-*.tar.gz
             upload/checksums.txt
             upload/install.sh
           body: |
-            Private alpha release for `x07-mcp-test` (M1).
+            Private alpha release for Hardproof (M1).
 
             What works:
             - `doctor`
-            - `conformance run` (official MCP conformance via `npx`)
+            - `scan` (official MCP conformance via `npx`)
             - `replay record` / `replay verify` (HTTP cassette)
             - `trust verify`
             - `bundle verify`
 
             Install:
-            - Download the `x07-mcp-test-...tar.gz` for your OS/arch + verify via `checksums.txt`, or run:
+            - Download the `hardproof-...tar.gz` for your OS/arch + verify via `checksums.txt`, or run:
               - `curl -fsSL https://github.com/x07lang/x07-mcp-test/releases/download/${{ github.ref_name }}/install.sh | bash -s -- --tag ${{ github.ref_name }}`
 
             Known limitations:

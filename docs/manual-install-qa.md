@@ -1,6 +1,6 @@
 # Manual install QA
 
-Manual install QA worksheet for `x07-mcp-test`.
+Manual install QA worksheet for `hardproof`.
 
 Goal: confirm that a cold user can download and run the alpha verifier without building from source.
 
@@ -30,18 +30,18 @@ Record:
 - [ ] download via `install.sh`
 - [ ] checksum verification succeeds
 - [ ] binary installed to `PATH`
-- [ ] `x07-mcp-test --help` works
+- [ ] `hardproof --help` works
 
 ### 2) Diagnostics
 
-- [ ] `x07-mcp-test doctor` works
-- [ ] `x07-mcp-test doctor --machine json` works
+- [ ] `hardproof doctor` works
+- [ ] `hardproof doctor --machine json` works
 
 ### 3) Conformance (smoke)
 
 - [ ] Node/npm/npx preconditions satisfied
-- [ ] run `x07-mcp-test conformance run --help`
-- [ ] run `x07-mcp-test conformance run --url "<URL>" --out out/conformance --machine json`
+- [ ] run `hardproof scan --help`
+- [ ] run `hardproof scan --url "<URL>" --out out/conformance --machine json`
 - [ ] outputs produced: `summary.json`, `summary.junit.xml`, `summary.html`
 
 ## Notes

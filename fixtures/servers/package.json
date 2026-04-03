@@ -1,5 +1,5 @@
 {
-  "name": "@x07lang/x07-mcp-test-fixtures",
+  "name": "@x07lang/hardproof-fixtures",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -7,4 +7,3 @@
     "@modelcontextprotocol/sdk": "1.29.0"
   }
 }
-

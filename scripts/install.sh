@@ -5,14 +5,14 @@ REPO="x07lang/x07-mcp-test"
 
 usage() {
   cat <<'USAGE'
-Install the x07-mcp-test private alpha verifier binary from GitHub Releases.
+Install the Hardproof verifier binary from GitHub Releases.
 
 Usage:
   install.sh --tag <v0.1.0-alpha.N>
   install.sh --tag latest-alpha
 
 Options:
-  --tag <TAG>         Git tag to install from (example: v0.1.0-alpha.4, or latest-alpha)
+  --tag <TAG>         Git tag to install from (example: v0.1.0-alpha.5, or latest-alpha)
   --install-dir <DIR> Install directory (default: ~/.local/bin)
 
 Notes:
@@ -104,10 +104,11 @@ case "${platform}-${arch}" in
     ;;
 esac
 
-asset="x07-mcp-test-${tag}-${artifact_platform}.tar.gz"
+asset="hardproof-${tag}-${artifact_platform}.tar.gz"
 base_url="https://github.com/${REPO}/releases/download/${tag}"
 
-install_path="${install_dir}/x07-mcp-test"
+install_path="${install_dir}/hardproof"
+legacy_alias_path="${install_dir}/x07-mcp-test"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
@@ -161,12 +162,23 @@ fi
 echo "==> install ${install_path}"
 mkdir -p "${install_dir}"
 tar -xzf "${archive_path}" -C "${tmp_dir}"
-cp "${tmp_dir}/x07-mcp-test" "${install_path}"
+cp "${tmp_dir}/hardproof" "${install_path}"
 chmod +x "${install_path}"
+
+cat >"${legacy_alias_path}" <<'SH'
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "x07-mcp-test is now Hardproof. Legacy commands remain available during beta." >&2
+echo "Try: hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json" >&2
+
+exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/hardproof" "$@"
+SH
+chmod +x "${legacy_alias_path}"
 
 echo "==> ok: ${install_path}"
 echo
 echo "Next:"
-echo "  x07-mcp-test --help"
-echo "  x07-mcp-test doctor"
-echo "  x07-mcp-test conformance run --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json"
+echo "  hardproof --help"
+echo "  hardproof doctor"
+echo "  hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json"

@@ -4,9 +4,9 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${repo_root}"
 
-tag="${X07_MCP_TEST_TAG:-${GITHUB_REF_NAME:-}}"
+tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set X07_MCP_TEST_TAG (example: v0.1.0-alpha.4)" >&2
+  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.1.0-alpha.5)" >&2
   exit 2
 fi
 
@@ -34,7 +34,7 @@ dist_dir="${DIST_DIR:-dist}"
 work_dir="${dist_dir}/work"
 mkdir -p "${work_dir}"
 
-bin_name="x07-mcp-test"
+bin_name="hardproof"
 bin_path="${work_dir}/${bin_name}"
 
 if ! command -v cc >/dev/null 2>&1; then

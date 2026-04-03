@@ -1,6 +1,6 @@
 # Targets and transports
 
-`x07-mcp-test` is moving from an HTTP-only private alpha to a dual-transport public beta.
+`hardproof` is moving from an HTTP-only private alpha to a dual-transport public beta.
 
 The verifier treats MCP targets as an explicit **transport + reference** pair:
 

@@ -69,7 +69,7 @@ start_spawn() {
   if [[ -n "${bg_pid}" ]]; then
     return 0
   fi
-  local server_log="/tmp/x07-mcp-test-conformance-server.log"
+  local server_log="/tmp/hardproof-conformance-server.log"
   "${ROOT}/conformance/scripts/spawn_reference_http.sh" "${SPAWN_TARGET}" "${SPAWN_MODE}" >"${server_log}" 2>&1 &
   bg_pid="$!"
   if ! "${ROOT}/conformance/scripts/wait_for_http.sh" "${URL}" >/dev/null; then
@@ -135,4 +135,3 @@ else
 fi
 
 stop_spawn
-

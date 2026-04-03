@@ -1,6 +1,11 @@
-# x07-mcp-test
+# Hardproof
 
-Private-alpha MCP verifier CLI (Track A wedge): run official MCP conformance plus replay/trust/bundle checks, and emit reviewable artifacts (terminal + JSON + JUnit + HTML + SARIF).
+Deterministic verification for MCP servers.
+
+Hardproof is a standalone verifier for MCP servers. It runs deterministic checks for conformance, replay, trust, and release-grade evidence. Hardproof is built with x07, but you do not need to adopt x07 to use it.
+
+> **Beta transition note**
+> Hardproof is the new public name for the private-alpha tool previously released as `x07-mcp-test`. The repo and legacy commands remain available during beta for compatibility.
 
 ## Who it's for
 
@@ -9,19 +14,19 @@ Private-alpha MCP verifier CLI (Track A wedge): run official MCP conformance plu
 
 ## Fastest first success
 
-1) Install `x07-mcp-test` (alpha).
+1) Install `hardproof`.
 
 2) Run diagnostics:
 
 ```sh
-x07-mcp-test doctor
-x07-mcp-test doctor --machine json
+hardproof doctor
+hardproof doctor --machine json
 ```
 
-3) Run official conformance:
+3) Run the public scan workflow:
 
 ```sh
-x07-mcp-test conformance run \
+hardproof scan \
   --url "http://127.0.0.1:3000/mcp" \
   --out out/conformance \
   --machine json
@@ -29,24 +34,36 @@ x07-mcp-test conformance run \
 
 ## Usage
 
-- `x07-mcp-test --help`
-- `x07-mcp-test doctor`
-- `x07-mcp-test doctor --machine json --cmd "<stdio cmd>" --url "<http url>"`
-- `x07-mcp-test conformance run --url "<http url>"`
-- `x07-mcp-test conformance run --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>"`
-- `x07-mcp-test conformance run --url "<http url>" --out out/`
-- `x07-mcp-test conformance run --url "<http url>" --full-suite`
-- `x07-mcp-test replay record --url "<http url>" --out out/replay.session.json --scenario smoke/basic`
-- `x07-mcp-test replay record --cmd "<stdio cmd>" --out out/replay.session.json`
-- `x07-mcp-test replay verify --session out/replay.session.json --url "<http url>" --out out/replay-verify`
-- `x07-mcp-test replay verify --session out/replay.session.json --cmd "<stdio cmd>" --out out/replay-verify`
-- `x07-mcp-test trust verify --server-json "<path>"`
-- `x07-mcp-test bundle verify --server-json "<path>" --mcpb "<path>"`
-- `x07-mcp-test corpus run --manifest corpus/manifests/quality-report-001.json --out out/corpus/quality-report-001`
+- `hardproof --help`
+- `hardproof scan --url "<http url>"`
+- `hardproof scan --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>"`
+- `hardproof scan --url "<http url>" --out out/`
+- `hardproof scan --url "<http url>" --full-suite`
+- `hardproof ci --url "<http url>" --threshold 80`
+- `hardproof doctor`
+- `hardproof doctor --machine json --cmd "<stdio cmd>" --url "<http url>"`
+- `hardproof conformance run --url "<http url>"`
+- `hardproof replay record --url "<http url>" --out out/replay.session.json --scenario smoke/basic`
+- `hardproof replay record --cmd "<stdio cmd>" --out out/replay.session.json`
+- `hardproof replay verify --session out/replay.session.json --url "<http url>" --out out/replay-verify`
+- `hardproof replay verify --session out/replay.session.json --cmd "<stdio cmd>" --out out/replay-verify`
+- `hardproof trust verify --server-json "<path>"`
+- `hardproof bundle verify --server-json "<path>" --mcpb "<path>"`
+- `hardproof corpus run --manifest corpus/manifests/quality-report-001.json --out out/corpus/quality-report-001`
 
 See `docs/doctor.md`.
 See `docs/targets.md`.
 See `corpus/README.md`.
+
+## Legacy command compatibility (beta)
+
+If you already installed the private alpha as `x07-mcp-test`, legacy commands continue to work during the beta transition:
+
+```sh
+x07-mcp-test conformance run --url "http://127.0.0.1:3000/mcp"
+```
+
+Hardproof is the public brand and CLI. The legacy alias remains available during beta for compatibility.
 
 ## Install (alpha)
 
@@ -56,25 +73,25 @@ On Windows, run inside WSL2 and use the `linux-x64` artifact.
 
 ### Install script
 
-Each alpha release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `x07-mcp-test` to `~/.local/bin`:
+Each alpha release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```sh
-curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.4/install.sh" \
-  | bash -s -- --tag "v0.1.0-alpha.4"
+curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.5/install.sh" \
+  | bash -s -- --tag "v0.1.0-alpha.5"
 ```
 
 You can also resolve the latest alpha tag (requires GitHub API access):
 
 ```sh
-curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.4/install.sh" \
+curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.5/install.sh" \
   | bash -s -- --tag latest-alpha
 ```
 
 ### Manual install
 
-1) Download `x07-mcp-test-<TAG>-<linux-x64|darwin-arm64|darwin-x64>.tar.gz` and `checksums.txt` from GitHub Releases.
+1) Download `hardproof-<TAG>-<linux-x64|darwin-arm64|darwin-x64>.tar.gz` and `checksums.txt` from GitHub Releases.
 
-2) Verify `sha256`, extract, and place `x07-mcp-test` on your `PATH`.
+2) Verify `sha256`, extract, and place `hardproof` on your `PATH`.
 
 ## Schemas
 
@@ -96,7 +113,7 @@ See `docs/schema-versioning.md`.
 
 ## Notes
 
-- HTTP conformance runs the official MCP suite via `npx` (requires Node/npm/npx); use `x07-mcp-test doctor` to confirm preconditions.
+- HTTP conformance runs the official MCP suite via `npx` (requires Node/npm/npx); use `hardproof doctor` to confirm preconditions.
 - Stdio conformance runs via an internal harness that emits the same `checks.json` shape and IDs as the pinned official package, so reports stay comparable across transports.
 - For now, `replay record` records the `smoke/basic` HTTP scenario and stores the cassette at `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`). See `rr/README.md`.
 - Trust and bundle verification operate on registry artifacts (`server.json` and `.mcpb`) rather than a running HTTP server. See `trust/README.md`.
@@ -104,7 +121,7 @@ See `docs/schema-versioning.md`.
 
 ## Conformance outputs
 
-`x07-mcp-test conformance run` writes:
+`hardproof scan` writes:
 - `summary.json` (schema: `x07.mcp.conformance.summary@0.2.0`)
 - `summary.junit.xml`
 - `summary.html`
@@ -117,11 +134,11 @@ Exit codes:
 
 ## CI / GitHub Action contract
 
-The Action downloads an `x07-mcp-test` release binary and runs `conformance run` (HTTP or stdio):
+The Action downloads a `hardproof` release binary and runs `hardproof scan` (HTTP or stdio):
 
 ```yaml
-- name: Run MCP conformance
-  uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.4
+- name: Run Hardproof scan
+  uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.5
   with:
     url: http://127.0.0.1:3000/mcp
     full-suite: "false"

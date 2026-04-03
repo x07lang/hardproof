@@ -23,7 +23,7 @@ async function main() {
     process.exit(2);
   }
 
-  const client = new Client({ name: 'x07-mcp-test-stdio-smoke', version: '0.0.0' });
+  const client = new Client({ name: 'hardproof-stdio-smoke', version: '0.0.0' });
   const transport = new StdioClientTransport({
     command: 'node',
     args: [serverEntry],

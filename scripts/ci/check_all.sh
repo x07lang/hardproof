@@ -32,7 +32,7 @@ mkdir -p out
 tmp_dir="$(mktemp -d "out/ci-tmp.XXXXXX")"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
-bin_path="${tmp_dir}/x07-mcp-test"
+bin_path="${tmp_dir}/hardproof"
 bundle_log="${tmp_dir}/bundle.log"
 if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >"${bundle_log}" 2>&1; then
   echo "ERROR: x07 bundle failed." >&2
@@ -41,8 +41,38 @@ if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >
 fi
 chmod +x "${bin_path}"
 
+echo "==> legacy alias smoke"
+legacy_bin_path="${tmp_dir}/x07-mcp-test"
+cat >"${legacy_bin_path}" <<'SH'
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "x07-mcp-test is now Hardproof. Legacy commands remain available during beta." >&2
+echo "Try: hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/conformance --machine json" >&2
+
+exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/hardproof" "$@"
+SH
+chmod +x "${legacy_bin_path}"
+
+legacy_err="${tmp_dir}/legacy.help.stderr.txt"
+rm -f "${legacy_err}"
+"${legacy_bin_path}" --help >/dev/null 2>"${legacy_err}"
+if ! grep -q '^x07-mcp-test is now Hardproof' "${legacy_err}"; then
+  echo "ERROR: legacy alias did not emit expected migration hint" >&2
+  cat "${legacy_err}" >&2 || true
+  exit 1
+fi
+
 echo "==> cli smoke"
 "${bin_path}" --help >/dev/null
+set +e
+"${bin_path}" scan --help >/dev/null
+scan_help_exit="$?"
+set -e
+if [[ "${scan_help_exit}" != "0" ]]; then
+  echo "ERROR: hardproof scan --help failed (exit ${scan_help_exit})" >&2
+  exit 1
+fi
 
 echo "==> schema fixtures"
 "${bin_path}" ci validate-fixtures
@@ -168,7 +198,7 @@ run_conformance_fixture() (
   fi
 
   set +e
-  "${bin_path}" conformance run \
+  "${bin_path}" scan \
     --url "${fixture_url}" \
     --baseline conformance/pinned/conformance-baseline.yml \
     --out "${fixture_out_dir}" \
@@ -177,11 +207,11 @@ run_conformance_fixture() (
   set -e
 
   if [[ "${exit_code}" != "${expected_exit}" ]]; then
-    echo "ERROR: conformance run exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
+    echo "ERROR: scan exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
     if [[ -f "${fixture_out_dir}/summary.stdout.json" ]]; then
-      echo "---- begin conformance stdout ----" >&2
+      echo "---- begin scan stdout ----" >&2
       cat "${fixture_out_dir}/summary.stdout.json" >&2 || true
-      echo "---- end conformance stdout ----" >&2
+      echo "---- end scan stdout ----" >&2
     fi
     tail -n 200 "${server_log}" >&2 || true
     exit 1
@@ -198,6 +228,33 @@ run_conformance_fixture() (
   "${bin_path}" ci validate-json \
     --schema schemas/x07.mcp.sarif.schema.json \
     --input "${fixture_out_dir}/summary.sarif.json"
+
+  if [[ "${fixture_id}" == "good-http" ]]; then
+    echo "==> ci smoke (good-http)"
+    local ci_out_dir="${fixture_out_dir}/ci"
+    rm -rf "${ci_out_dir}"
+    mkdir -p "${ci_out_dir}"
+
+    set +e
+    "${bin_path}" ci \
+      --url "${fixture_url}" \
+      --threshold 80 \
+      --baseline conformance/pinned/conformance-baseline.yml \
+      --out "${ci_out_dir}" \
+      --machine json >"${ci_out_dir}/summary.stdout.json"
+    local ci_exit="$?"
+    set -e
+
+    if [[ "${ci_exit}" != "0" ]]; then
+      echo "ERROR: ci exit code mismatch for ${fixture_id} (expected 0, got ${ci_exit})" >&2
+      cat "${ci_out_dir}/summary.stdout.json" >&2 || true
+      exit 1
+    fi
+
+    "${bin_path}" ci validate-json \
+      --schema schemas/x07.mcp.conformance.summary.schema.json \
+      --input "${ci_out_dir}/summary.json"
+  fi
 )
 
 run_conformance_fixture good-http noauth http://127.0.0.1:18080/mcp 0
@@ -214,7 +271,7 @@ run_conformance_stdio_fixture() (
   mkdir -p "${fixture_out_dir}"
 
   set +e
-  "${bin_path}" conformance run \
+  "${bin_path}" scan \
     --cmd "bash conformance/scripts/spawn_reference_stdio.sh ${target_id}" \
     --baseline conformance/pinned/conformance-baseline.yml \
     --out "${fixture_out_dir}" \
@@ -223,11 +280,11 @@ run_conformance_stdio_fixture() (
   set -e
 
   if [[ "${exit_code}" != "${expected_exit}" ]]; then
-    echo "ERROR: conformance run exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
+    echo "ERROR: scan exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
     if [[ -f "${fixture_out_dir}/summary.stdout.json" ]]; then
-      echo "---- begin conformance stdout ----" >&2
+      echo "---- begin scan stdout ----" >&2
       cat "${fixture_out_dir}/summary.stdout.json" >&2 || true
-      echo "---- end conformance stdout ----" >&2
+      echo "---- end scan stdout ----" >&2
     fi
     exit 1
   fi

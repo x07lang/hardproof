@@ -1,6 +1,8 @@
-# x07-mcp-test GitHub Action (public beta contract)
+# Hardproof Scan (beta)
 
-This Action downloads an `x07-mcp-test` release binary and runs `x07-mcp-test conformance run` against a target MCP server (HTTP or stdio).
+This Action downloads a `hardproof` release binary and runs `hardproof scan` against a target MCP server (HTTP or stdio).
+
+During the beta transition, the Action is publicly branded as Hardproof Scan but is still served from the existing `x07lang/x07-mcp-test` repository path for compatibility.
 
 ## Usage
 
@@ -23,9 +25,9 @@ jobs:
       # - name: Start server
       #   run: ./scripts/start-server.sh
 
-      - name: Run MCP conformance
+      - name: Run Hardproof scan
         id: mcp
-        uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.4
+        uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.5
         with:
           url: http://127.0.0.1:3000/mcp
           full-suite: "false"
@@ -35,7 +37,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: x07-mcp-test-reports
+          name: hardproof-reports
           path: |
             out/doctor.json
             out/conformance/summary.json
@@ -47,9 +49,9 @@ jobs:
 ### stdio target
 
 ```yaml
-- name: Run MCP conformance (stdio)
+- name: Run Hardproof scan (stdio)
   id: mcp
-  uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.4
+  uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.5
   with:
     cmd: node server.mjs
     cwd: servers/my-mcp

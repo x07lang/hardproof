@@ -3,7 +3,7 @@
 The corpus runner exists to make the public quality report reproducible:
 
 - a checked-in manifest defines **what** was tested and under which assumptions
-- `x07-mcp-test corpus run` executes conformance per target and emits per-target outputs plus an aggregate `index.json`
+- `hardproof corpus run` executes conformance per target and emits per-target outputs plus an aggregate `index.json`
 
 ## Manifest
 
@@ -20,7 +20,7 @@ Each `targets[]` entry captures:
 
 ## `corpus run` outputs
 
-`x07-mcp-test corpus run --manifest <FILE> --out <DIR>` writes:
+`hardproof corpus run --manifest <FILE> --out <DIR>` writes:
 
 - `<DIR>/index.json` (`x07.mcp.corpus.summary@0.1.0`)
 - `<DIR>/<server_id>/result.json` (`x07.mcp.corpus.result@0.1.0`)

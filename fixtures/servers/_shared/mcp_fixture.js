@@ -54,7 +54,7 @@ function requireBearerAuth(req, res, next) {
 }
 
 export function getServer() {
-  const server = new McpServer({ name: 'x07-mcp-test-fixture', version: '1.0.0' }, { capabilities: { logging: {} } });
+  const server = new McpServer({ name: 'hardproof-fixture', version: '1.0.0' }, { capabilities: { logging: {} } });
 
   server.registerTool(
     'test_tool_with_progress',

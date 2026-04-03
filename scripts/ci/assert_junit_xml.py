@@ -18,7 +18,7 @@ def main(argv: list[str]) -> int:
         raise ValueError(f"unexpected root tag: {root.tag!r}")
 
     suite_name = root.attrib.get("name")
-    if suite_name != "x07-mcp-test conformance":
+    if suite_name != "hardproof conformance":
         raise ValueError(f"unexpected testsuite name: {suite_name!r}")
 
     testcases = root.findall("testcase")
@@ -43,4 +43,3 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))
-

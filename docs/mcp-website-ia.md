@@ -5,7 +5,7 @@ Information architecture and messaging hierarchy for the MCP wedge pages.
 ## Route list (frozen)
 
 - `/mcp` — Wedge landing page (what it is + why it matters).
-- `/mcp/install` — Install `x07-mcp-test` (private alpha) and run `doctor`.
+- `/mcp/install` — Install `hardproof` and run `doctor`.
 - `/mcp/action` — CI integration preview (GitHub Action surface).
 - `/mcp/codespaces` — Zero-install evaluation path (Codespaces).
 
@@ -14,23 +14,23 @@ Information architecture and messaging hierarchy for the MCP wedge pages.
 ### `/mcp`
 
 - Headline: Test and trust MCP servers.
-- Subhead: `x07-mcp-test` is a standalone verifier that runs conformance, replay, and trust checks against MCP servers (any language).
+- Subhead: `hardproof` is a standalone verifier that runs conformance, replay, and trust checks against MCP servers (any language).
 - CTA 1: Install (private alpha)
 - CTA 2: Open in Codespaces
 - CTA 3: Add to CI (Action preview)
 
 ### `/mcp/install`
 
-- Headline: Install `x07-mcp-test` (private alpha)
+- Headline: Install `hardproof`
 - Subhead: Prebuilt binaries; conformance requires a working Node/npm toolchain.
 - CTA 1: Download latest alpha release
-- CTA 2: Run `x07-mcp-test doctor`
-- CTA 3: Run `x07-mcp-test conformance run`
+- CTA 2: Run `hardproof doctor`
+- CTA 3: Run `hardproof scan`
 
 ### `/mcp/action`
 
 - Headline: Run MCP conformance in CI
-- Subhead: GitHub Action wrapper around `x07-mcp-test` outputs.
+- Subhead: GitHub Action wrapper around `hardproof` outputs.
 - CTA 1: See the Action YAML snippet
 - CTA 2: View sample report artifacts
 - CTA 3: Open an issue for early access

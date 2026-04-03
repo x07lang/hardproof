@@ -31,7 +31,7 @@ jobs:
           echo "$!" > out/action-smoke.server.pid
           conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null
 
-      - name: Run x07-mcp-test Action
+      - name: Run Hardproof Action
         uses: ./action
         with:
           url: http://127.0.0.1:18080/mcp

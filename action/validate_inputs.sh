@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-url="${X07_MCP_TEST_ACTION_URL:-}"
-cmd="${X07_MCP_TEST_ACTION_CMD:-}"
-full_suite="${X07_MCP_TEST_ACTION_FULL_SUITE:-false}"
-sarif="${X07_MCP_TEST_ACTION_SARIF:-false}"
+url="${HARDPROOF_ACTION_URL:-}"
+cmd="${HARDPROOF_ACTION_CMD:-}"
+full_suite="${HARDPROOF_ACTION_FULL_SUITE:-false}"
+sarif="${HARDPROOF_ACTION_SARIF:-false}"
 
 if [[ -n "${url}" && -n "${cmd}" ]]; then
   echo "ERROR: set exactly one of 'url' or 'cmd'." >&2
@@ -30,4 +30,3 @@ case "${sarif}" in
     exit 2
     ;;
 esac
-

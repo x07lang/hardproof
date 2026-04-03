@@ -11,10 +11,10 @@ run_case() (
   local out
   set +e
   out="$(
-    X07_MCP_TEST_ACTION_URL="${X07_MCP_TEST_ACTION_URL:-}" \
-    X07_MCP_TEST_ACTION_CMD="${X07_MCP_TEST_ACTION_CMD:-}" \
-    X07_MCP_TEST_ACTION_FULL_SUITE="${X07_MCP_TEST_ACTION_FULL_SUITE:-false}" \
-    X07_MCP_TEST_ACTION_SARIF="${X07_MCP_TEST_ACTION_SARIF:-false}" \
+    HARDPROOF_ACTION_URL="${HARDPROOF_ACTION_URL:-}" \
+    HARDPROOF_ACTION_CMD="${HARDPROOF_ACTION_CMD:-}" \
+    HARDPROOF_ACTION_FULL_SUITE="${HARDPROOF_ACTION_FULL_SUITE:-false}" \
+    HARDPROOF_ACTION_SARIF="${HARDPROOF_ACTION_SARIF:-false}" \
     "$@" 2>&1
   )"
   local got="$?"
@@ -29,22 +29,22 @@ run_case() (
 
 script="${repo_root}/action/validate_inputs.sh"
 
-X07_MCP_TEST_ACTION_URL="http://127.0.0.1:3000/mcp" \
-  X07_MCP_TEST_ACTION_CMD="" \
+HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
+  HARDPROOF_ACTION_CMD="" \
   run_case "url-only" 0 bash "${script}"
 
-X07_MCP_TEST_ACTION_URL="" \
-  X07_MCP_TEST_ACTION_CMD="node server.mjs" \
+HARDPROOF_ACTION_URL="" \
+  HARDPROOF_ACTION_CMD="node server.mjs" \
   run_case "cmd-only" 0 bash "${script}"
 
-X07_MCP_TEST_ACTION_URL="http://127.0.0.1:3000/mcp" \
-  X07_MCP_TEST_ACTION_CMD="node server.mjs" \
+HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
+  HARDPROOF_ACTION_CMD="node server.mjs" \
   run_case "url-and-cmd" 2 bash "${script}"
 
-X07_MCP_TEST_ACTION_URL="" \
-  X07_MCP_TEST_ACTION_CMD="" \
+HARDPROOF_ACTION_URL="" \
+  HARDPROOF_ACTION_CMD="" \
   run_case "neither-url-nor-cmd" 2 bash "${script}"
 
-X07_MCP_TEST_ACTION_URL="http://127.0.0.1:3000/mcp" \
-  X07_MCP_TEST_ACTION_SARIF="nope" \
+HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
+  HARDPROOF_ACTION_SARIF="nope" \
   run_case "bad-sarif" 2 bash "${script}"

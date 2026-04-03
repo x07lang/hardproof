@@ -1,6 +1,6 @@
 # Schema versioning and compatibility
 
-`x07-mcp-test` emits machine-readable JSON artifacts. Every JSON artifact includes a required top-level `schema_version` string of the form:
+`hardproof` emits machine-readable JSON artifacts. Every JSON artifact includes a required top-level `schema_version` string of the form:
 
 ```text
 x07.mcp.<artifact>@<semver>

@@ -1,5 +1,5 @@
-name: x07-mcp-test (public beta contract)
-description: Run MCP conformance checks using an x07-mcp-test release binary.
+name: Hardproof Scan (beta)
+description: Run Hardproof verification in GitHub Actions using a release binary.
 
 inputs:
   url:
@@ -31,7 +31,7 @@ inputs:
     required: false
     default: "false"
   version:
-    description: "x07-mcp-test release tag (example: v0.1.0-alpha.4) or latest-alpha"
+    description: "Hardproof release tag (example: v0.1.0-alpha.5) or latest-alpha"
     required: false
     default: latest-alpha
 
@@ -60,35 +60,35 @@ runs:
       with:
         node-version: "22"
 
-    - name: Install x07-mcp-test (release binary)
+    - name: Install hardproof (release binary)
       shell: bash
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: |
         set -euo pipefail
-        install_dir="${RUNNER_TEMP}/x07-mcp-test/bin"
+        install_dir="${RUNNER_TEMP}/hardproof/bin"
         mkdir -p "${install_dir}"
         bash "${GITHUB_ACTION_PATH}/../scripts/install.sh" \
           --tag "${{ inputs.version }}" \
           --install-dir "${install_dir}"
         echo "${install_dir}" >>"${GITHUB_PATH}"
-        echo "X07_MCP_TEST_BIN=${install_dir}/x07-mcp-test" >>"${GITHUB_ENV}"
-        "${install_dir}/x07-mcp-test" --help >/dev/null
+        echo "HARDPROOF_BIN=${install_dir}/hardproof" >>"${GITHUB_ENV}"
+        "${install_dir}/hardproof" --help >/dev/null
 
     - name: Doctor (environment diagnostics)
       shell: bash
       run: |
         set -euo pipefail
         mkdir -p out
-        "${X07_MCP_TEST_BIN}" doctor --machine json > out/doctor.json
+        "${HARDPROOF_BIN}" doctor --machine json > out/doctor.json
 
     - name: Validate inputs
       shell: bash
       env:
-        X07_MCP_TEST_ACTION_URL: ${{ inputs.url }}
-        X07_MCP_TEST_ACTION_CMD: ${{ inputs.cmd }}
-        X07_MCP_TEST_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
-        X07_MCP_TEST_ACTION_SARIF: ${{ inputs.sarif }}
+        HARDPROOF_ACTION_URL: ${{ inputs.url }}
+        HARDPROOF_ACTION_CMD: ${{ inputs.cmd }}
+        HARDPROOF_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
+        HARDPROOF_ACTION_SARIF: ${{ inputs.sarif }}
       run: |
         set -euo pipefail
         bash "${GITHUB_ACTION_PATH}/validate_inputs.sh"
@@ -108,7 +108,7 @@ runs:
         cwd="${{ inputs.cwd }}"
         env_file="${{ inputs.env-file }}"
 
-        args=(conformance run --out "${out_dir}" --machine json)
+        args=(scan --out "${out_dir}" --machine json)
         if [[ -n "${url}" ]]; then
           args+=(--url "${url}")
         fi
@@ -129,7 +129,7 @@ runs:
         fi
 
         set +e
-        "${X07_MCP_TEST_BIN}" "${args[@]}" >"${out_dir}/summary.stdout.json"
+        "${HARDPROOF_BIN}" "${args[@]}" >"${out_dir}/summary.stdout.json"
         exit_code="$?"
         set -e
 
@@ -154,7 +154,7 @@ runs:
         echo "sarif_report=${sarif_report}" >>"${GITHUB_OUTPUT}"
 
         if [[ "${exit_code}" == "2" ]]; then
-          echo "ERROR: conformance run failed due to invocation/config/runtime precondition (exit 2)." >&2
+          echo "ERROR: scan failed due to invocation/config/runtime precondition (exit 2)." >&2
           exit 2
         fi
 

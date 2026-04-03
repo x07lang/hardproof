@@ -1,16 +1,16 @@
-# `x07-mcp-test doctor`
+# `hardproof doctor`
 
 Environment and toolchain diagnostics for running the private-alpha MCP wedge CLI.
 
 ## Usage
 
 ```bash
-x07-mcp-test doctor
-x07-mcp-test doctor --cmd "my-mcp-server --stdio"
-x07-mcp-test doctor --url "http://127.0.0.1:3000/mcp"
+hardproof doctor
+hardproof doctor --cmd "my-mcp-server --stdio"
+hardproof doctor --url "http://127.0.0.1:3000/mcp"
 
 # machine output:
-x07-mcp-test doctor --machine json
+hardproof doctor --machine json
 ```
 
 ## Options
@@ -28,4 +28,3 @@ x07-mcp-test doctor --machine json
 ## Fixtures
 
 Negative fixtures used by CI live in `fixtures/doctor/`.
-
