@@ -494,3 +494,55 @@ test -s "${bundle_bad_out}"
 "${bin_path}" ci validate-json \
   --schema schemas/x07.mcp.bundle.verify.schema.json \
   --input "${bundle_bad_out}"
+
+bundle_large_dir="${tmp_dir}/bundle.large"
+mkdir -p "${bundle_large_dir}"
+
+bundle_large_mcpb="${bundle_large_dir}/bundle-large.mcpb"
+bundle_large_server_json="${bundle_large_dir}/server-large.json"
+
+python3 - "${bundle_large_mcpb}" "${bundle_large_server_json}" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+mcpb_path = Path(sys.argv[1])
+server_json_path = Path(sys.argv[2])
+
+size = 5_000_000
+data = bytearray(size)
+data[0] = ord("P")
+data[1] = ord("K")
+mcpb_path.write_bytes(data)
+
+sha = hashlib.sha256(data).hexdigest()
+server_doc = {
+    "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+    "name": "io.x07/mcptest-bundle-large",
+    "version": "0.1.0",
+    "description": "Synthetic large mcpb fixture to smoke bundle verify fuel budget.",
+    "packages": [
+        {
+            "registryType": "mcpb",
+            "identifier": "io.x07/mcptest-bundle-large",
+            "version": "0.1.0",
+            "fileSha256": sha,
+            "transport": {"type": "stdio"},
+        }
+    ],
+}
+server_json_path.write_text(json.dumps(server_doc, indent=2) + "\n", encoding="utf-8")
+PY
+
+bundle_large_out="${bundle_large_dir}/bundle.large.json"
+"${bin_path}" bundle verify \
+  --server-json "${bundle_large_server_json}" \
+  --mcpb "${bundle_large_mcpb}" \
+  --out "${bundle_large_out}" \
+  --machine json >"${bundle_large_dir}/bundle.large.stdout.json"
+
+test -s "${bundle_large_out}"
+"${bin_path}" ci validate-json \
+  --schema schemas/x07.mcp.bundle.verify.schema.json \
+  --input "${bundle_large_out}"
