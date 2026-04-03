@@ -134,6 +134,9 @@ runs:
         if [[ "${{ inputs.full-suite }}" == "true" ]]; then
           args+=(--full-suite)
         fi
+        if [[ "${{ inputs.sarif }}" == "true" ]]; then
+          args+=(--sarif)
+        fi
         if [[ -n "${{ inputs.baseline }}" ]]; then
           args+=(--baseline "${{ inputs.baseline }}")
         fi
