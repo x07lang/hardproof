@@ -34,11 +34,11 @@ HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
   run_case "url-only" 0 bash "${script}"
 
 HARDPROOF_ACTION_URL="" \
-  HARDPROOF_ACTION_CMD="node server.mjs" \
+  HARDPROOF_ACTION_CMD="./server" \
   run_case "cmd-only" 0 bash "${script}"
 
 HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
-  HARDPROOF_ACTION_CMD="node server.mjs" \
+  HARDPROOF_ACTION_CMD="./server" \
   run_case "url-and-cmd" 2 bash "${script}"
 
 HARDPROOF_ACTION_URL="" \

@@ -7,15 +7,12 @@ BASELINE="${ROOT}/conformance/pinned/conformance-baseline.yml"
 OUT_DIR="${ROOT}/out/conformance"
 SPAWN_TARGET=""
 SPAWN_MODE="noauth"
-URL_EXPLICIT=0
 FULL_SUITE=0
-SCENARIOS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --url)
       URL="${2:?missing value for --url}"
-      URL_EXPLICIT=1
       shift 2
       ;;
     --baseline)
@@ -38,10 +35,6 @@ while [[ $# -gt 0 ]]; do
       FULL_SUITE=1
       shift
       ;;
-    --scenario)
-      SCENARIOS+=("${2:?missing value for --scenario}")
-      shift 2
-      ;;
     *)
       echo "unknown argument: $1" >&2
       exit 2
@@ -57,12 +50,6 @@ if [[ "${OUT_DIR}" != /* ]]; then
 fi
 
 mkdir -p "${OUT_DIR}/raw"
-
-CONFORMANCE_VERSION="$(tr -d '\n' < "${ROOT}/conformance/pinned/official-package-version.txt")"
-if [[ -z "${CONFORMANCE_VERSION}" ]]; then
-  echo "ERROR: missing conformance pinned version" >&2
-  exit 2
-fi
 
 bg_pid=""
 start_spawn() {
@@ -93,45 +80,20 @@ stop_spawn() {
 
 trap 'stop_spawn' EXIT
 
-if [[ "${FULL_SUITE}" == "1" && -n "${SPAWN_TARGET}" ]]; then
+if [[ -n "${SPAWN_TARGET}" ]]; then
   start_spawn
 fi
 
-raw_root="${OUT_DIR}/raw"
-
-if [[ "${FULL_SUITE}" == "1" ]]; then
-  npx -y "@modelcontextprotocol/conformance@${CONFORMANCE_VERSION}" \
-    server \
-    --url "${URL}" \
-    --expected-failures "${BASELINE}" \
-    --output-dir "${raw_root}/full-suite"
-else
-  if [[ "${#SCENARIOS[@]}" -eq 0 ]]; then
-    SCENARIOS=(
-      server-initialize
-      ping
-      tools-list
-      tools-call-with-progress
-      resources-subscribe
-      resources-unsubscribe
-      server-sse-multiple-streams
-      dns-rebinding-protection
-    )
-  fi
-  for scenario in "${SCENARIOS[@]}"; do
-    if [[ "${URL_EXPLICIT}" != "1" && -n "${SPAWN_TARGET}" ]]; then
-      start_spawn
-    fi
-    npx -y "@modelcontextprotocol/conformance@${CONFORMANCE_VERSION}" \
-      server \
-      --url "${URL}" \
-      --scenario "${scenario}" \
-      --output-dir "${raw_root}/${scenario}" \
-      --expected-failures "${BASELINE}"
-    if [[ "${URL_EXPLICIT}" != "1" && -n "${SPAWN_TARGET}" ]]; then
-      stop_spawn
-    fi
-  done
+hardproof_bin="${HARDPROOF_BIN:-hardproof}"
+if ! command -v "${hardproof_bin}" >/dev/null 2>&1; then
+  echo "ERROR: hardproof binary not found on PATH (set HARDPROOF_BIN to override)" >&2
+  exit 2
 fi
+
+args=(scan --url "${URL}" --baseline "${BASELINE}" --out "${OUT_DIR}" --machine json)
+if [[ "${FULL_SUITE}" == "1" ]]; then
+  args+=(--full-suite)
+fi
+"${hardproof_bin}" "${args[@]}"
 
 stop_spawn

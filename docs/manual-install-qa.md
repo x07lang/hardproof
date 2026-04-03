@@ -39,7 +39,7 @@ Record:
 
 ### 3) Conformance (smoke)
 
-- [ ] Node/npm/npx preconditions satisfied
+- [ ] target URL reachable (or stdio command runnable)
 - [ ] run `hardproof scan --help`
 - [ ] run `hardproof scan --url "<URL>" --out out/conformance --machine json`
 - [ ] outputs produced: `summary.json`, `summary.junit.xml`, `summary.html`

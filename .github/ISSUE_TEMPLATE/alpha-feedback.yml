@@ -1,5 +1,5 @@
 name: Alpha feedback
-description: Private alpha feedback for x07-mcp-test (install, conformance, replay, trust, bundle).
+description: Private alpha feedback for Hardproof (install, scan, replay, trust, bundle). Legacy alias: x07-mcp-test.
 title: "alpha: "
 body:
   - type: markdown
@@ -49,7 +49,7 @@ body:
     id: reports
     attributes:
       label: Machine reports (JSON)
-      description: Paste JSON output from x07-mcp-test commands (stdout) or attach files.
+      description: Paste JSON output from hardproof commands (stdout) or attach files.
       render: json
     validations:
       required: false

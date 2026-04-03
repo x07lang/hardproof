@@ -69,27 +69,28 @@ Hardproof is the public brand and CLI. The legacy alias remains available during
 
 Release artifacts are built via GitHub Actions on tags like `v0.1.*-alpha*`.
 
-On Windows, run inside WSL2 and use the `linux-x64` artifact.
+On Windows, run inside WSL2 and use the `linux_x86_64` artifact.
 
 ### Install script
 
 Each alpha release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```sh
-curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.5/install.sh" \
-  | bash -s -- --tag "v0.1.0-alpha.5"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.6/install.sh" \
+  | bash -s -- --tag "v0.1.0-alpha.6"
 ```
 
 You can also resolve the latest alpha tag (requires GitHub API access):
 
 ```sh
-curl -fsSL "https://github.com/x07lang/x07-mcp-test/releases/download/v0.1.0-alpha.5/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.1.0-alpha.6/install.sh" \
   | bash -s -- --tag latest-alpha
 ```
 
 ### Manual install
 
-1) Download `hardproof-<TAG>-<linux-x64|darwin-arm64|darwin-x64>.tar.gz` and `checksums.txt` from GitHub Releases.
+1) Download `hardproof_<VERSION>_<linux_x86_64|macos_arm64|macos_x86_64>.tar.gz` and `checksums.txt` from GitHub Releases.
+   (`VERSION` is the tag without the `v` prefix, like `0.1.0-alpha.6`.)
 
 2) Verify `sha256`, extract, and place `hardproof` on your `PATH`.
 
@@ -113,8 +114,7 @@ See `docs/schema-versioning.md`.
 
 ## Notes
 
-- HTTP conformance runs the official MCP suite via `npx` (requires Node/npm/npx); use `hardproof doctor` to confirm preconditions.
-- Stdio conformance runs via an internal harness that emits the same `checks.json` shape and IDs as the pinned official package, so reports stay comparable across transports.
+- Conformance runs in the `hardproof` binary (no Node.js toolchain required). HTTP and stdio emit the same `checks.json` shape/IDs so reports stay comparable across transports.
 - For now, `replay record` records the `smoke/basic` HTTP scenario and stores the cassette at `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`). See `rr/README.md`.
 - Trust and bundle verification operate on registry artifacts (`server.json` and `.mcpb`) rather than a running HTTP server. See `trust/README.md`.
 - Output paths should be **relative** (example: `out/...`). Absolute paths are rejected by the current filesystem capability model.
@@ -138,17 +138,18 @@ The Action downloads a `hardproof` release binary and runs `hardproof scan` (HTT
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/x07-mcp-test/action@v0.1.0-alpha.5
+  uses: x07lang/hardproof/hardproof-scan@v0.1.0-alpha.6
   with:
     url: http://127.0.0.1:3000/mcp
     full-suite: "false"
 ```
 
 See `action/README.md`.
+See `hardproof-scan/README.md`.
 
 ## Fixture targets
 
-Local fixture servers live under `fixtures/servers/` and are wired via:
+Local fixture servers live under `scripts/ci/fixtures/` and are wired via:
 - `conformance/fixtures/targets.json`
 - `conformance/scripts/spawn_reference_http.sh`
 - `conformance/scripts/wait_for_http.sh`
@@ -163,15 +164,14 @@ Start a fixture server:
 - `conformance/scripts/spawn_reference_stdio.sh good-stdio`
 
 Stdio fixtures:
-- `good-stdio`: `node stdio-hello/server.mjs`
-- `broken-stdio`: `node stdio-broken/server.mjs`
+- `good-stdio`: `conformance/scripts/spawn_reference_stdio.sh good-stdio`
+- `broken-stdio`: `conformance/scripts/spawn_reference_stdio.sh broken-stdio`
 
 ## Known limitations (alpha)
 
-- Windows support is via WSL2 (run inside a Linux distro and use `linux-x64`).
-- HTTP conformance requires Node/npm/npx.
+- Windows support is via WSL2 (run inside a Linux distro and use `linux_x86_64`).
 - Some stdio target flows are still being stabilized; use the stdio fixtures as the reference shape.
 
 ## Feedback
 
-File issues in `x07lang/x07-mcp-test` using the issue templates (Alpha feedback / Bug report).
+File issues in `x07lang/hardproof` using the issue templates (Alpha feedback / Bug report).

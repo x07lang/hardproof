@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a concrete, reproducible bug in x07-mcp-test.
+description: Report a concrete, reproducible bug in Hardproof (legacy alias: x07-mcp-test).
 title: "bug: "
 body:
   - type: markdown
@@ -54,7 +54,7 @@ body:
     id: reports
     attributes:
       label: Machine reports (JSON)
-      description: Paste JSON output from x07-mcp-test commands (stdout) or attach files.
+      description: Paste JSON output from hardproof commands (stdout) or attach files.
       render: json
     validations:
       required: false

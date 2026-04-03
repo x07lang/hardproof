@@ -7,7 +7,7 @@ inputs:
     required: false
     default: ""
   cmd:
-    description: "MCP stdio command (example: node server.mjs)"
+    description: "MCP stdio command (example: ./server --stdio)"
     required: false
     default: ""
   cwd:
@@ -19,7 +19,7 @@ inputs:
     required: false
     default: ""
   full-suite:
-    description: Run the full official conformance suite (default false)
+    description: Run the extended conformance suite (default false)
     required: false
     default: "false"
   baseline:
@@ -31,134 +31,53 @@ inputs:
     required: false
     default: "false"
   version:
-    description: "Hardproof release tag (example: v0.1.0-alpha.5) or latest-alpha"
+    description: "Hardproof release tag (example: v0.1.0-alpha.6) or latest-alpha"
     required: false
     default: latest-alpha
 
 outputs:
-  ok:
-    description: "true if conformance passed (exit 0)"
-    value: ${{ steps.conformance.outputs.ok }}
-  json_report:
+  scan_ok:
+    description: "true if scan passed (exit 0)"
+    value: ${{ steps.scan.outputs.scan_ok }}
+  report_json:
     description: Path to JSON summary report
-    value: ${{ steps.conformance.outputs.json_report }}
-  junit_report:
+    value: ${{ steps.scan.outputs.report_json }}
+  report_junit:
     description: Path to JUnit XML report
-    value: ${{ steps.conformance.outputs.junit_report }}
-  html_report:
+    value: ${{ steps.scan.outputs.report_junit }}
+  report_html:
     description: Path to HTML report
-    value: ${{ steps.conformance.outputs.html_report }}
-  sarif_report:
+    value: ${{ steps.scan.outputs.report_html }}
+  report_sarif:
     description: Path to SARIF report (when enabled)
-    value: ${{ steps.conformance.outputs.sarif_report }}
+    value: ${{ steps.scan.outputs.report_sarif }}
+  ok:
+    description: "compat alias for scan_ok"
+    value: ${{ steps.scan.outputs.ok }}
+  json_report:
+    description: "compat alias for report_json"
+    value: ${{ steps.scan.outputs.json_report }}
+  junit_report:
+    description: "compat alias for report_junit"
+    value: ${{ steps.scan.outputs.junit_report }}
+  html_report:
+    description: "compat alias for report_html"
+    value: ${{ steps.scan.outputs.html_report }}
+  sarif_report:
+    description: "compat alias for report_sarif"
+    value: ${{ steps.scan.outputs.sarif_report }}
 
 runs:
   using: composite
   steps:
-    - name: Setup Node (for official conformance via npx)
-      uses: actions/setup-node@v4
+    - id: scan
+      uses: ./hardproof-scan
       with:
-        node-version: "22"
-
-    - name: Install hardproof (release binary)
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: |
-        set -euo pipefail
-        install_dir="${RUNNER_TEMP}/hardproof/bin"
-        mkdir -p "${install_dir}"
-        bash "${GITHUB_ACTION_PATH}/../scripts/install.sh" \
-          --tag "${{ inputs.version }}" \
-          --install-dir "${install_dir}"
-        echo "${install_dir}" >>"${GITHUB_PATH}"
-        echo "HARDPROOF_BIN=${install_dir}/hardproof" >>"${GITHUB_ENV}"
-        "${install_dir}/hardproof" --help >/dev/null
-
-    - name: Doctor (environment diagnostics)
-      shell: bash
-      run: |
-        set -euo pipefail
-        mkdir -p out
-        "${HARDPROOF_BIN}" doctor --machine json > out/doctor.json
-
-    - name: Validate inputs
-      shell: bash
-      env:
-        HARDPROOF_ACTION_URL: ${{ inputs.url }}
-        HARDPROOF_ACTION_CMD: ${{ inputs.cmd }}
-        HARDPROOF_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
-        HARDPROOF_ACTION_SARIF: ${{ inputs.sarif }}
-      run: |
-        set -euo pipefail
-        bash "${GITHUB_ACTION_PATH}/validate_inputs.sh"
-
-    - name: Conformance run
-      id: conformance
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        out_dir="out/conformance"
-        rm -rf "${out_dir}"
-        mkdir -p "${out_dir}"
-
-        url="${{ inputs.url }}"
-        cmd="${{ inputs.cmd }}"
-        cwd="${{ inputs.cwd }}"
-        env_file="${{ inputs.env-file }}"
-
-        args=(scan --out "${out_dir}" --machine json)
-        if [[ -n "${url}" ]]; then
-          args+=(--url "${url}")
-        fi
-        if [[ -n "${cmd}" ]]; then
-          args+=(--cmd "${cmd}")
-        fi
-        if [[ -n "${cwd}" ]]; then
-          args+=(--cwd "${cwd}")
-        fi
-        if [[ -n "${env_file}" ]]; then
-          args+=(--env-file "${env_file}")
-        fi
-        if [[ "${{ inputs.full-suite }}" == "true" ]]; then
-          args+=(--full-suite)
-        fi
-        if [[ -n "${{ inputs.baseline }}" ]]; then
-          args+=(--baseline "${{ inputs.baseline }}")
-        fi
-
-        set +e
-        "${HARDPROOF_BIN}" "${args[@]}" >"${out_dir}/summary.stdout.json"
-        exit_code="$?"
-        set -e
-
-        ok="false"
-        if [[ "${exit_code}" == "0" ]]; then
-          ok="true"
-        fi
-
-        echo "ok=${ok}" >>"${GITHUB_OUTPUT}"
-        echo "json_report=${out_dir}/summary.json" >>"${GITHUB_OUTPUT}"
-        echo "junit_report=${out_dir}/summary.junit.xml" >>"${GITHUB_OUTPUT}"
-        echo "html_report=${out_dir}/summary.html" >>"${GITHUB_OUTPUT}"
-
-        sarif_report=""
-        if [[ "${{ inputs.sarif }}" == "true" ]]; then
-          sarif_report="${out_dir}/summary.sarif.json"
-          if [[ ! -s "${sarif_report}" ]]; then
-            echo "ERROR: missing SARIF report: ${sarif_report}" >&2
-            exit 2
-          fi
-        fi
-        echo "sarif_report=${sarif_report}" >>"${GITHUB_OUTPUT}"
-
-        if [[ "${exit_code}" == "2" ]]; then
-          echo "ERROR: scan failed due to invocation/config/runtime precondition (exit 2)." >&2
-          exit 2
-        fi
-
-        if [[ "${exit_code}" == "1" ]]; then
-          echo "ERROR: one or more required conformance scenarios failed (exit 1)." >&2
-          exit 1
-        fi
+        url: ${{ inputs.url }}
+        cmd: ${{ inputs.cmd }}
+        cwd: ${{ inputs.cwd }}
+        env-file: ${{ inputs.env-file }}
+        full-suite: ${{ inputs.full-suite }}
+        baseline: ${{ inputs.baseline }}
+        sarif: ${{ inputs.sarif }}
+        version: ${{ inputs.version }}

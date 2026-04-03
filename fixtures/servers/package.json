@@ -1,9 +1,0 @@
-{
-  "name": "@x07lang/hardproof-fixtures",
-  "private": true,
-  "type": "module",
-  "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0"
-  }
-}

@@ -4,7 +4,7 @@
   "targets": [
     {
       "id": "good-http",
-      "source": { "repo": "https://github.com/x07lang/x07-mcp-test", "version": "fixtures" },
+      "source": { "repo": "https://github.com/x07lang/hardproof", "version": "fixtures" },
       "target": {
         "kind": "mcp_server",
         "transport": "streamable_http",

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="x07lang/x07-mcp-test"
+REPO="x07lang/hardproof"
 
 usage() {
   cat <<'USAGE'
@@ -12,11 +12,11 @@ Usage:
   install.sh --tag latest-alpha
 
 Options:
-  --tag <TAG>         Git tag to install from (example: v0.1.0-alpha.5, or latest-alpha)
+  --tag <TAG>         Git tag to install from (example: v0.1.0-alpha.6, or latest-alpha)
   --install-dir <DIR> Install directory (default: ~/.local/bin)
 
 Notes:
-  - Windows is supported via WSL2. Run this script inside WSL2 to install the linux-x64 artifact.
+  - Windows is supported via WSL2. Run this script inside WSL2 to install the linux_x86_64 artifact.
 USAGE
 }
 
@@ -92,11 +92,11 @@ fi
 platform="$(uname -s)"
 arch="$(uname -m)"
 
-artifact_platform=""
+artifact_suffix=""
 case "${platform}-${arch}" in
-  Linux-x86_64) artifact_platform="linux-x64" ;;
-  Darwin-arm64) artifact_platform="darwin-arm64" ;;
-  Darwin-x86_64) artifact_platform="darwin-x64" ;;
+  Linux-x86_64) artifact_suffix="linux_x86_64" ;;
+  Darwin-arm64) artifact_suffix="macos_arm64" ;;
+  Darwin-x86_64) artifact_suffix="macos_x86_64" ;;
   *)
     echo "ERROR: unsupported platform/arch: ${platform}-${arch}" >&2
     echo "NOTE: on Windows, use WSL2 and install from inside your Linux distro." >&2
@@ -104,7 +104,8 @@ case "${platform}-${arch}" in
     ;;
 esac
 
-asset="hardproof-${tag}-${artifact_platform}.tar.gz"
+version="${tag#v}"
+asset="hardproof_${version}_${artifact_suffix}.tar.gz"
 base_url="https://github.com/${REPO}/releases/download/${tag}"
 
 install_path="${install_dir}/hardproof"

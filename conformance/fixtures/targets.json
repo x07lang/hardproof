@@ -30,7 +30,7 @@
     {
       "id": "good-stdio",
       "kind": "stdio",
-      "cmd": "node stdio-hello/server.mjs",
+      "cmd": "bash conformance/scripts/spawn_reference_stdio.sh good-stdio",
       "spawn": {
         "script": "conformance/scripts/spawn_reference_stdio.sh",
         "args": ["good-stdio"]
@@ -39,7 +39,7 @@
     {
       "id": "broken-stdio",
       "kind": "stdio",
-      "cmd": "node stdio-broken/server.mjs",
+      "cmd": "bash conformance/scripts/spawn_reference_stdio.sh broken-stdio",
       "spawn": {
         "script": "conformance/scripts/spawn_reference_stdio.sh",
         "args": ["broken-stdio"]

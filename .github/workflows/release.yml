@@ -86,19 +86,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          archive="$(ls -1 dist/hardproof-*.tar.gz | head -n 1)"
+          archive="$(ls -1 dist/hardproof_*.tar.gz | head -n 1)"
           tmp_dir="$(mktemp -d)"
           trap 'rm -rf "${tmp_dir}"' EXIT
           tar -xzf "${archive}" -C "${tmp_dir}"
           "${tmp_dir}/hardproof" --help >/dev/null
           "${tmp_dir}/hardproof" doctor --help >/dev/null
           "${tmp_dir}/hardproof" scan --help >/dev/null
+          "${tmp_dir}/x07-mcp-test" --help >/dev/null
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: hardproof-${{ inputs.tag || github.ref_name }}-${{ matrix.platform }}
-          path: dist/hardproof-*.tar.gz
+          path: dist/hardproof_*.tar.gz
 
   checksums:
     name: release / checksums + install script
@@ -120,9 +121,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p upload
-          find dist -type f -name 'hardproof-*.tar.gz' -print0 | xargs -0 -I{} cp "{}" upload/
+          find dist -type f -name 'hardproof_*.tar.gz' -print0 | xargs -0 -I{} cp "{}" upload/
           cd upload
-          sha256sum hardproof-*.tar.gz | LC_ALL=C sort > checksums.txt
+          sha256sum hardproof_*.tar.gz | LC_ALL=C sort > checksums.txt
           cat checksums.txt
 
       - name: Add install script
@@ -155,7 +156,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            upload/hardproof-*.tar.gz
+            upload/hardproof_*.tar.gz
             upload/checksums.txt
             upload/install.sh
           body: |
@@ -163,15 +164,14 @@ jobs:
 
             What works:
             - `doctor`
-            - `scan` (official MCP conformance via `npx`)
+            - `scan` (built-in MCP conformance)
             - `replay record` / `replay verify` (HTTP cassette)
             - `trust verify`
             - `bundle verify`
 
             Install:
-            - Download the `hardproof-...tar.gz` for your OS/arch + verify via `checksums.txt`, or run:
-              - `curl -fsSL https://github.com/x07lang/x07-mcp-test/releases/download/${{ github.ref_name }}/install.sh | bash -s -- --tag ${{ github.ref_name }}`
+            - Download the `hardproof_...tar.gz` for your OS/arch + verify via `checksums.txt`, or run:
+              - `curl -fsSL https://github.com/x07lang/hardproof/releases/download/${{ github.ref_name }}/install.sh | bash -s -- --tag ${{ github.ref_name }}`
 
             Known limitations:
-            - Windows support is via WSL2 (use the `linux-x64` artifact inside WSL2).
-            - Conformance requires Node/npm/npx on PATH.
+            - Windows support is via WSL2 (use the `linux_x86_64` artifact inside WSL2).

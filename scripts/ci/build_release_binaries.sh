@@ -6,7 +6,7 @@ cd "${repo_root}"
 
 tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.1.0-alpha.5)" >&2
+  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.1.0-alpha.6)" >&2
   exit 2
 fi
 
@@ -18,14 +18,14 @@ fi
 platform="$(uname -s)"
 arch="$(uname -m)"
 
-artifact_platform=""
+artifact_suffix=""
 case "${platform}-${arch}" in
-  Linux-x86_64) artifact_platform="linux-x64" ;;
-  Darwin-arm64) artifact_platform="darwin-arm64" ;;
-  Darwin-x86_64) artifact_platform="darwin-x64" ;;
+  Linux-x86_64) artifact_suffix="linux_x86_64" ;;
+  Darwin-arm64) artifact_suffix="macos_arm64" ;;
+  Darwin-x86_64) artifact_suffix="macos_x86_64" ;;
   *)
     echo "ERROR: unsupported platform/arch for release packaging: ${platform}-${arch}" >&2
-    echo "NOTE: on Windows, run inside WSL2 and use the linux-x64 artifact." >&2
+    echo "NOTE: on Windows, run inside WSL2 and use the linux_x86_64 artifact." >&2
     exit 2
     ;;
 esac
@@ -36,6 +36,10 @@ mkdir -p "${work_dir}"
 
 bin_name="hardproof"
 bin_path="${work_dir}/${bin_name}"
+legacy_bin_name="x07-mcp-test"
+legacy_bin_path="${work_dir}/${legacy_bin_name}"
+readme_name="README-beta.txt"
+readme_path="${work_dir}/${readme_name}"
 
 if ! command -v cc >/dev/null 2>&1; then
   echo "ERROR: missing C compiler (cc) required for x07 bundle packaging." >&2
@@ -61,10 +65,29 @@ if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >
 fi
 chmod +x "${bin_path}"
 
-archive_base="${bin_name}-${tag}-${artifact_platform}"
+cp "${bin_path}" "${legacy_bin_path}"
+chmod +x "${legacy_bin_path}"
+
+cat >"${readme_path}" <<'TXT'
+Hardproof beta transition
+
+Hardproof is the new public name for the private-alpha tool previously released as x07-mcp-test.
+
+Included binaries:
+- hardproof (primary)
+- x07-mcp-test (legacy compatibility alias during beta)
+
+Next:
+  ./hardproof --help
+  ./hardproof doctor
+  ./hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/conformance --machine json
+TXT
+
+version="${tag#v}"
+archive_base="hardproof_${version}_${artifact_suffix}"
 archive_path="${dist_dir}/${archive_base}.tar.gz"
 
 echo "==> package ${archive_path}"
-tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}"
+tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}" "${legacy_bin_name}" "${readme_name}"
 
 echo "${archive_path}"

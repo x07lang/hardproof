@@ -9,13 +9,7 @@ python3 scripts/ci/check_repo_hygiene.py >/dev/null
 
 echo "==> action contract"
 bash action/tests/test_validate_inputs.sh >/dev/null
-
-echo "==> node version"
-if ! command -v node >/dev/null 2>&1; then
-  echo "ERROR: node not found (required for conformance fixtures)" >&2
-  exit 1
-fi
-node -e 'const req=[20,18,1]; const got=process.versions.node.split(".").map(n=>parseInt(n,10)); const ok=(got[0]>req[0])||(got[0]===req[0]&&((got[1]>req[1])||(got[1]===req[1]&&got[2]>=req[2]))); if(!ok){console.error(`ERROR: node >=${req.join(".")} required for @modelcontextprotocol/conformance (undici>=7); got ${process.versions.node}`); process.exit(1)}' >/dev/null
+test -s hardproof-scan/action.yml
 
 echo "==> fmt"
 while IFS= read -r path; do
@@ -147,9 +141,6 @@ python3 scripts/ci/assert_doctor_json.py \
   os.uname=true \
   tmp.writable=true \
   shell.sh=true \
-  node.present=true \
-  npm.present=true \
-  npx.present=true \
   url.reachable=true \
   cmd.present=true
 
@@ -304,36 +295,6 @@ run_conformance_stdio_fixture() (
 
 run_conformance_stdio_fixture good-stdio good-stdio 0
 run_conformance_stdio_fixture broken-stdio broken-stdio 1
-
-echo "==> stdio fixture smoke"
-
-(
-  cd fixtures/servers
-  if [[ ! -d node_modules ]]; then
-    npm ci >/dev/null
-  fi
-  node _shared/stdio_smoke_client.mjs stdio-hello/server.mjs --expect-tool test_tool_with_progress >/dev/null
-)
-
-set +e
-stdio_broken_err="${repo_root}/${tmp_dir}/stdio-broken.stderr.txt"
-rm -f "${stdio_broken_err}"
-(
-  cd fixtures/servers
-  node _shared/stdio_smoke_client.mjs stdio-broken/server.mjs >/dev/null 2>"${stdio_broken_err}"
-)
-stdio_broken_exit="$?"
-set -e
-if [[ "${stdio_broken_exit}" == "0" ]]; then
-  echo "ERROR: expected stdio-broken fixture to fail smoke client" >&2
-  cat "${stdio_broken_err}" >&2 || true
-  exit 1
-fi
-if ! grep -q '^stdio smoke client error:' "${stdio_broken_err}"; then
-  echo "ERROR: stdio-broken fixture stderr did not contain expected error prefix" >&2
-  cat "${stdio_broken_err}" >&2 || true
-  exit 1
-fi
 
 echo "==> replay fixtures"
 

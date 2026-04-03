@@ -1,12 +1,8 @@
 # Hardproof Scan (beta)
 
-This Action downloads a `hardproof` release binary and runs `hardproof scan` against a target MCP server (HTTP or stdio).
+Run Hardproof verification in GitHub Actions using a release binary.
 
 ## Usage
-
-This Action is served from two paths during the beta transition:
-- Preferred: `x07lang/hardproof/hardproof-scan@...`
-- Legacy alias: `x07lang/hardproof/action@...`
 
 ### Streamable HTTP target
 
@@ -83,37 +79,18 @@ jobs:
 Compatibility aliases (beta):
 - `ok`, `json_report`, `junit_report`, `html_report`, `sarif_report`
 
-## Notes
+## Migration (beta)
 
-- Hardproof runs as a standalone binary (no Node.js toolchain required).
-- Windows is supported via WSL2; this Action currently targets Linux/macOS runners.
-
-## Upload SARIF (optional)
+If you previously used:
 
 ```yaml
-permissions:
-  security-events: write
-
-- name: Upload SARIF to code scanning
-  if: always() && steps.mcp.outputs.report_sarif != ''
-  uses: github/codeql-action/upload-sarif@v3
-  with:
-    sarif_file: ${{ steps.mcp.outputs.report_sarif }}
+uses: x07lang/hardproof/action@v0.1.0-alpha.6
 ```
 
-## PR summary snippet
+Switch to:
 
 ```yaml
-- name: MCP conformance summary
-  if: always()
-  run: |
-    {
-      echo "### MCP conformance"
-      echo ""
-      echo "- ok: ${{ steps.mcp.outputs.scan_ok }}"
-      echo "- json: ${{ steps.mcp.outputs.report_json }}"
-      echo "- junit: ${{ steps.mcp.outputs.report_junit }}"
-      echo "- html: ${{ steps.mcp.outputs.report_html }}"
-      echo "- sarif: ${{ steps.mcp.outputs.report_sarif }}"
-    } >>"$GITHUB_STEP_SUMMARY"
+uses: x07lang/hardproof/hardproof-scan@v0.1.0-alpha.6
 ```
+
+The `action/` path remains available during the beta transition.

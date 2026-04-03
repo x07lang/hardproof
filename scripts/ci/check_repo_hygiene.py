@@ -45,24 +45,28 @@ def scan_crlf(repo_root: Path) -> list[Path]:
 
 
 def validate_action_manifest(repo_root: Path) -> list[str]:
-    action_path = repo_root / "action" / "action.yml"
-    if not action_path.exists():
-        return []
-
     errors: list[str] = []
-    lines = action_path.read_text(encoding="utf-8").splitlines()
-    for idx, line in enumerate(lines, start=1):
-        match = re.match(r"^\s*description:\s*(.*)$", line)
-        if not match:
+    action_paths = [
+        repo_root / "action" / "action.yml",
+        repo_root / "hardproof-scan" / "action.yml",
+    ]
+
+    for action_path in action_paths:
+        if not action_path.exists():
             continue
-        value = match.group(1).strip()
-        if ": " not in value:
-            continue
-        if value.startswith(("'", '"', "|", ">")):
-            continue
-        errors.append(
-            f"{action_path.relative_to(repo_root)}:{idx}: description contains ': ' and must be quoted"
-        )
+        lines = action_path.read_text(encoding="utf-8").splitlines()
+        for idx, line in enumerate(lines, start=1):
+            match = re.match(r"^\s*description:\s*(.*)$", line)
+            if not match:
+                continue
+            value = match.group(1).strip()
+            if ": " not in value:
+                continue
+            if value.startswith(("'", '"', "|", ">")):
+                continue
+            errors.append(
+                f"{action_path.relative_to(repo_root)}:{idx}: description contains ': ' and must be quoted"
+            )
     return errors
 
 
@@ -91,4 +95,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

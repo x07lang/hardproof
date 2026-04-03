@@ -4,6 +4,12 @@
 
 - (none yet)
 
+## v0.1.0-alpha.6
+
+- Rename release archives to `hardproof_<version>_<os>_<arch>.tar.gz` and include a `x07-mcp-test` compatibility binary in the archive.
+- Add `hardproof-scan` as the preferred GitHub Action path (legacy `action/` path remains available during beta).
+- Normalize Action outputs (`scan_ok`, `report_json`, `report_junit`, `report_html`, `report_sarif`) with compatibility aliases.
+
 ## v0.1.0-alpha.5
 
 - Rebrand public CLI to `hardproof` (docs, installer, Action, and release artifacts).
