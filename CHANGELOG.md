@@ -4,7 +4,7 @@
 
 - (none yet)
 
-## v0.1.0-alpha.7
+## v0.1.0-alpha.8
 
 - Fix release packaging to emit `hardproof_<version>_<os>_<arch>.tar.gz` deterministically on all supported runners.
 - Update `install.sh` to resolve the correct platform artifact from GitHub Release assets (supports both legacy and current archive naming).

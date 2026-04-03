@@ -93,7 +93,6 @@ jobs:
           "${tmp_dir}/hardproof" --help >/dev/null
           "${tmp_dir}/hardproof" doctor --help >/dev/null
           "${tmp_dir}/hardproof" scan --help >/dev/null
-          "${tmp_dir}/x07-mcp-test" --help >/dev/null
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
