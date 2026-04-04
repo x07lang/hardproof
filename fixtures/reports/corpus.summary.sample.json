@@ -2,7 +2,7 @@
   "schema_version": "x07.mcp.corpus.summary@0.1.0",
   "generated_at": "2026-03-31T00:00:00Z",
   "tool": "hardproof",
-  "tool_version": "0.1.0-alpha.6",
+  "tool_version": "0.1.0-alpha.9",
   "target": { "kind": "file", "transport": "file", "ref": "corpus/manifests/quality-report-001.json", "meta": {} },
   "ok": false,
   "errors": [{ "id": "corpus.stub", "message": "corpus run is a placeholder (not implemented yet)" }],

@@ -4,6 +4,11 @@
 
 - (none yet)
 
+## v0.1.0-alpha.9
+
+- Fix GitHub Action to call `hardproof` without the unsupported `--sarif` flag.
+- Bump embedded tool version strings to `0.1.0-alpha.9`.
+
 ## v0.1.0-alpha.8
 
 - Fix release packaging to emit `hardproof_<version>_<os>_<arch>.tar.gz` deterministically on all supported runners.

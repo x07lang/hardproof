@@ -31,7 +31,7 @@ inputs:
     required: false
     default: "false"
   version:
-    description: "Hardproof release tag (example: v0.1.0-alpha.6) or latest-alpha"
+    description: "Hardproof release tag (example: v0.1.0-alpha.9) or latest-alpha"
     required: false
     default: latest-alpha
 
