@@ -5,10 +5,11 @@ on:
     tags:
       - "v0.1.*-alpha*"
       - "v0.2.*-beta*"
+      - "v0.3.*-beta*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to build artifacts for (example: v0.2.0-beta.1)"
+        description: "Tag to build artifacts for (example: v0.3.0-beta.0)"
         required: true
         type: string
 
@@ -160,15 +161,16 @@ jobs:
             upload/checksums.txt
             upload/install.sh
           body: |
-            Hardproof public beta (M2).
+            Hardproof public beta (M2.5).
 
             What works:
             - `doctor`
-            - `scan` (built-in MCP conformance)
-            - `ci` (policy wrapper with `--threshold`)
+            - `scan` (five dimensions + usage metrics, report `scan.json`)
+            - `ci` (policy gate: `--min-score`/`--threshold`, per-dimension, severity, usage limits)
             - `replay record` / `replay verify` (HTTP cassette)
             - `trust verify`
             - `bundle verify`
+            - `explain` and `report` (summary/html/sarif) for scan reports
             - `corpus run` / `corpus render`
 
             Install:
