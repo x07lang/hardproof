@@ -19,6 +19,11 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 - `json`: the full report JSON
 - `jsonl`: the scan event stream
 
+## Extra scan options
+
+- `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
+- `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
+
 ## Output directory layout
 
 `hardproof scan --out <DIR>` writes:
@@ -37,6 +42,8 @@ Current event types include:
 - `scan.started`
 - `scan.phase.started` / `scan.phase.finished`
 - `scan.dimension.started` / `scan.dimension.finished`
+- `scan.score.preview` (when `--score-preview` is enabled)
+- `scan.metrics.dimension` / `scan.metrics.usage` (when `--metrics` is enabled)
 - `scan.finished`
 
 ## Conversions and explanations

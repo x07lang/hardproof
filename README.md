@@ -33,6 +33,8 @@ hardproof scan \
 
 - `hardproof --help`
 - `hardproof scan --url "<http url>" --out out/scan --format rich|compact|json|jsonl`
+- `hardproof scan --url "<http url>" --out out/scan --format jsonl --score-preview`
+- `hardproof scan --url "<http url>" --out out/scan --format jsonl --metrics usage,perf`
 - `hardproof scan --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>" --out out/scan`
 - `hardproof scan --url "<http url>" --full-suite --baseline conformance/pinned/conformance-baseline.yml`
 - `hardproof ci --url "<http url>" --threshold 80`

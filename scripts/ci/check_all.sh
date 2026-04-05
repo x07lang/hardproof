@@ -319,6 +319,36 @@ run_conformance_fixture() (
     "${bin_path}" ci validate-json \
       --schema schemas/x07.mcp.scan.report.schema.json \
       --input "${ci_out_dir}/scan.json"
+
+    echo "==> scan overlays smoke (good-http)"
+    local overlay_out_dir="${fixture_out_dir}/scan-overlays"
+    rm -rf "${overlay_out_dir}"
+    mkdir -p "${overlay_out_dir}"
+
+    set +e
+    "${bin_path}" scan \
+      --url "${fixture_url}" \
+      --baseline conformance/pinned/conformance-baseline.yml \
+      --out "${overlay_out_dir}" \
+      --machine json \
+      --score-preview \
+      --metrics all >"${overlay_out_dir}/summary.stdout.json"
+    local overlay_exit="$?"
+    set -e
+    if [[ "${overlay_exit}" != "0" ]]; then
+      echo "ERROR: scan overlays exit code mismatch for ${fixture_id} (expected 0, got ${overlay_exit})" >&2
+      cat "${overlay_out_dir}/summary.stdout.json" >&2 || true
+      exit 1
+    fi
+
+    "${bin_path}" ci validate-json \
+      --schema schemas/x07.mcp.scan.report.schema.json \
+      --input "${overlay_out_dir}/scan.json"
+
+    test -s "${overlay_out_dir}/scan.events.jsonl"
+    grep -q '"type":"scan.score.preview"' "${overlay_out_dir}/scan.events.jsonl"
+    grep -q '"type":"scan.metrics.dimension"' "${overlay_out_dir}/scan.events.jsonl"
+    grep -q '"type":"scan.metrics.usage"' "${overlay_out_dir}/scan.events.jsonl"
   fi
 )
 
