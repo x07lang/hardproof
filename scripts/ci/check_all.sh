@@ -53,12 +53,17 @@ echo "==> score core: trust certify"
 score_core_cert_dir="${tmp_dir}/score-core-cert"
 rm -rf "${score_core_cert_dir}"
 mkdir -p "${score_core_cert_dir}"
-x07 trust certify \
+score_core_trust_certify_log="${tmp_dir}/score-core-trust-certify.log"
+if ! x07 trust certify \
   --project score_core/x07.json \
   --profile score_core/arch/trust/profiles/hardproof_score_core_pure_v1.json \
   --entry scan.score.overall_score_n_or_neg1_v1 \
   --out-dir "${score_core_cert_dir}" \
-  --json=off >/dev/null
+  --json=pretty >"${score_core_trust_certify_log}" 2>&1; then
+  echo "ERROR: x07 trust certify failed for score core." >&2
+  cat "${score_core_trust_certify_log}" >&2 || true
+  exit 1
+fi
 
 score_core_cert="${score_core_cert_dir}/certificate.json"
 test -s "${score_core_cert}"

@@ -26,7 +26,8 @@ jobs:
             build-essential \
             pkg-config \
             libssl-dev \
-            libcurl4-openssl-dev
+            libcurl4-openssl-dev \
+            unzip
           cc --version
       - name: Cache X07 toolchain
         uses: actions/cache@v4
@@ -36,6 +37,9 @@ jobs:
       - name: Install X07 (pinned)
         shell: bash
         run: ./scripts/ci/install_x07_toolchain.sh
+      - name: Install formal verification tools (pinned)
+        shell: bash
+        run: ./scripts/ci/install_formal_verification_tools_linux.sh
       - name: Check
         shell: bash
         run: ./scripts/ci/check_all.sh
@@ -50,7 +54,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          brew install openssl@3 pkg-config
+          brew install openssl@3 pkg-config cbmc z3
           cc --version
       - name: Cache X07 toolchain
         uses: actions/cache@v4
@@ -92,6 +96,7 @@ jobs:
             pkg-config
             python3
             python3-venv
+            unzip
             xz-utils
 
       - name: Install X07 + Check
@@ -108,5 +113,6 @@ jobs:
           }
 
           ./scripts/ci/install_x07_toolchain.sh
+          ./scripts/ci/install_formal_verification_tools_linux.sh
           export PATH="$HOME/.x07/bin:$PATH"
           ./scripts/ci/check_all.sh

@@ -87,6 +87,13 @@ curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.3.0-beta.0
 
 2) Verify `sha256`, extract, and place `hardproof` on your `PATH`.
 
+## Development
+
+Running `./scripts/ci/check_all.sh` locally requires the pinned x07 toolchain plus formal verification tools for `x07 verify --prove` / `x07 trust certify`:
+
+- macOS: `brew install cbmc z3`
+- Linux (CI-style pinned install): `./scripts/ci/install_formal_verification_tools_linux.sh` (requires `curl`, `unzip`, and `sudo`)
+
 ## Schemas
 
 Report schemas and shared envelope fields are versioned and pinned for consumers:
