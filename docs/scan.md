@@ -22,6 +22,7 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 ## Extra scan options
 
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
+- `--score-preview` stays provisional until at least 80% of score weight has concrete scores. Before that threshold, preview events still stream but keep `score_available=false` and expose the current `score_weight_total`.
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
 - `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
 
@@ -58,6 +59,8 @@ hardproof report html --input out/scan/scan.json > out/scan/report.html
 hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
 hardproof explain <FINDING_CODE>
 ```
+
+`hardproof explain` covers the scan finding codes emitted in `scan.json`, including aggregate conformance failures (`CONFORMANCE.FAIL`) and scenario-specific codes such as `CONFORMANCE.tools-call-with-progress`.
 
 ## CI gating
 

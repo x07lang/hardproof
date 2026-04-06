@@ -138,6 +138,42 @@ if [[ "${scan_help_exit}" != "0" ]]; then
   exit 1
 fi
 
+set +e
+"${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
+explain_perf_exit="$?"
+set -e
+if [[ "${explain_perf_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain PERF-TOOLS-CALL-FAILED failed (exit ${explain_perf_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain CONFORMANCE.FAIL >/dev/null
+explain_conformance_fail_exit="$?"
+set -e
+if [[ "${explain_conformance_fail_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain CONFORMANCE.FAIL failed (exit ${explain_conformance_fail_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain CONFORMANCE.sample-check >/dev/null
+explain_conformance_dynamic_exit="$?"
+set -e
+if [[ "${explain_conformance_dynamic_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain CONFORMANCE.<check-id> failed (exit ${explain_conformance_dynamic_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain DOES-NOT-EXIST >/dev/null 2>&1
+explain_unknown_exit="$?"
+set -e
+if [[ "${explain_unknown_exit}" != "2" ]]; then
+  echo "ERROR: hardproof explain unknown-code regression (expected 2, got ${explain_unknown_exit})" >&2
+  exit 1
+fi
+
 echo "==> cli regression smoke"
 
 run_cli_regression_smoke() (

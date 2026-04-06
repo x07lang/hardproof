@@ -42,6 +42,8 @@ hardproof scan \
 - `hardproof ci --url "<http url>" --min-score 80 --min-dimension conformance=85 --max-critical 0`
 - `hardproof ci --url "<http url>" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000`
 - `hardproof explain <FINDING_CODE>`
+- `hardproof explain CONFORMANCE.FAIL`
+- `hardproof explain CONFORMANCE.<check-id>`
 - `hardproof report summary --input out/scan/scan.json --ui rich|compact`
 - `hardproof report html --input out/scan/scan.json > out/scan/report.html`
 - `hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json`
@@ -61,6 +63,8 @@ See `docs/doctor.md`.
 See `docs/scan.md`.
 See `docs/targets.md`.
 See `corpus/README.md`.
+
+For `--score-preview`, early JSONL preview events stay provisional until at least 80% of score weight has concrete scores. Before that threshold, preview events keep `score_available=false` and expose the accumulated `score_weight_total`.
 
 ## Install (beta)
 
