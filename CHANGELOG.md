@@ -41,7 +41,7 @@
 
 - Rebrand public CLI to `hardproof` (docs, installer, Action, and release artifacts).
 - Add public hero commands: `hardproof scan` and `hardproof ci`.
-- Implement Week 6 proof machinery: stdio conformance + replay, corpus runner outputs, and SARIF export.
+- Implement proof machinery: stdio conformance + replay, corpus runner outputs, and SARIF export.
 
 ## v0.1.0-alpha.4
 

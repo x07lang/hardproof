@@ -23,6 +23,7 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
+- `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
 
 ## Output directory layout
 
@@ -40,7 +41,7 @@ The event stream is intended for CI log streaming and future TUI/integrations.
 Current event types include:
 
 - `scan.started`
-- `scan.phase.started` / `scan.phase.finished`
+- `scan.stage.started` / `scan.stage.finished`
 - `scan.dimension.started` / `scan.dimension.finished`
 - `scan.score.preview` (when `--score-preview` is enabled)
 - `scan.metrics.dimension` / `scan.metrics.usage` (when `--metrics` is enabled)

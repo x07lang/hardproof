@@ -13,9 +13,9 @@
   "transport": "streamable_http",
   "generated_at": "2026-04-04T00:00:00Z",
   "methodology_version": "0.3.0",
-  "status": "pass",
+  "status": "warn",
   "score_available": true,
-  "overall_score": 90,
+  "overall_score": 89,
   "dimensions": [
     {
       "name": "conformance",

@@ -203,6 +203,26 @@ test -s "${corpus_out}/good-http/summary.sarif.json"
   --schema schemas/x07.mcp.sarif.schema.json \
   --input "${corpus_out}/good-http/summary.sarif.json"
 
+echo "==> corpus render smoke"
+corpus_render_out="${corpus_out}/report.html"
+rm -f "${corpus_render_out}"
+
+set +e
+"${bin_path}" corpus render \
+  --input "${corpus_out}/index.json" \
+  --out "${corpus_out}" \
+  --machine json >"${tmp_dir}/corpus.render.stdout.json"
+corpus_render_exit="$?"
+set -e
+if [[ "${corpus_render_exit}" != "0" ]]; then
+  echo "ERROR: corpus render exit code mismatch (expected 0, got ${corpus_render_exit})" >&2
+  cat "${tmp_dir}/corpus.render.stdout.json" >&2 || true
+  exit 1
+fi
+
+test -s "${corpus_render_out}"
+grep -q '<h1>Hardproof corpus report</h1>' "${corpus_render_out}"
+
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"
 "${bin_path}" doctor --machine json >"${ok_json}"
@@ -281,6 +301,7 @@ run_conformance_fixture() (
   "${bin_path}" ci validate-json \
     --schema schemas/x07.mcp.scan.report.schema.json \
     --input "${fixture_out_dir}/scan.json"
+  python3 scripts/ci/assert_scan_report_consistency.py "${fixture_out_dir}/scan.json"
 
   "${bin_path}" ci validate-json \
     --schema schemas/x07.mcp.conformance.summary.schema.json \
@@ -319,6 +340,7 @@ run_conformance_fixture() (
     "${bin_path}" ci validate-json \
       --schema schemas/x07.mcp.scan.report.schema.json \
       --input "${ci_out_dir}/scan.json"
+    python3 scripts/ci/assert_scan_report_consistency.py "${ci_out_dir}/scan.json"
 
     echo "==> scan overlays smoke (good-http)"
     local overlay_out_dir="${fixture_out_dir}/scan-overlays"
@@ -344,6 +366,7 @@ run_conformance_fixture() (
     "${bin_path}" ci validate-json \
       --schema schemas/x07.mcp.scan.report.schema.json \
       --input "${overlay_out_dir}/scan.json"
+    python3 scripts/ci/assert_scan_report_consistency.py "${overlay_out_dir}/scan.json"
 
     test -s "${overlay_out_dir}/scan.events.jsonl"
     grep -q '"type":"scan.score.preview"' "${overlay_out_dir}/scan.events.jsonl"
@@ -648,6 +671,46 @@ test -s "${bundle_bad_out}"
   --schema schemas/x07.mcp.bundle.verify.schema.json \
   --input "${bundle_bad_out}"
 
+echo "==> x07lang-mcp dist smoke (optional)"
+
+x07lang_mcp_src_server_json="../x07-mcp/servers/x07lang-mcp/dist/server.json"
+x07lang_mcp_src_mcpb="../x07-mcp/servers/x07lang-mcp/dist/x07lang-mcp.mcpb"
+if [[ -f "${x07lang_mcp_src_server_json}" && -f "${x07lang_mcp_src_mcpb}" ]]; then
+  x07lang_mcp_out="${tmp_dir}/x07lang-mcp"
+  rm -rf "${x07lang_mcp_out}"
+  mkdir -p "${x07lang_mcp_out}"
+
+  x07lang_mcp_server_json="${x07lang_mcp_out}/server.json"
+  x07lang_mcp_mcpb="${x07lang_mcp_out}/x07lang-mcp.mcpb"
+  cp "${x07lang_mcp_src_server_json}" "${x07lang_mcp_server_json}"
+  cp "${x07lang_mcp_src_mcpb}" "${x07lang_mcp_mcpb}"
+
+  x07lang_mcp_trust_out="${x07lang_mcp_out}/trust.json"
+  "${bin_path}" trust verify \
+    --server-json "${x07lang_mcp_server_json}" \
+    --out "${x07lang_mcp_trust_out}" \
+    --machine json >"${x07lang_mcp_out}/trust.stdout.json"
+
+  test -s "${x07lang_mcp_trust_out}"
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.trust.summary.schema.json \
+    --input "${x07lang_mcp_trust_out}"
+
+  x07lang_mcp_bundle_out="${x07lang_mcp_out}/bundle.json"
+  "${bin_path}" bundle verify \
+    --server-json "${x07lang_mcp_server_json}" \
+    --mcpb "${x07lang_mcp_mcpb}" \
+    --out "${x07lang_mcp_bundle_out}" \
+    --machine json >"${x07lang_mcp_out}/bundle.stdout.json"
+
+  test -s "${x07lang_mcp_bundle_out}"
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.bundle.verify.schema.json \
+    --input "${x07lang_mcp_bundle_out}"
+else
+  echo "(skip) missing ${x07lang_mcp_src_server_json} or ${x07lang_mcp_src_mcpb}"
+fi
+
 bundle_large_dir="${tmp_dir}/bundle.large"
 mkdir -p "${bundle_large_dir}"
 
@@ -672,13 +735,13 @@ mcpb_path.write_bytes(data)
 sha = hashlib.sha256(data).hexdigest()
 server_doc = {
     "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-    "name": "io.x07/mcptest-bundle-large",
+    "name": "io.x07/hardproof-bundle-large",
     "version": "0.1.0",
     "description": "Synthetic large mcpb fixture to smoke bundle verify fuel budget.",
     "packages": [
         {
             "registryType": "mcpb",
-            "identifier": "io.x07/mcptest-bundle-large",
+            "identifier": "io.x07/hardproof-bundle-large",
             "version": "0.1.0",
             "fileSha256": sha,
             "transport": {"type": "stdio"},

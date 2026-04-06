@@ -122,6 +122,16 @@
       "version": "0.3.23"
     },
     {
+      "name": "ext-mcp-trust",
+      "path": ".x07/deps/ext-mcp-trust/0.5.0",
+      "version": "0.5.0"
+    },
+    {
+      "name": "ext-mcp-trust-os",
+      "path": ".x07/deps/ext-mcp-trust-os/0.5.1",
+      "version": "0.5.1"
+    },
+    {
       "name": "ext-mcp-worker",
       "path": ".x07/deps/ext-mcp-worker/0.3.7",
       "version": "0.3.7"
@@ -261,7 +271,7 @@
   "profiles": {
     "os": {
       "auto_ffi": true,
-      "solve_fuel": 500000000,
+      "solve_fuel": 2000000000,
       "world": "run-os"
     }
   },

@@ -1,0 +1,15 @@
+{
+  "schema_version": "x07.budget.profile@0.1.0",
+  "id": "scan_trust_v1",
+  "v": 1,
+  "cfg": {
+    "mode": "result_err_v1",
+    "label": "scan.trust.v1",
+    "alloc_bytes": 268435456,
+    "alloc_calls": 2000000,
+    "realloc_calls": 600000,
+    "memcpy_bytes": 2147483647,
+    "sched_ticks": 5000000,
+    "fuel": 0
+  }
+}

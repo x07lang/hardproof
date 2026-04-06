@@ -1,0 +1,43 @@
+{
+  "files": {
+    "arch/budgets/profiles/cli_ux_v1.budget.json": {
+      "jcs_sha256_hex": "8e029fbfb19b1c7973b18c33922c2e5aca9c8b208e1c674af694385019ffe1a6"
+    },
+    "arch/budgets/profiles/crypto_jwt_v1.budget.json": {
+      "jcs_sha256_hex": "2f8638bef077d69f2b9339e2e33e33cc4412709d62467c15d04485b26979ed0f"
+    },
+    "arch/budgets/profiles/scan_conformance_v1.budget.json": {
+      "jcs_sha256_hex": "dd95d64d3e37dda812fc64b58285e0257944de59d66f72704600072975ad4a36"
+    },
+    "arch/budgets/profiles/scan_performance_v1.budget.json": {
+      "jcs_sha256_hex": "540c3cd0425a14fbed49951df76ad3f10c7e50e52bcb324f4b5c0b906c560405"
+    },
+    "arch/budgets/profiles/scan_reliability_v1.budget.json": {
+      "jcs_sha256_hex": "42ba0e709964dd5312099d40f3db5bbc851ac0dc9262cfefbd7b8ebffc4c779c"
+    },
+    "arch/budgets/profiles/scan_root_v1.budget.json": {
+      "jcs_sha256_hex": "8a6b2269037db181c2575b6e03eda0980900e2bce8c37059b1e2140a3ea951c9"
+    },
+    "arch/budgets/profiles/scan_security_v1.budget.json": {
+      "jcs_sha256_hex": "5b5c6bc8dbc2add7b3ff2af3dd08e5217a124172decca2dda8042ed5f554f49f"
+    },
+    "arch/budgets/profiles/scan_trust_v1.budget.json": {
+      "jcs_sha256_hex": "97f6129688a9b1121332a3a96f0176317cc02d0d0eda0a640a7cddbfd29914fc"
+    },
+    "arch/budgets/profiles/scan_usage_v1.budget.json": {
+      "jcs_sha256_hex": "36ec7048ab6900731e7b65864240733544d5f89bfdc0ba7320f135e9b469d21a"
+    },
+    "arch/sm/specs/scan_lifecycle.sm.json": {
+      "jcs_sha256_hex": "105b88e9035b95c631c5915f18760b1ec5f3887a709eb7071c49589085bc5956"
+    }
+  },
+  "indexes": {
+    "arch/budgets/index.x07budgets.json": {
+      "jcs_sha256_hex": "99a04f04008b9de59da0cceb5c4eb543d714840b63c470e03666527df6f5c8af"
+    },
+    "arch/sm/index.x07sm.json": {
+      "jcs_sha256_hex": "18c864132b3219a1b36026449659f4db07e2edbb47afba058d408795d4c1947a"
+    }
+  },
+  "schema_version": "x07.arch.contracts.lock@0.1.0"
+}

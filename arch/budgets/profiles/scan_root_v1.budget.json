@@ -1,0 +1,15 @@
+{
+  "schema_version": "x07.budget.profile@0.1.0",
+  "id": "scan_root_v1",
+  "v": 1,
+  "cfg": {
+    "mode": "result_err_v1",
+    "label": "scan.root.v1",
+    "alloc_bytes": 536870912,
+    "alloc_calls": 4000000,
+    "realloc_calls": 1200000,
+    "memcpy_bytes": 2147483647,
+    "sched_ticks": 40000000,
+    "fuel": 0
+  }
+}

@@ -12,16 +12,16 @@
     xml:space="preserve"
   >
     <tspan x="24" dy="0">$ hardproof scan --url http://127.0.0.1:18080/mcp --out out/scan</tspan>
-    <tspan x="24" dy="20">+------------------------------------+</tspan>
-    <tspan x="24" dy="20">| Scan                               |</tspan>
-    <tspan x="24" dy="20">+------------------------------------+</tspan>
-    <tspan x="24" dy="20">| target: http://127.0.0.1:18080/mcp |</tspan>
-    <tspan x="24" dy="20">| transport: streamable_http         |</tspan>
-    <tspan x="24" dy="20">| elapsed_ms: 157                    |</tspan>
-    <tspan x="24" dy="20">| status: WARN                       |</tspan>
-    <tspan x="24" dy="20">| score: 100                         |</tspan>
-    <tspan x="24" dy="20">| findings: critical 0, warning 0    |</tspan>
-    <tspan x="24" dy="20">+------------------------------------+</tspan>
+    <tspan x="24" dy="20">+-------------------------------------+</tspan>
+    <tspan x="24" dy="20">| Hardproof - AI Infrastructure Score |</tspan>
+    <tspan x="24" dy="20">+-------------------------------------+</tspan>
+    <tspan x="24" dy="20">| target: http://127.0.0.1:18080/mcp  |</tspan>
+    <tspan x="24" dy="20">| transport: streamable_http          |</tspan>
+    <tspan x="24" dy="20">| elapsed_ms: 157                     |</tspan>
+    <tspan x="24" dy="20">| status: WARN                        |</tspan>
+    <tspan x="24" dy="20">| score: 100                          |</tspan>
+    <tspan x="24" dy="20">| findings: critical 0, warning 0     |</tspan>
+    <tspan x="24" dy="20">+-------------------------------------+</tspan>
     <tspan x="24" dy="24"> </tspan>
     <tspan x="24" dy="20">== Dimensions ==</tspan>
     <tspan x="24" dy="20">conformance  [##########] 100 PASS</tspan>

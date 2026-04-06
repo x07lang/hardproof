@@ -20,6 +20,126 @@
         "run-os",
         "run-os-sandboxed"
       ]
+    },
+    {
+      "id": "crypto_jwt_v1",
+      "profile_path": "arch/budgets/profiles/crypto_jwt_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_root_v1",
+      "profile_path": "arch/budgets/profiles/scan_root_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_conformance_v1",
+      "profile_path": "arch/budgets/profiles/scan_conformance_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_security_v1",
+      "profile_path": "arch/budgets/profiles/scan_security_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_performance_v1",
+      "profile_path": "arch/budgets/profiles/scan_performance_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_trust_v1",
+      "profile_path": "arch/budgets/profiles/scan_trust_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_reliability_v1",
+      "profile_path": "arch/budgets/profiles/scan_reliability_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
+    },
+    {
+      "id": "scan_usage_v1",
+      "profile_path": "arch/budgets/profiles/scan_usage_v1.budget.json",
+      "enforce": "error",
+      "selectors": [],
+      "worlds_allowed": [
+        "solve-pure",
+        "solve-fs",
+        "solve-rr",
+        "solve-kv",
+        "solve-full",
+        "run-os",
+        "run-os-sandboxed"
+      ]
     }
   ]
 }

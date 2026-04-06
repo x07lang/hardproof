@@ -35,6 +35,7 @@ hardproof scan \
 - `hardproof scan --url "<http url>" --out out/scan --format rich|compact|json|jsonl`
 - `hardproof scan --url "<http url>" --out out/scan --format jsonl --score-preview`
 - `hardproof scan --url "<http url>" --out out/scan --format jsonl --metrics usage,perf`
+- `hardproof scan --url "<http url>" --server-json "<path>" --mcpb "<path>" --out out/scan`
 - `hardproof scan --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>" --out out/scan`
 - `hardproof scan --url "<http url>" --full-suite --baseline conformance/pinned/conformance-baseline.yml`
 - `hardproof ci --url "<http url>" --threshold 80`
@@ -54,6 +55,7 @@ hardproof scan \
 - `hardproof trust verify --server-json "<path>"`
 - `hardproof bundle verify --server-json "<path>" --mcpb "<path>"`
 - `hardproof corpus run --manifest corpus/manifests/quality-report-001.json --out out/corpus/quality-report-001`
+- `hardproof corpus render --input out/corpus/quality-report-001/index.json --out out/corpus/quality-report-001`
 
 See `docs/doctor.md`.
 See `docs/scan.md`.

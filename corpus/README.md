@@ -29,6 +29,12 @@ Each `targets[]` entry captures:
 - `<DIR>/<server_id>/summary.html`
 - `<DIR>/<server_id>/summary.sarif.json` (`x07.mcp.sarif@0.1.0`)
 
+## `corpus render` outputs
+
+`hardproof corpus render --input <DIR>/index.json --out <DIR>` writes:
+
+- `<DIR>/report.html` (corpus index with links to per-target artifacts)
+
 ## Exclusions
 
 `exclusions.skip_scenarios` is recorded in the per-target `result.json` warnings as `corpus.exclusions.skip_scenarios` and is not applied to the conformance runner yet.
