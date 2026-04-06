@@ -126,7 +126,7 @@ See `docs/schema-versioning.md`.
 - Conformance runs in the `hardproof` binary (no Node.js toolchain required). HTTP and stdio emit the same `checks.json` shape/IDs so reports stay comparable across transports.
 - For now, `replay record` records the `smoke/basic` HTTP scenario and stores the cassette at `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`). See `rr/README.md`.
 - Trust and bundle verification operate on registry artifacts (`server.json` and `.mcpb`) rather than a running HTTP server. See `trust/README.md`.
-- Output paths should be **relative** (example: `out/...`). Absolute paths are rejected by the current filesystem capability model.
+- Output paths may be relative (for example `out/...`) or absolute.
 
 ## Scan outputs
 

@@ -29,6 +29,7 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 
 `hardproof scan --out <DIR>` writes:
 
+- `<DIR>` may be relative or absolute.
 - `scan.json` (schema: `x07.mcp.scan.report@0.3.0`)
 - `scan.events.jsonl` (stable JSONL event stream)
 - `conformance.summary.*` artifacts when the conformance dimension runs

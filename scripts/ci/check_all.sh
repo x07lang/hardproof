@@ -138,6 +138,100 @@ if [[ "${scan_help_exit}" != "0" ]]; then
   exit 1
 fi
 
+echo "==> cli regression smoke"
+
+run_cli_regression_smoke() (
+  local server_log="${tmp_dir}/cli-regression.server.log"
+  conformance/scripts/spawn_reference_http.sh good-http noauth >"${server_log}" 2>&1 &
+  local server_pid="$!"
+
+  cleanup() {
+    kill "${server_pid}" >/dev/null 2>&1 || true
+    wait "${server_pid}" >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  if ! conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null; then
+    echo "ERROR: regression fixture failed to start: good-http (http://127.0.0.1:18080/mcp)" >&2
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  local abs_root
+  abs_root="$(mktemp -d "${tmp_dir}/cli-abs.XXXXXX")"
+
+  local abs_scan_out="${abs_root}/scan"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${abs_scan_out}" \
+    --format json >"${tmp_dir}/scan.abs.stdout.json"
+  local scan_abs_exit="$?"
+  set -e
+  if [[ "${scan_abs_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan absolute --out regression (expected 0, got ${scan_abs_exit})" >&2
+    cat "${tmp_dir}/scan.abs.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${abs_scan_out}/scan.json"
+  test -s "${abs_scan_out}/scan.events.jsonl"
+
+  local abs_conformance_out="${abs_root}/conformance"
+  set +e
+  "${bin_path}" conformance run \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${abs_conformance_out}" \
+    --machine json >"${tmp_dir}/conformance.abs.stdout.json"
+  local conformance_abs_exit="$?"
+  set -e
+  if [[ "${conformance_abs_exit}" != "0" ]]; then
+    echo "ERROR: hardproof conformance absolute --out regression (expected 0, got ${conformance_abs_exit})" >&2
+    cat "${tmp_dir}/conformance.abs.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${abs_conformance_out}/summary.json"
+  test -s "${abs_conformance_out}/summary.junit.xml"
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-thresholds" \
+    --min-score 50 \
+    --max-critical 0 \
+    --max-warning 10 \
+    --machine json >"${tmp_dir}/ci.thresholds.stdout.json"
+  local ci_threshold_exit="$?"
+  set -e
+  if [[ "${ci_threshold_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ci thresholds regression (expected 0, got ${ci_threshold_exit})" >&2
+    cat "${tmp_dir}/ci.thresholds.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-require-pass" \
+    --min-score 50 \
+    --max-critical 0 \
+    --max-warning 10 \
+    --require-pass \
+    --machine json >"${tmp_dir}/ci.require_pass.stdout.json"
+  local ci_require_pass_exit="$?"
+  set -e
+  if [[ "${ci_require_pass_exit}" != "1" ]]; then
+    echo "ERROR: hardproof ci --require-pass regression (expected 1, got ${ci_require_pass_exit})" >&2
+    cat "${tmp_dir}/ci.require_pass.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+)
+
+run_cli_regression_smoke
+
 echo "==> schema fixtures"
 "${bin_path}" ci validate-fixtures
 
