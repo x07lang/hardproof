@@ -22,6 +22,121 @@
       },
       "pbt": { "required": true, "tests": ["scan_score/overall_monotonicity"] },
       "verify": { "required": true, "mode": "prove" }
+    },
+    {
+      "id": "scan.score.partial_score_n_or_neg1_v1",
+      "symbol": "scan.score.partial_score_n_or_neg1_v1",
+      "node_id": "score_core",
+      "kind": "public_function",
+      "from_zone": "verified_core",
+      "to_zone": "verified_core",
+      "worlds_allowed": ["solve-pure"],
+      "input": {
+        "params": [
+          { "name": "score_weight_sum", "ty": "i32" },
+          { "name": "score_weight_total", "ty": "i32" }
+        ]
+      },
+      "output": { "ty": "i32" },
+      "smoke": {
+        "entry": "tests.scan_score.smoke_overall_threshold_v1",
+        "tests": ["scan_score/smoke_overall_threshold"]
+      },
+      "pbt": { "required": false, "tests": [] },
+      "verify": { "required": true, "mode": "prove" }
+    },
+    {
+      "id": "scan.score_status.status_v1",
+      "symbol": "scan.score_status.status_v1",
+      "node_id": "score_core",
+      "kind": "public_function",
+      "from_zone": "verified_core",
+      "to_zone": "verified_core",
+      "worlds_allowed": ["solve-pure"],
+      "input": {
+        "params": [
+          { "name": "score_available", "ty": "i32" },
+          { "name": "has_fail", "ty": "i32" },
+          { "name": "critical_n", "ty": "i32" },
+          { "name": "warning_n", "ty": "i32" },
+          { "name": "has_warn", "ty": "i32" },
+          { "name": "has_unknown", "ty": "i32" }
+        ]
+      },
+      "output": { "ty": "bytes", "brand": "hardproof.scan.score_status_v1" },
+      "smoke": {
+        "entry": "tests.scan_status.classifies_fail_warn_unknown_v1",
+        "tests": ["scan_status/classifies_fail_warn_unknown"]
+      },
+      "pbt": { "required": false, "tests": [] },
+      "verify": { "required": true, "mode": "prove" }
+    },
+    {
+      "id": "scan.stats.quantile_index_v1",
+      "symbol": "scan.stats.quantile_index_v1",
+      "node_id": "score_core",
+      "kind": "public_function",
+      "from_zone": "verified_core",
+      "to_zone": "verified_core",
+      "worlds_allowed": ["solve-pure"],
+      "input": {
+        "params": [
+          { "name": "count", "ty": "i32" },
+          { "name": "pct", "ty": "i32" }
+        ]
+      },
+      "output": { "ty": "i32" },
+      "smoke": {
+        "entry": "tests.scan_stats.sort_and_quantiles_v1",
+        "tests": ["scan_stats/sort_and_quantiles"]
+      },
+      "pbt": { "required": false, "tests": [] },
+      "verify": { "required": true, "mode": "prove" }
+    },
+    {
+      "id": "scan.stats.quantile_u32le_sorted_v1",
+      "symbol": "scan.stats.quantile_u32le_sorted_v1",
+      "node_id": "score_core",
+      "kind": "public_function",
+      "from_zone": "verified_core",
+      "to_zone": "verified_core",
+      "worlds_allowed": ["solve-pure"],
+      "input": {
+        "params": [
+          { "name": "sorted", "ty": "bytes_view", "brand": "hardproof.scan.sorted_u32le_seq_v1" },
+          { "name": "count", "ty": "i32" },
+          { "name": "pct", "ty": "i32" }
+        ]
+      },
+      "output": { "ty": "i32" },
+      "smoke": {
+        "entry": "tests.scan_stats.sort_and_quantiles_v1",
+        "tests": ["scan_stats/sort_and_quantiles"]
+      },
+      "pbt": { "required": false, "tests": [] },
+      "verify": { "required": true, "mode": "prove" }
+    },
+    {
+      "id": "scan.stats.sort_u32le_asc_v1",
+      "symbol": "scan.stats.sort_u32le_asc_v1",
+      "node_id": "score_core",
+      "kind": "public_function",
+      "from_zone": "verified_core",
+      "to_zone": "verified_core",
+      "worlds_allowed": ["solve-pure"],
+      "input": {
+        "params": [
+          { "name": "samples", "ty": "bytes_view", "brand": "hardproof.scan.u32le_seq_v1" },
+          { "name": "count", "ty": "i32" }
+        ]
+      },
+      "output": { "ty": "bytes", "brand": "hardproof.scan.sorted_u32le_seq_v1" },
+      "smoke": {
+        "entry": "tests.scan_stats.sort_and_quantiles_v1",
+        "tests": ["scan_stats/sort_and_quantiles"]
+      },
+      "pbt": { "required": false, "tests": [] },
+      "verify": { "required": true, "mode": "prove" }
     }
   ]
 }

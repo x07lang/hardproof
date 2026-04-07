@@ -36,6 +36,8 @@ def main() -> None:
     has_fail = False
     has_warn = False
     has_unknown = False
+    dimension_coverage = {}
+    unknown_dimensions = []
 
     for dim in dims:
         name = dim.get("name")
@@ -59,6 +61,9 @@ def main() -> None:
             has_unknown = True
 
         score = dim.get("score")
+        dimension_coverage[name] = score is not None
+        if status == "unknown":
+            unknown_dimensions.append(name)
         if score is None:
             continue
         if not isinstance(score, int) or score < 0 or score > 100:
@@ -77,26 +82,95 @@ def main() -> None:
     if not isinstance(score_available, bool):
         fail("score_available must be boolean")
 
+    overall_status = report.get("overall_status")
+    if overall_status not in {"pass", "warn", "fail", "unknown"}:
+        fail(f"overall_status invalid: {overall_status}")
+
+    score_mode = report.get("score_mode")
+    if score_mode not in {"publishable", "partial"}:
+        fail(f"score_mode invalid: {score_mode}")
+
+    score_truth_status = report.get("score_truth_status")
+    if score_truth_status not in {"publishable", "partial", "insufficient"}:
+        fail(f"score_truth_status invalid: {score_truth_status}")
+
+    score_weight_present = report.get("score_weight_present")
+    if not isinstance(score_weight_present, int) or score_weight_present < 0 or score_weight_present > 100:
+        fail(f"score_weight_present invalid: {score_weight_present}")
+
+    coverage = report.get("dimension_coverage")
+    if not isinstance(coverage, dict):
+        fail("dimension_coverage must be object")
+    if coverage != dimension_coverage:
+        fail(f"dimension_coverage mismatch: got {coverage}, expected {dimension_coverage}")
+
+    report_unknown_dimensions = report.get("unknown_dimensions")
+    if report_unknown_dimensions != unknown_dimensions:
+        fail(
+            f"unknown_dimensions mismatch: got {report_unknown_dimensions}, expected {unknown_dimensions}"
+        )
+
+    partial_reasons = report.get("partial_reasons")
+    gating_reasons = report.get("gating_reasons")
+    if not isinstance(partial_reasons, list):
+        fail("partial_reasons must be array")
+    if not isinstance(gating_reasons, list):
+        fail("gating_reasons must be array")
+
     overall_score = report.get("overall_score")
-    computed_score_available = score_weight_total >= 80
+    partial_score = report.get("partial_score")
+    computed_partial_score = None if score_weight_total <= 0 else score_weight_sum // score_weight_total
+    computed_score_available = score_truth_status != "insufficient"
     if score_available != computed_score_available:
         fail(
             f"score_available mismatch: got {score_available}, expected {computed_score_available} "
-            f"(weight_total={score_weight_total})"
+            f"(score_truth_status={score_truth_status})"
         )
 
-    if not computed_score_available:
-        if overall_score is not None:
-            fail(f"overall_score must be null when score_available=false (got {overall_score})")
-    else:
+    if score_weight_present != score_weight_total:
+        fail(
+            f"score_weight_present mismatch: got {score_weight_present}, expected {score_weight_total}"
+        )
+
+    computed_mode = "publishable" if score_truth_status == "publishable" else "partial"
+    if score_mode != computed_mode:
+        fail(f"score_mode mismatch: got {score_mode}, expected {computed_mode}")
+
+    if score_truth_status == "publishable":
+        if score_weight_total < 85:
+            fail(f"publishable score requires score_weight_present >= 85 (got {score_weight_total})")
+        if unknown_dimensions:
+            fail(f"publishable score cannot include unknown_dimensions (got {unknown_dimensions})")
         if not isinstance(overall_score, int):
-            fail(f"overall_score must be integer when score_available=true (got {overall_score})")
+            fail(f"overall_score must be integer when score is publishable (got {overall_score})")
         computed_overall = score_weight_sum // score_weight_total
         if overall_score != computed_overall:
             fail(
                 f"overall_score mismatch: got {overall_score}, expected {computed_overall} "
                 f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
             )
+        if not isinstance(partial_score, int):
+            fail(f"partial_score must be integer when score is publishable (got {partial_score})")
+        if partial_score != computed_partial_score:
+            fail(
+                f"partial_score mismatch: got {partial_score}, expected {computed_partial_score} "
+                f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
+            )
+    elif score_truth_status == "partial":
+        if overall_score is not None:
+            fail(f"overall_score must be null when score is partial (got {overall_score})")
+        if not isinstance(partial_score, int):
+            fail(f"partial_score must be integer when score is partial (got {partial_score})")
+        if partial_score != computed_partial_score:
+            fail(
+                f"partial_score mismatch: got {partial_score}, expected {computed_partial_score} "
+                f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
+            )
+    else:
+        if overall_score is not None:
+            fail(f"overall_score must be null when score is insufficient (got {overall_score})")
+        if partial_score is not None:
+            fail(f"partial_score must be null when score is insufficient (got {partial_score})")
 
     findings = report.get("findings")
     if not isinstance(findings, list):
@@ -125,6 +199,8 @@ def main() -> None:
             f"(has_fail={has_fail}, has_warn={has_warn}, has_unknown={has_unknown}, "
             f"critical_n={critical_n}, warning_n={warning_n}, score_available={computed_score_available})"
         )
+    if overall_status != computed_status:
+        fail(f"overall_status mismatch: got {overall_status}, expected {computed_status}")
 
     usage = report.get("usage_metrics")
     if not isinstance(usage, dict):
@@ -133,10 +209,13 @@ def main() -> None:
     if usage.get("estimator_family") == "bytes_per_token_v1":
         tool_catalog_bytes = usage.get("tool_catalog_bytes")
         tool_catalog_tokens = usage.get("tool_catalog_est_tokens_cl100k")
+        tool_count = usage.get("tool_count")
         if not isinstance(tool_catalog_bytes, int) or tool_catalog_bytes < 0:
             fail(f"usage.tool_catalog_bytes must be non-negative integer (got {tool_catalog_bytes})")
         if not isinstance(tool_catalog_tokens, int) or tool_catalog_tokens < 0:
             fail(f"usage.tool_catalog_est_tokens_cl100k must be non-negative integer (got {tool_catalog_tokens})")
+        if not isinstance(tool_count, int) or tool_count < 0:
+            fail(f"usage.tool_count must be non-negative integer (got {tool_count})")
         expected_tokens = 0 if tool_catalog_bytes <= 0 else int(math.ceil(tool_catalog_bytes / 4.0))
         if tool_catalog_tokens != expected_tokens:
             fail(
@@ -166,7 +245,12 @@ def main() -> None:
         if isinstance(p50, int) and isinstance(p95, int) and p95 < p50:
             fail(f"usage response quantiles invalid: p95 < p50 ({p95} < {p50})")
 
+        metadata_ratio = usage.get("metadata_to_payload_ratio_pct")
+        if not isinstance(metadata_ratio, int) or metadata_ratio < 0:
+            fail(
+                f"usage.metadata_to_payload_ratio_pct must be non-negative integer (got {metadata_ratio})"
+            )
+
 
 if __name__ == "__main__":
     main()
-

@@ -18,8 +18,8 @@
     },
     {
       "name": "ext-cli-ux",
-      "path": ".x07/deps/ext-cli-ux/0.1.4",
-      "version": "0.1.4"
+      "path": ".x07/deps/ext-cli-ux/0.1.5",
+      "version": "0.1.5"
     },
     {
       "name": "ext-crypto-rs",
@@ -216,7 +216,9 @@
   "lockfile": "x07.lock.json",
   "module_roots": [
     "score_core/src",
-    "cli/src"
+    "cli/src",
+    "gen/report_manifest/modules",
+    "tests"
   ],
   "patch": {
     "ext-auth-jwt": {

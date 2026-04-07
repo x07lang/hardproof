@@ -1,13 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://x07.io/schemas/x07.mcp.scan.usage.schema.json",
-  "title": "x07.mcp.scan.usage@0.3.0",
+  "title": "x07.mcp.scan.usage@0.4.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "tool_catalog_bytes",
     "tool_catalog_est_tokens_cl100k",
     "tool_catalog_est_tokens_o200k",
+    "tool_count",
     "avg_tool_description_tokens",
     "max_tool_description_tokens",
     "input_schema_bytes_total",
@@ -16,6 +17,7 @@
     "replay_transcript_est_tokens_total",
     "response_payload_est_tokens_p50",
     "response_payload_est_tokens_p95",
+    "metadata_to_payload_ratio_pct",
     "estimator_family",
     "estimator_confidence"
   ],
@@ -23,6 +25,7 @@
     "tool_catalog_bytes": { "type": "integer", "minimum": 0 },
     "tool_catalog_est_tokens_cl100k": { "type": "integer", "minimum": 0 },
     "tool_catalog_est_tokens_o200k": { "type": "integer", "minimum": 0 },
+    "tool_count": { "type": "integer", "minimum": 0 },
     "avg_tool_description_tokens": { "type": "integer", "minimum": 0 },
     "max_tool_description_tokens": { "type": "integer", "minimum": 0 },
     "input_schema_bytes_total": { "type": "integer", "minimum": 0 },
@@ -31,6 +34,7 @@
     "replay_transcript_est_tokens_total": { "type": "integer", "minimum": 0 },
     "response_payload_est_tokens_p50": { "type": "integer", "minimum": 0 },
     "response_payload_est_tokens_p95": { "type": "integer", "minimum": 0 },
+    "metadata_to_payload_ratio_pct": { "type": "integer", "minimum": 0 },
     "estimator_family": { "type": "string", "minLength": 1 },
     "estimator_confidence": { "type": "string", "enum": ["low", "medium", "high"] }
   }

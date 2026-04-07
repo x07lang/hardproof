@@ -1,0 +1,87 @@
+{
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.0",
+  "report_kind": "scan",
+  "target": {
+    "kind": "mcp_server",
+    "transport": "streamable_http",
+    "ref": "http://demo.invalid/mcp",
+    "meta": {}
+  },
+  "transport": "streamable_http",
+  "generated_at": "2026-04-04T00:00:00Z",
+  "methodology_version": "0.4.0",
+  "status": "fail",
+  "overall_status": "fail",
+  "score_available": true,
+  "score_mode": "publishable",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "overall_score": 62,
+  "partial_score": 62,
+  "dimension_coverage": {
+    "conformance": true,
+    "security": true,
+    "performance": true,
+    "trust": true,
+    "reliability": true
+  },
+  "unknown_dimensions": [],
+  "partial_reasons": [],
+  "gating_reasons": ["CRITICAL-SECURITY-FINDINGS"],
+  "dimensions": [
+    {
+      "name": "security",
+      "status": "fail",
+      "score": 40,
+      "weight": 0.2,
+      "metrics": {
+        "metadata_drift_kind": "tools_list",
+        "injection_pattern_count": 2,
+        "command_risk_pattern_count": 3
+      },
+      "finding_refs": [
+        "SEC-TOOLS-LIST-DRIFT",
+        "SEC-INJECTION-PATTERN",
+        "SEC-COMMAND-RISK-PATTERN"
+      ],
+      "artifact_refs": []
+    }
+  ],
+  "usage_metrics": {
+    "tool_catalog_bytes": 1900,
+    "tool_catalog_est_tokens_cl100k": 475,
+    "tool_catalog_est_tokens_o200k": 475,
+    "tool_count": 10,
+    "avg_tool_description_tokens": 120,
+    "max_tool_description_tokens": 410,
+    "input_schema_bytes_total": 1600,
+    "input_schema_est_tokens_total": 400,
+    "example_payload_est_tokens_total": 0,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 40,
+    "response_payload_est_tokens_p95": 90,
+    "metadata_to_payload_ratio_pct": 250,
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_confidence": "low"
+  },
+  "findings": [
+    {
+      "code": "SEC-COMMAND-RISK-PATTERN",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Command-risk parameter surface",
+      "summary": "Tool metadata exposes command or shell execution patterns that deserve manual review.",
+      "evidence": {"pattern_count": 3},
+      "suggested_fix": "Prefer structured arguments over free-form command execution surfaces.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-COMMAND-RISK-PATTERN"
+    }
+  ],
+  "artifacts": [],
+  "spec_baseline": "mcp@2025-11-25",
+  "report_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "run_id": "scan-fixture-security-bad",
+  "elapsed_ms": 201
+}

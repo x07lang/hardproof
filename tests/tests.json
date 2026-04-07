@@ -1,0 +1,90 @@
+{
+  "schema_version": "x07.tests_manifest@0.2.0",
+  "tests": [
+    {
+      "id": "cli/scan_security_rules/auth_protection_classification",
+      "world": "solve-pure",
+      "entry": "tests.scan_security_rules.auth_protection_classification_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_security_rules/command_surface_and_injection",
+      "world": "solve-pure",
+      "entry": "tests.scan_security_rules.command_surface_and_injection_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_security_rules/finding_payload",
+      "world": "solve-pure",
+      "entry": "tests.scan_security_rules.finding_payload_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_security_rules/auth_finding_payload",
+      "world": "solve-pure",
+      "entry": "tests.scan_security_rules.auth_finding_payload_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_performance_profile/profile_defaults",
+      "world": "solve-pure",
+      "entry": "tests.scan_performance_profile.profile_defaults_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_performance_profile/throughput_and_confidence",
+      "world": "solve-pure",
+      "entry": "tests.scan_performance_profile.profile_throughput_and_confidence_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_reliability_rr/rr_fixture_fetch",
+      "world": "solve-rr",
+      "fixture_root": "fixtures/rr_smoke",
+      "entry": "tests.scan_reliability_rr.rr_fixture_fetch_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_reliability_rr/replay_digest_drift",
+      "world": "solve-pure",
+      "entry": "tests.scan_reliability_rr.replay_digest_drift_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_contracts/report_manifest_builds",
+      "world": "solve-pure",
+      "entry": "tests.scan_contracts.report_manifest_builds_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_contracts/digest_validator_rejects_uppercase",
+      "world": "solve-pure",
+      "entry": "tests.scan_contracts.digest_validator_rejects_uppercase_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_rich_snapshot/partial_score",
+      "world": "solve-pure",
+      "entry": "tests.render_rich_snapshot.partial_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_compact_snapshot/partial_score",
+      "world": "solve-pure",
+      "entry": "tests.render_compact_snapshot.partial_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    }
+  ]
+}

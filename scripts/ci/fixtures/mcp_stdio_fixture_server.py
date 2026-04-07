@@ -4,6 +4,8 @@ import argparse
 import json
 import sys
 
+MAX_REQUEST_BYTES = 16 * 1024
+
 
 def _json_line(obj: object) -> str:
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n"
@@ -14,10 +16,22 @@ def _write(obj: object) -> None:
     sys.stdout.flush()
 
 
+def _write_error(req_id: object, code: int, message: str) -> None:
+    _write({"jsonrpc": "2.0", "id": req_id, "error": {"code": code, "message": message}})
+
+
 def _handle_good(req: dict) -> None:
     method = req.get("method")
     req_id = req.get("id")
     params = req.get("params") or {}
+
+    if req.get("jsonrpc") != "2.0":
+        _write_error(req_id, -32600, "invalid request")
+        return
+
+    if not isinstance(method, str):
+        _write_error(req_id, -32600, "invalid request")
+        return
 
     if method == "initialize":
         _write(
@@ -61,13 +75,7 @@ def _handle_good(req: dict) -> None:
     if method == "tools/call":
         tool_name = params.get("name")
         if tool_name != "test_tool_with_progress":
-            _write(
-                {
-                    "jsonrpc": "2.0",
-                    "id": req_id if req_id is not None else 2,
-                    "error": {"code": -32601, "message": "unknown tool"},
-                }
-            )
+            _write_error(req_id if req_id is not None else 2, -32601, "unknown tool")
             return
 
         meta = params.get("_meta") or {}
@@ -92,13 +100,7 @@ def _handle_good(req: dict) -> None:
         _write({"jsonrpc": "2.0", "id": req_id if req_id is not None else 2, "result": {}})
         return
 
-    _write(
-        {
-            "jsonrpc": "2.0",
-            "id": req_id,
-            "error": {"code": -32601, "message": "method not found"},
-        }
-    )
+    _write_error(req_id, -32601, "method not found")
 
 
 def main(argv: list[str]) -> int:
@@ -116,15 +118,20 @@ def main(argv: list[str]) -> int:
         line = line.strip()
         if not line:
             continue
+        if len(line.encode("utf-8")) > MAX_REQUEST_BYTES:
+            _write_error(None, -32600, "request too large")
+            continue
         try:
             req = json.loads(line)
         except Exception:
+            _write_error(None, -32700, "parse error")
             continue
         if isinstance(req, dict):
             _handle_good(req)
+        else:
+            _write_error(None, -32600, "invalid request")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))
-

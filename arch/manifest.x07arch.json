@@ -1,7 +1,15 @@
 {
   "schema_version": "x07.arch.manifest@0.3.0",
   "repo": { "id": "hardproof", "root": "." },
-  "externals": { "allowed_import_prefixes": ["std.", "ext.", "gen."], "allowed_exact": [] },
+  "externals": {
+    "allowed_import_prefixes": ["std.", "ext.", "gen."],
+    "allowed_exact": [
+      "hardproof.schema.scan.dimension_coverage_v1",
+      "hardproof.schema.scan.dimension_manifest_v1",
+      "hardproof.schema.scan.report_manifest_v1",
+      "hardproof.schema.scan.target_ref_v1"
+    ]
+  },
   "nodes": [
     {
       "id": "score_core",
@@ -26,6 +34,14 @@
       "trust_zone": "untrusted",
       "visibility": { "mode": "public", "visible_to": [] },
       "imports": { "deny_prefixes": [], "allow_prefixes": [] }
+    },
+    {
+      "id": "cli_helper_tests",
+      "match": { "module_prefixes": [], "path_globs": ["tests/**/*.x07.json"] },
+      "world": "run-os",
+      "trust_zone": "test_only",
+      "visibility": { "mode": "restricted", "visible_to": [] },
+      "imports": { "deny_prefixes": ["std.os."], "allow_prefixes": ["scan", "std.", "ext.", "tests."] }
     }
   ],
   "rules": [

@@ -1,0 +1,177 @@
+{
+  "boundaries": [
+    {
+      "from_zone": "verified_core",
+      "id": "hardproof.scan_dimension_coverage_v1.boundary_v1",
+      "input": {
+        "params": [
+          {
+            "brand": "hardproof.scan.dimension_coverage_v1",
+            "name": "payload",
+            "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+            "ty": "bytes_view"
+          }
+        ]
+      },
+      "kind": "public_function",
+      "node_id": "hardproof_core",
+      "output": {
+        "brand": "hardproof.scan.dimension_coverage_v1",
+        "error_space": "hardproof.boundary.scan_dimension_coverage_v1_errors_v1",
+        "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+        "ty": "result_bytes"
+      },
+      "pbt": {
+        "required": true,
+        "tests": [
+          "pbt/scan_dimension_coverage_v1"
+        ]
+      },
+      "smoke": {
+        "entry": "tests.boundary.smoke_scan_dimension_coverage_v1_v1",
+        "tests": [
+          "smoke/scan_dimension_coverage_v1"
+        ]
+      },
+      "symbol": "hardproof.boundary.scan_dimension_coverage_v1_v1",
+      "to_zone": "verified_core",
+      "verify": {
+        "mode": "prove",
+        "required": true
+      },
+      "worlds_allowed": [
+        "solve-pure"
+      ]
+    },
+    {
+      "from_zone": "verified_core",
+      "id": "hardproof.scan_dimension_manifest_v1.boundary_v1",
+      "input": {
+        "params": [
+          {
+            "brand": "hardproof.scan.dimension_manifest_v1",
+            "name": "payload",
+            "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+            "ty": "bytes_view"
+          }
+        ]
+      },
+      "kind": "public_function",
+      "node_id": "hardproof_core",
+      "output": {
+        "brand": "hardproof.scan.dimension_manifest_v1",
+        "error_space": "hardproof.boundary.scan_dimension_manifest_v1_errors_v1",
+        "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+        "ty": "result_bytes"
+      },
+      "pbt": {
+        "required": true,
+        "tests": [
+          "pbt/scan_dimension_manifest_v1"
+        ]
+      },
+      "smoke": {
+        "entry": "tests.boundary.smoke_scan_dimension_manifest_v1_v1",
+        "tests": [
+          "smoke/scan_dimension_manifest_v1"
+        ]
+      },
+      "symbol": "hardproof.boundary.scan_dimension_manifest_v1_v1",
+      "to_zone": "verified_core",
+      "verify": {
+        "mode": "prove",
+        "required": true
+      },
+      "worlds_allowed": [
+        "solve-pure"
+      ]
+    },
+    {
+      "from_zone": "verified_core",
+      "id": "hardproof.scan_report_manifest_v1.boundary_v1",
+      "input": {
+        "params": [
+          {
+            "brand": "hardproof.scan.report_manifest_v1",
+            "name": "payload",
+            "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+            "ty": "bytes_view"
+          }
+        ]
+      },
+      "kind": "public_function",
+      "node_id": "hardproof_core",
+      "output": {
+        "brand": "hardproof.scan.report_manifest_v1",
+        "error_space": "hardproof.boundary.scan_report_manifest_v1_errors_v1",
+        "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+        "ty": "result_bytes"
+      },
+      "pbt": {
+        "required": true,
+        "tests": [
+          "pbt/scan_report_manifest_v1"
+        ]
+      },
+      "smoke": {
+        "entry": "tests.boundary.smoke_scan_report_manifest_v1_v1",
+        "tests": [
+          "smoke/scan_report_manifest_v1"
+        ]
+      },
+      "symbol": "hardproof.boundary.scan_report_manifest_v1_v1",
+      "to_zone": "verified_core",
+      "verify": {
+        "mode": "prove",
+        "required": true
+      },
+      "worlds_allowed": [
+        "solve-pure"
+      ]
+    },
+    {
+      "from_zone": "verified_core",
+      "id": "hardproof.scan_target_ref_v1.boundary_v1",
+      "input": {
+        "params": [
+          {
+            "brand": "hardproof.scan.target_ref_v1",
+            "name": "payload",
+            "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+            "ty": "bytes_view"
+          }
+        ]
+      },
+      "kind": "public_function",
+      "node_id": "hardproof_core",
+      "output": {
+        "brand": "hardproof.scan.target_ref_v1",
+        "error_space": "hardproof.boundary.scan_target_ref_v1_errors_v1",
+        "schema": "arch/schemas/scan_report_manifest.x07schema.json",
+        "ty": "result_bytes"
+      },
+      "pbt": {
+        "required": true,
+        "tests": [
+          "pbt/scan_target_ref_v1"
+        ]
+      },
+      "smoke": {
+        "entry": "tests.boundary.smoke_scan_target_ref_v1_v1",
+        "tests": [
+          "smoke/scan_target_ref_v1"
+        ]
+      },
+      "symbol": "hardproof.boundary.scan_target_ref_v1_v1",
+      "to_zone": "verified_core",
+      "verify": {
+        "mode": "prove",
+        "required": true
+      },
+      "worlds_allowed": [
+        "solve-pure"
+      ]
+    }
+  ],
+  "schema_version": "x07.arch.boundaries.index@0.1.0"
+}

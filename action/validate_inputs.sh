@@ -6,6 +6,7 @@ cmd="${HARDPROOF_ACTION_CMD:-}"
 full_suite="${HARDPROOF_ACTION_FULL_SUITE:-false}"
 sarif="${HARDPROOF_ACTION_SARIF:-false}"
 threshold="${HARDPROOF_ACTION_THRESHOLD:-80}"
+require_trust_for_full_score="${HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE:-false}"
 
 if [[ -n "${url}" && -n "${cmd}" ]]; then
   echo "ERROR: set exactly one of 'url' or 'cmd'." >&2
@@ -28,6 +29,14 @@ case "${sarif}" in
   true|false) ;;
   *)
     echo "ERROR: invalid 'sarif' value (expected 'true' or 'false'): ${sarif}" >&2
+    exit 2
+    ;;
+esac
+
+case "${require_trust_for_full_score}" in
+  true|false) ;;
+  *)
+    echo "ERROR: invalid 'require-trust-for-full-score' value (expected 'true' or 'false'): ${require_trust_for_full_score}" >&2
     exit 2
     ;;
 esac

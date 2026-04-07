@@ -29,10 +29,11 @@ jobs:
 
       - name: Run Hardproof scan
         id: mcp
-        uses: x07lang/hardproof/hardproof-scan@v0.3.0-beta.0
+        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
         with:
           url: http://127.0.0.1:3000/mcp
-          threshold: "80"
+          threshold: "85"
+          require-trust-for-full-score: "true"
           full-suite: "false"
           sarif: "true"
 
@@ -51,12 +52,13 @@ jobs:
 ```yaml
 - name: Run Hardproof scan (stdio)
   id: mcp
-  uses: x07lang/hardproof/hardproof-scan@v0.3.0-beta.0
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
   with:
     cmd: ./server --stdio
     cwd: servers/my-mcp
     env-file: .env.mcp
-    threshold: "80"
+    threshold: "85"
+    require-trust-for-full-score: "true"
     full-suite: "false"
 ```
 
@@ -69,8 +71,9 @@ jobs:
 - `full-suite` (optional): `"true"` to run the extended suite
 - `baseline` (optional): path to an expected-failures YAML file
 - `sarif` (optional): `"true"` to emit a `report.sarif.json` file
+- `require-trust-for-full-score` (optional): `"true"` to fail when the scan remains partial because trust evidence is missing/unknown
 - `threshold` (optional): minimum score (0-100) required to pass (default `"80"`)
-- `version` (optional): `v0.3.*-beta.*` tag, or `latest-beta`
+- `version` (optional): `v0.4.*-beta.*` tag, or `latest-beta`
 
 ## Outputs
 
@@ -87,6 +90,7 @@ Compatibility aliases (beta):
 
 - Hardproof runs as a standalone binary (no Node.js toolchain required).
 - Windows is supported via WSL2; this Action currently targets Linux/macOS runners.
+- For release-grade CI, prefer `threshold: "85"` together with `require-trust-for-full-score: "true"`.
 
 ## Upload SARIF (optional)
 

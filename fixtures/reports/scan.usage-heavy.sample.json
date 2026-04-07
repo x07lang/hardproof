@@ -1,0 +1,69 @@
+{
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.0",
+  "report_kind": "scan",
+  "target": {
+    "kind": "mcp_server",
+    "transport": "streamable_http",
+    "ref": "http://localhost:3000/mcp",
+    "meta": {}
+  },
+  "transport": "streamable_http",
+  "generated_at": "2026-04-04T00:00:00Z",
+  "methodology_version": "0.4.0",
+  "status": "warn",
+  "overall_status": "warn",
+  "score_available": true,
+  "score_mode": "publishable",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "overall_score": 84,
+  "partial_score": 84,
+  "dimension_coverage": {
+    "conformance": true,
+    "security": true,
+    "performance": true,
+    "trust": true,
+    "reliability": true
+  },
+  "unknown_dimensions": [],
+  "partial_reasons": [],
+  "gating_reasons": ["USAGE-BUDGET-EXCEEDED"],
+  "dimensions": [],
+  "usage_metrics": {
+    "tool_catalog_bytes": 12000,
+    "tool_catalog_est_tokens_cl100k": 3000,
+    "tool_catalog_est_tokens_o200k": 3000,
+    "tool_count": 28,
+    "avg_tool_description_tokens": 240,
+    "max_tool_description_tokens": 450,
+    "input_schema_bytes_total": 9600,
+    "input_schema_est_tokens_total": 2400,
+    "example_payload_est_tokens_total": 0,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 400,
+    "response_payload_est_tokens_p95": 2100,
+    "metadata_to_payload_ratio_pct": 700,
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_confidence": "low"
+  },
+  "findings": [
+    {
+      "code": "USAGE-CATALOG-OVERSIZE",
+      "dimension": "usage",
+      "severity": "warning",
+      "title": "Tool catalog too large",
+      "summary": "tools/list consumes excessive context relative to the tool count.",
+      "evidence": {"estimated_tokens": 3000},
+      "suggested_fix": "Reduce tool count and shorten descriptions/examples to lower catalog footprint.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/USAGE-CATALOG-OVERSIZE"
+    }
+  ],
+  "artifacts": [],
+  "spec_baseline": "mcp@2025-11-25",
+  "report_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "run_id": "scan-fixture-usage-heavy",
+  "elapsed_ms": 144
+}

@@ -35,11 +35,14 @@ hardproof scan \
 - `hardproof scan --url "<http url>" --out out/scan --format rich|compact|json|jsonl`
 - `hardproof scan --url "<http url>" --out out/scan --format jsonl --score-preview`
 - `hardproof scan --url "<http url>" --out out/scan --format jsonl --metrics usage,perf`
+- `hardproof scan --url "<http url>" --out out/scan --require-trust-for-full-score`
 - `hardproof scan --url "<http url>" --server-json "<path>" --mcpb "<path>" --out out/scan`
 - `hardproof scan --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>" --out out/scan`
 - `hardproof scan --url "<http url>" --full-suite --baseline conformance/pinned/conformance-baseline.yml`
 - `hardproof ci --url "<http url>" --threshold 80`
 - `hardproof ci --url "<http url>" --min-score 80 --min-dimension conformance=85 --max-critical 0`
+- `hardproof ci --url "<http url>" --min-score 80 --require-trust-for-full-score`
+- `hardproof ci --url "<http url>" --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500`
 - `hardproof ci --url "<http url>" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000`
 - `hardproof explain <FINDING_CODE>`
 - `hardproof explain CONFORMANCE.FAIL`
@@ -64,11 +67,13 @@ See `docs/scan.md`.
 See `docs/targets.md`.
 See `corpus/README.md`.
 
-For `--score-preview`, early JSONL preview events stay provisional until at least 80% of score weight has concrete scores. Before that threshold, preview events keep `score_available=false` and expose the accumulated `score_weight_total`.
+Hardproof now makes score truth explicit. Publishable scans set `overall_score`; partial scans keep `overall_score=null`, set `partial_score`, and expose `score_truth_status`, `dimension_coverage`, `unknown_dimensions`, `partial_reasons`, and `gating_reasons`.
+
+For `--score-preview`, JSONL preview events remain provisional until a full score is publishable. Partial runs keep `overall_score=null`, emit `partial_score`, and continue to expose `score_available=true` with the accumulated scored weight.
 
 ## Install (beta)
 
-Release artifacts are built via GitHub Actions on tags like `v0.3.*-beta.*`.
+Release artifacts are built via GitHub Actions on tags like `v0.4.*-beta.*`.
 
 On Windows, run inside WSL2 and use the `linux_x86_64` artifact.
 
@@ -77,21 +82,21 @@ On Windows, run inside WSL2 and use the `linux_x86_64` artifact.
 Each beta release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.3.0-beta.0/install.sh" \
-  | bash -s -- --tag "v0.3.0-beta.0"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.0"
 ```
 
 You can also resolve the latest beta tag (requires GitHub API access):
 
 ```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.3.0-beta.0/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
   | bash -s -- --tag latest-beta
 ```
 
 ### Manual install
 
 1) Download `hardproof_<VERSION>_<linux_x86_64|macos_arm64|macos_x86_64>.tar.gz` and `checksums.txt` from GitHub Releases.
-   (`VERSION` is the tag without the `v` prefix, like `0.3.0-beta.0`.)
+   (`VERSION` is the tag without the `v` prefix, like `0.4.0-beta.0`.)
 
 2) Verify `sha256`, extract, and place `hardproof` on your `PATH`.
 
@@ -106,11 +111,11 @@ Running `./scripts/ci/check_all.sh` locally requires the pinned x07 toolchain pl
 
 Report schemas and shared envelope fields are versioned and pinned for consumers:
 
-- `x07.mcp.scan.report@0.3.0` (`schemas/x07.mcp.scan.report.schema.json`)
+- `x07.mcp.scan.report@0.4.0` (`schemas/x07.mcp.scan.report.schema.json`)
 - `x07.mcp.scan.dimension@0.3.0` (`schemas/x07.mcp.scan.dimension.schema.json`)
 - `x07.mcp.scan.finding@0.3.0` (`schemas/x07.mcp.scan.finding.schema.json`)
 - `x07.mcp.scan.metrics@0.3.0` (`schemas/x07.mcp.scan.metrics.schema.json`)
-- `x07.mcp.scan.usage@0.3.0` (`schemas/x07.mcp.scan.usage.schema.json`)
+- `x07.mcp.scan.usage@0.4.0` (`schemas/x07.mcp.scan.usage.schema.json`)
 - `x07.mcp.conformance.summary@0.2.0` (`schemas/x07.mcp.conformance.summary.schema.json`)
 - `x07.mcp.replay.session@0.2.0` (`schemas/x07.mcp.replay.session.schema.json`)
 - `x07.mcp.replay.verify@0.2.0` (`schemas/x07.mcp.replay.verify.schema.json`)
@@ -136,7 +141,7 @@ See `docs/schema-versioning.md`.
 
 `hardproof scan --out <DIR>` writes:
 
-- `scan.json` (schema: `x07.mcp.scan.report@0.3.0`)
+- `scan.json` (schema: `x07.mcp.scan.report@0.4.0`)
 - `scan.events.jsonl` (JSONL event stream)
 - `conformance.summary.json` + `conformance.summary.junit.xml` + `conformance.summary.html` + `conformance.summary.sarif.json` (when the conformance dimension runs)
 - other dimension-specific artifacts as they are added (pinned by `scan.json.artifacts[]`)
@@ -152,7 +157,7 @@ The Action downloads a `hardproof` release binary and runs `hardproof scan` (HTT
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.3.0-beta.0
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
   with:
     url: http://127.0.0.1:3000/mcp
     full-suite: "false"

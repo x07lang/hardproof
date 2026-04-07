@@ -4,6 +4,14 @@
 
 - TBD
 
+## v0.4.0-beta.0
+
+- Upgrade the scan report contract to `x07.mcp.scan.report@0.4.0` / `x07.mcp.scan.usage@0.4.0`.
+- Make score truth explicit with `overall_score`, `partial_score`, `score_truth_status`, `dimension_coverage`, `unknown_dimensions`, `partial_reasons`, and `gating_reasons`.
+- Add `--require-trust-for-full-score` to `hardproof scan` and `hardproof ci`.
+- Add CI usage thresholds for `--max-avg-tool-description-tokens`, `--max-tool-count`, and `--max-metadata-to-payload-ratio-pct`.
+- Update rich/compact rendering and public docs to explain partial versus publishable scores.
+
 ## v0.3.0-beta.0
 
 - Add `hardproof scan` v0.3 report contract (`x07.mcp.scan.*@0.3.0`) with five deterministic dimensions plus usage overlay.

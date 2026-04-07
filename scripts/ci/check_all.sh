@@ -38,11 +38,23 @@ x07 trust profile check \
 echo "==> score core: tests"
 x07 test --all --manifest score_core/tests/tests.json --json=off >/dev/null
 
+echo "==> hardproof helper tests"
+x07 test --all --manifest tests/tests.json --json=off >/dev/null
+
+echo "==> generated SM tests"
+x07 test --all --manifest cli/src/gen/sm/tests.manifest.json --json=off >/dev/null
+
 echo "==> score core: verify coverage"
 x07 verify \
   --coverage \
   --project score_core/x07.json \
   --entry scan.score.overall_score_n_or_neg1_v1 \
+  --json=off >/dev/null
+
+x07 verify \
+  --coverage \
+  --project score_core/x07.json \
+  --entry scan.score.partial_score_n_or_neg1_v1 \
   --json=off >/dev/null
 
 mkdir -p out
@@ -129,14 +141,35 @@ tar -xzf "${release_archive}" -C "${release_extract_dir}"
 
 echo "==> cli smoke"
 "${bin_path}" --help >/dev/null
-set +e
-"${bin_path}" scan --help >/dev/null
-scan_help_exit="$?"
-set -e
-if [[ "${scan_help_exit}" != "0" ]]; then
-  echo "ERROR: hardproof scan --help failed (exit ${scan_help_exit})" >&2
-  exit 1
-fi
+
+run_help_smoke() (
+  local label="${1:?missing label}"
+  shift
+
+  set +e
+  "${bin_path}" "$@" >/dev/null
+  local help_exit="$?"
+  set -e
+
+  if [[ "${help_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ${label} failed (exit ${help_exit})" >&2
+    exit 1
+  fi
+)
+
+run_help_smoke "scan --help" scan --help
+run_help_smoke "ci validate-fixtures --help" ci validate-fixtures --help
+run_help_smoke "doctor --help" doctor --help
+run_help_smoke "report summary --help" report summary --help
+run_help_smoke "report html --help" report html --help
+run_help_smoke "report sarif --help" report sarif --help
+run_help_smoke "conformance run --help" conformance run --help
+run_help_smoke "replay record --help" replay record --help
+run_help_smoke "replay verify --help" replay verify --help
+run_help_smoke "corpus run --help" corpus run --help
+run_help_smoke "corpus render --help" corpus render --help
+run_help_smoke "trust verify --help" trust verify --help
+run_help_smoke "bundle verify --help" bundle verify --help
 
 set +e
 "${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
@@ -247,6 +280,75 @@ run_cli_regression_smoke() (
     exit 1
   fi
 
+  local scan_require_trust_out="${tmp_dir}/scan-require-trust"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${scan_require_trust_out}" \
+    --require-trust-for-full-score \
+    --machine json >"${tmp_dir}/scan.require_trust.stdout.json"
+  local scan_require_trust_exit="$?"
+  set -e
+  if [[ "${scan_require_trust_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan --require-trust-for-full-score regression (expected 0, got ${scan_require_trust_exit})" >&2
+    cat "${tmp_dir}/scan.require_trust.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  python3 - "${scan_require_trust_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+assert report["score_truth_status"] == "partial", report
+assert report["score_mode"] == "partial", report
+assert report["score_available"] is True, report
+assert report["overall_score"] is None, report
+assert isinstance(report["partial_score"], int), report
+assert 0 <= report["partial_score"] <= 100, report
+assert "TRUST-UNKNOWN" in report["gating_reasons"], report
+assert "TRUST-UNKNOWN" in report["partial_reasons"], report
+assert report["unknown_dimensions"] == ["trust"], report
+assert report["dimension_coverage"]["trust"] is False, report
+assert report["score_weight_present"] == 80, report
+PY
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-new-usage-thresholds" \
+    --min-score 50 \
+    --max-critical 0 \
+    --max-warning 10 \
+    --max-avg-tool-description-tokens 500 \
+    --max-tool-count 50 \
+    --max-metadata-to-payload-ratio-pct 500 \
+    --machine json >"${tmp_dir}/ci.new_usage_thresholds.stdout.json"
+  local ci_new_usage_thresholds_exit="$?"
+  set -e
+  if [[ "${ci_new_usage_thresholds_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ci new usage threshold regression (expected 0, got ${ci_new_usage_thresholds_exit})" >&2
+    cat "${tmp_dir}/ci.new_usage_thresholds.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  python3 - "${tmp_dir}/ci-new-usage-thresholds/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+usage = report["usage_metrics"]
+assert usage["avg_tool_description_tokens"] == 3, usage
+assert usage["tool_count"] == 1, usage
+assert usage["metadata_to_payload_ratio_pct"] == 391, usage
+PY
+
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
@@ -261,6 +363,24 @@ run_cli_regression_smoke() (
   if [[ "${ci_require_pass_exit}" != "1" ]]; then
     echo "ERROR: hardproof ci --require-pass regression (expected 1, got ${ci_require_pass_exit})" >&2
     cat "${tmp_dir}/ci.require_pass.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-require-full-score" \
+    --min-score 50 \
+    --max-critical 0 \
+    --max-warning 10 \
+    --require-trust-for-full-score \
+    --machine json >"${tmp_dir}/ci.require_full_score.stdout.json"
+  local ci_require_full_score_exit="$?"
+  set -e
+  if [[ "${ci_require_full_score_exit}" != "1" ]]; then
+    echo "ERROR: hardproof ci --require-trust-for-full-score regression (expected 1, got ${ci_require_full_score_exit})" >&2
+    cat "${tmp_dir}/ci.require_full_score.stdout.json" >&2 || true
     tail -n 200 "${server_log}" >&2 || true
     exit 1
   fi
@@ -444,6 +564,23 @@ run_conformance_fixture() (
   "${bin_path}" ci validate-json \
     --schema schemas/x07.mcp.sarif.schema.json \
     --input "${fixture_out_dir}/conformance.summary.sarif.json"
+
+  if [[ "${fixture_id}" == "auth-http" ]]; then
+    python3 - "${fixture_out_dir}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+security = next(dim for dim in report["dimensions"] if dim["name"] == "security")
+metrics = security["metrics"]
+assert metrics["auth_protection_status"] == "required", metrics
+assert metrics["auth_challenge_status_code"] == 401, metrics
+codes = {finding["code"] for finding in report["findings"]}
+assert "SEC-AUTH-MISCONFIG" not in codes, codes
+PY
+  fi
 
   if [[ "${fixture_id}" == "good-http" ]]; then
     echo "==> ci smoke (good-http)"

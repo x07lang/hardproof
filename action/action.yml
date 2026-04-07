@@ -30,12 +30,16 @@ inputs:
     description: Emit a SARIF report file (default false)
     required: false
     default: "false"
+  require-trust-for-full-score:
+    description: Fail CI when the scan remains partial because trust evidence was not evaluated
+    required: false
+    default: "false"
   threshold:
     description: Minimum score (0-100) required to pass (default 80)
     required: false
     default: "80"
   version:
-    description: "Hardproof release tag (example: v0.3.0-beta.0) or latest-beta"
+    description: "Hardproof release tag (example: v0.4.0-beta.0) or latest-beta"
     required: false
     default: latest-beta
 
@@ -84,5 +88,6 @@ runs:
         full-suite: ${{ inputs.full-suite }}
         baseline: ${{ inputs.baseline }}
         sarif: ${{ inputs.sarif }}
+        require-trust-for-full-score: ${{ inputs.require-trust-for-full-score }}
         threshold: ${{ inputs.threshold }}
         version: ${{ inputs.version }}

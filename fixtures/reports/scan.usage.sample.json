@@ -2,6 +2,7 @@
   "tool_catalog_bytes": 1000,
   "tool_catalog_est_tokens_cl100k": 250,
   "tool_catalog_est_tokens_o200k": 250,
+  "tool_count": 6,
   "avg_tool_description_tokens": 40,
   "max_tool_description_tokens": 80,
   "input_schema_bytes_total": 800,
@@ -10,6 +11,7 @@
   "replay_transcript_est_tokens_total": 0,
   "response_payload_est_tokens_p50": 0,
   "response_payload_est_tokens_p95": 0,
+  "metadata_to_payload_ratio_pct": 400,
   "estimator_family": "bytes_per_token_v1",
   "estimator_confidence": "low"
 }

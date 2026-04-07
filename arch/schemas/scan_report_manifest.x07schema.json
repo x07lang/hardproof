@@ -1,0 +1,423 @@
+{
+  "schema_version": "x07schema.specrows@0.1.0",
+  "package": {
+    "name": "hardproof",
+    "version": "0.4.0-beta.0"
+  },
+  "defaults": {
+    "max_doc_bytes": 16384,
+    "max_map_entries": 32,
+    "max_number_bytes": 32,
+    "max_string_bytes": 4096,
+    "allow_unknown_fields": false
+  },
+  "types": [
+    {
+      "type_id": "scan.target_ref",
+      "version": 1,
+      "kind": "struct",
+      "err_base": 460000,
+      "budgets": {
+        "max_doc_bytes": 2048,
+        "max_map_entries": 8,
+        "allow_unknown_fields": false
+      },
+      "fields": [
+        {
+          "id": 1,
+          "name": "kind",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 2,
+          "name": "transport",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 3,
+          "name": "ref",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 4096
+        }
+      ],
+      "examples": [
+        {
+          "name": "ex0_http",
+          "value": {
+            "kind": "mcp_server",
+            "transport": "streamable_http",
+            "ref": "http://localhost:3000/mcp"
+          }
+        }
+      ]
+    },
+    {
+      "type_id": "scan.dimension_coverage",
+      "version": 1,
+      "kind": "struct",
+      "err_base": 461000,
+      "budgets": {
+        "max_doc_bytes": 1024,
+        "max_map_entries": 8,
+        "allow_unknown_fields": false
+      },
+      "fields": [
+        {
+          "id": 1,
+          "name": "conformance",
+          "ty": "bool",
+          "required": true
+        },
+        {
+          "id": 2,
+          "name": "security",
+          "ty": "bool",
+          "required": true
+        },
+        {
+          "id": 3,
+          "name": "performance",
+          "ty": "bool",
+          "required": true
+        },
+        {
+          "id": 4,
+          "name": "trust",
+          "ty": "bool",
+          "required": true
+        },
+        {
+          "id": 5,
+          "name": "reliability",
+          "ty": "bool",
+          "required": true
+        }
+      ],
+      "examples": [
+        {
+          "name": "ex0_basic",
+          "value": {
+            "conformance": true,
+            "security": true,
+            "performance": true,
+            "trust": false,
+            "reliability": true
+          }
+        }
+      ]
+    },
+    {
+      "type_id": "scan.dimension_manifest",
+      "version": 1,
+      "kind": "struct",
+      "err_base": 462000,
+      "budgets": {
+        "max_doc_bytes": 2048,
+        "max_map_entries": 8,
+        "allow_unknown_fields": false
+      },
+      "fields": [
+        {
+          "id": 1,
+          "name": "name",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 2,
+          "name": "status",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 3,
+          "name": "weight_pct",
+          "ty": "number",
+          "required": true,
+          "max_bytes": 4
+        },
+        {
+          "id": 4,
+          "name": "score_present",
+          "ty": "bool",
+          "required": true
+        }
+      ],
+      "examples": [
+        {
+          "name": "ex0_basic",
+          "value": {
+            "name": "conformance",
+            "status": "pass",
+            "weight_pct": "30",
+            "score_present": true
+          }
+        }
+      ]
+    },
+    {
+      "type_id": "scan.report_manifest",
+      "version": 1,
+      "kind": "struct",
+      "err_base": 463000,
+      "budgets": {
+        "max_doc_bytes": 16384,
+        "max_map_entries": 32,
+        "allow_unknown_fields": false
+      },
+      "fields": [
+        {
+          "id": 1,
+          "name": "schema_version",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 2,
+          "name": "tool",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 3,
+          "name": "tool_family",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 4,
+          "name": "tool_version",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 5,
+          "name": "report_kind",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 6,
+          "name": "transport",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 7,
+          "name": "generated_at",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 8,
+          "name": "methodology_version",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 9,
+          "name": "status",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 10,
+          "name": "overall_status",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 11,
+          "name": "score_available",
+          "ty": "bool",
+          "required": true
+        },
+        {
+          "id": 12,
+          "name": "score_mode",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 13,
+          "name": "score_truth_status",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 32
+        },
+        {
+          "id": 14,
+          "name": "score_weight_present",
+          "ty": "number",
+          "required": true,
+          "max_bytes": 4
+        },
+        {
+          "id": 15,
+          "name": "target",
+          "ty": "struct:scan.target_ref",
+          "required": true
+        },
+        {
+          "id": 16,
+          "name": "dimension_coverage",
+          "ty": "struct:scan.dimension_coverage",
+          "required": true
+        },
+        {
+          "id": 17,
+          "name": "dimensions",
+          "ty": "seq:struct:scan.dimension_manifest",
+          "required": true,
+          "max_items": 5
+        },
+        {
+          "id": 18,
+          "name": "unknown_dimensions",
+          "ty": "seq:bytes",
+          "required": true,
+          "max_bytes": 32,
+          "max_items": 5
+        },
+        {
+          "id": 19,
+          "name": "partial_reasons",
+          "ty": "seq:bytes",
+          "required": true,
+          "max_bytes": 64,
+          "max_items": 8
+        },
+        {
+          "id": 20,
+          "name": "gating_reasons",
+          "ty": "seq:bytes",
+          "required": true,
+          "max_bytes": 64,
+          "max_items": 8
+        },
+        {
+          "id": 21,
+          "name": "finding_count",
+          "ty": "number",
+          "required": true,
+          "max_bytes": 8
+        },
+        {
+          "id": 22,
+          "name": "artifact_count",
+          "ty": "number",
+          "required": true,
+          "max_bytes": 8
+        },
+        {
+          "id": 23,
+          "name": "spec_baseline",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 24,
+          "name": "report_digest",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 64
+        },
+        {
+          "id": 25,
+          "name": "run_id",
+          "ty": "bytes",
+          "required": true,
+          "max_bytes": 128
+        },
+        {
+          "id": 26,
+          "name": "elapsed_ms",
+          "ty": "number",
+          "required": true,
+          "max_bytes": 16
+        }
+      ],
+      "examples": [
+        {
+          "name": "ex0_partial",
+          "value": {
+            "schema_version": "x07.mcp.scan.report.manifest@0.1.0",
+            "tool": "hardproof",
+            "tool_family": "hardproof",
+            "tool_version": "0.4.0-beta.0",
+            "report_kind": "scan",
+            "transport": "streamable_http",
+            "generated_at": "2026-04-04T00:00:00Z",
+            "methodology_version": "0.4.0",
+            "status": "warn",
+            "overall_status": "warn",
+            "score_available": true,
+            "score_mode": "partial",
+            "score_truth_status": "partial",
+            "score_weight_present": "80",
+            "target": {
+              "kind": "mcp_server",
+              "transport": "streamable_http",
+              "ref": "http://localhost:3000/mcp"
+            },
+            "dimension_coverage": {
+              "conformance": true,
+              "security": true,
+              "performance": true,
+              "trust": false,
+              "reliability": true
+            },
+            "dimensions": [
+              {
+                "name": "conformance",
+                "status": "pass",
+                "weight_pct": "30",
+                "score_present": true
+              },
+              {
+                "name": "trust",
+                "status": "unknown",
+                "weight_pct": "20",
+                "score_present": false
+              }
+            ],
+            "unknown_dimensions": [
+              "trust"
+            ],
+            "partial_reasons": [
+              "TRUST-UNKNOWN"
+            ],
+            "gating_reasons": [
+              "TRUST-UNKNOWN"
+            ],
+            "finding_count": "1",
+            "artifact_count": "2",
+            "spec_baseline": "mcp@2025-11-25",
+            "report_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "run_id": "scan-fixture",
+            "elapsed_ms": "123"
+          }
+        }
+      ]
+    }
+  ]
+}

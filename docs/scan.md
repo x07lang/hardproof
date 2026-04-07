@@ -1,13 +1,13 @@
-# Scan (v0.3)
+# Scan (v0.4)
 
-`hardproof scan` is the primary orchestrator command. It runs five deterministic dimensions (Conformance, Security, Performance, Trust, Reliability) plus a first-class usage/token overlay and emits a stable `x07.mcp.scan.report@0.3.0` report.
+`hardproof scan` is the primary orchestrator command. It runs five deterministic dimensions (Conformance, Security, Performance, Trust, Reliability) plus a first-class usage/token overlay and emits a stable `x07.mcp.scan.report@0.4.0` report.
 
 ## Quickstart
 
 ```sh
 hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan
 hardproof report summary --input out/scan/scan.json --ui rich
-hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --max-critical 0
+hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --require-trust-for-full-score --max-critical 0
 ```
 
 ## Output modes
@@ -22,16 +22,19 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 ## Extra scan options
 
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
-- `--score-preview` stays provisional until at least 80% of score weight has concrete scores. Before that threshold, preview events still stream but keep `score_available=false` and expose the current `score_weight_total`.
+- `--score-preview` stays provisional until a full score is publishable. Partial runs still stream preview events with `overall_score=null`, a numeric `partial_score`, and `score_available=true`.
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
+- `--require-trust-for-full-score`: require trust evidence before reporting a full overall score.
 - `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
+
+Partial scans are explicit in `v0.4.0`: `overall_score` stays `null`, `partial_score` carries the numeric score, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not publishable.
 
 ## Output directory layout
 
 `hardproof scan --out <DIR>` writes:
 
 - `<DIR>` may be relative or absolute.
-- `scan.json` (schema: `x07.mcp.scan.report@0.3.0`)
+- `scan.json` (schema: `x07.mcp.scan.report@0.4.0`)
 - `scan.events.jsonl` (stable JSONL event stream)
 - `conformance.summary.*` artifacts when the conformance dimension runs
 - other referenced artifacts as the scan grows (pinned in `scan.json.artifacts[]`)
@@ -75,4 +78,6 @@ Common gates:
 ```sh
 hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --min-dimension conformance=85 --max-critical 0
 hardproof ci --url "http://127.0.0.1:3000/mcp" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000
+hardproof ci --url "http://127.0.0.1:3000/mcp" --require-trust-for-full-score
+hardproof ci --url "http://127.0.0.1:3000/mcp" --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500
 ```

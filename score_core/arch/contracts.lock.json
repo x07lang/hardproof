@@ -1,12 +1,12 @@
 {
   "files": {
     "arch/boundaries/index.x07boundary.json": {
-      "jcs_sha256_hex": "9a15ef418991204c3b6c56e1cf4cda58d6a21e751d379fb1657869a76e53cc59"
+      "jcs_sha256_hex": "9f2ba8202e8082af46587f850a236deeae1fe6813b7434edecbbdc04663c2811"
     }
   },
   "indexes": {
     "boundaries": {
-      "jcs_sha256_hex": "9a15ef418991204c3b6c56e1cf4cda58d6a21e751d379fb1657869a76e53cc59"
+      "jcs_sha256_hex": "9f2ba8202e8082af46587f850a236deeae1fe6813b7434edecbbdc04663c2811"
     }
   },
   "schema_version": "x07.arch.contracts.lock@0.1.0"

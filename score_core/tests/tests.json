@@ -2,6 +2,20 @@
   "schema_version": "x07.tests_manifest@0.2.0",
   "tests": [
     {
+      "id": "score_truth/publishable_thresholds",
+      "world": "solve-pure",
+      "entry": "tests.score_truth.publishable_thresholds_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "score_semantics/partial_vs_overall",
+      "world": "solve-pure",
+      "entry": "tests.score_semantics.partial_vs_overall_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
       "id": "scan_score/smoke_overall_threshold",
       "world": "solve-pure",
       "entry": "tests.scan_score.smoke_overall_threshold_v1",
@@ -25,6 +39,38 @@
           "max_output_bytes": 1048576
         }
       }
+    },
+    {
+      "id": "finding_dedup/idempotent_unique_count",
+      "world": "solve-pure",
+      "entry": "tests.finding_dedup_pbt.idempotent_unique_count_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1",
+      "pbt": {
+        "cases": 200,
+        "max_shrinks": 2048,
+        "params": [{ "name": "case_bytes", "gen": { "kind": "bytes", "max_len": 64 } }],
+        "case_budget": {
+          "fuel": 200000,
+          "timeout_ms": 200,
+          "max_mem_bytes": 67108864,
+          "max_output_bytes": 1048576
+        }
+      }
+    },
+    {
+      "id": "scan_status/classifies_fail_warn_unknown",
+      "world": "solve-pure",
+      "entry": "tests.scan_status.classifies_fail_warn_unknown_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "scan_stats/sort_and_quantiles",
+      "world": "solve-pure",
+      "entry": "tests.scan_stats.sort_and_quantiles_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
     }
   ]
 }

@@ -8,7 +8,14 @@
   "nodes": [
     {
       "id": "score_core",
-      "match": { "module_prefixes": [], "path_globs": ["src/scan/score.x07.json"] },
+      "match": {
+        "module_prefixes": [],
+        "path_globs": [
+          "src/scan/score.x07.json",
+          "src/scan/score_status.x07.json",
+          "src/scan/stats.x07.json"
+        ]
+      },
       "world": "solve-pure",
       "trust_zone": "verified_core",
       "visibility": { "mode": "public", "visible_to": [] },
@@ -19,14 +26,7 @@
     },
     {
       "id": "support",
-      "match": {
-        "module_prefixes": [],
-        "path_globs": [
-          "src/main.x07.json",
-          "src/scan/score_status.x07.json",
-          "src/scan/stats.x07.json"
-        ]
-      },
+      "match": { "module_prefixes": [], "path_globs": ["src/main.x07.json"] },
       "world": "solve-pure",
       "trust_zone": "untrusted",
       "visibility": { "mode": "restricted", "visible_to": [] },

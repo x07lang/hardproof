@@ -6,6 +6,7 @@ on:
       - "v0.1.*-alpha*"
       - "v0.2.*-beta*"
       - "v0.3.*-beta*"
+      - "v0.4.*-beta*"
   workflow_dispatch:
     inputs:
       tag:
@@ -17,7 +18,7 @@ permissions:
   contents: write
 
 env:
-  X07_TOOLCHAIN_TAG: "v0.1.108"
+  X07_TOOLCHAIN_TAG: "v0.1.110"
 
 jobs:
   build:
@@ -161,7 +162,7 @@ jobs:
             upload/checksums.txt
             upload/install.sh
           body: |
-            Hardproof public beta (M2.5).
+            Hardproof public beta.
 
             What works:
             - `doctor`

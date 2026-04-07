@@ -30,12 +30,16 @@ inputs:
     description: Emit a SARIF report file (default false)
     required: false
     default: "false"
+  require-trust-for-full-score:
+    description: Fail CI when the scan remains partial because trust evidence was not evaluated
+    required: false
+    default: "false"
   threshold:
     description: Minimum score (0-100) required to pass (default 80)
     required: false
     default: "80"
   version:
-    description: "Hardproof release tag (example: v0.3.0-beta.0) or latest-beta"
+    description: "Hardproof release tag (example: v0.4.0-beta.0) or latest-beta"
     required: false
     default: latest-beta
 
@@ -104,6 +108,7 @@ runs:
         HARDPROOF_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
         HARDPROOF_ACTION_SARIF: ${{ inputs.sarif }}
         HARDPROOF_ACTION_THRESHOLD: ${{ inputs.threshold }}
+        HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE: ${{ inputs.require-trust-for-full-score }}
       run: |
         set -euo pipefail
         bash "${GITHUB_ACTION_PATH}/../action/validate_inputs.sh"
@@ -138,6 +143,9 @@ runs:
         fi
         if [[ "${{ inputs.full-suite }}" == "true" ]]; then
           args+=(--full-suite)
+        fi
+        if [[ "${{ inputs.require-trust-for-full-score }}" == "true" ]]; then
+          args+=(--require-trust-for-full-score)
         fi
         if [[ -n "${{ inputs.baseline }}" ]]; then
           args+=(--baseline "${{ inputs.baseline }}")

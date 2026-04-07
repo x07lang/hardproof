@@ -1,0 +1,29 @@
+{
+  "schema_version": "x07.tests_manifest@0.2.0",
+  "tests": [
+    {
+      "id": "scan.dimension_coverage_v1",
+      "entry": "hardproof.schema.scan.dimension_coverage_v1.tests.test_vectors_v1",
+      "world": "solve-pure",
+      "expect": "pass"
+    },
+    {
+      "id": "scan.dimension_manifest_v1",
+      "entry": "hardproof.schema.scan.dimension_manifest_v1.tests.test_vectors_v1",
+      "world": "solve-pure",
+      "expect": "pass"
+    },
+    {
+      "id": "scan.report_manifest_v1",
+      "entry": "hardproof.schema.scan.report_manifest_v1.tests.test_vectors_v1",
+      "world": "solve-pure",
+      "expect": "pass"
+    },
+    {
+      "id": "scan.target_ref_v1",
+      "entry": "hardproof.schema.scan.target_ref_v1.tests.test_vectors_v1",
+      "world": "solve-pure",
+      "expect": "pass"
+    }
+  ]
+}

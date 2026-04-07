@@ -2,7 +2,7 @@
   "schema_version": "x07.mcp.replay.session@0.2.0",
   "generated_at": "2026-03-31T00:00:00Z",
   "tool": "hardproof",
-  "tool_version": "0.3.0-beta.0",
+  "tool_version": "0.4.0-beta.0",
   "target": {
     "kind": "mcp_server",
     "transport": "streamable_http",
