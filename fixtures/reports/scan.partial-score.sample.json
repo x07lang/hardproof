@@ -32,12 +32,14 @@
     "trust"
   ],
   "partial_reasons": [
-    "TRUST-UNKNOWN",
+    "TRUST-NOT-EVALUABLE",
+    "SERVER-JSON-MISSING",
     "WEIGHT-COVERAGE-BELOW-FULL",
     "UNKNOWN-DIMENSIONS"
   ],
   "gating_reasons": [
-    "TRUST-UNKNOWN",
+    "TRUST-NOT-EVALUABLE",
+    "SERVER-JSON-MISSING",
     "WEIGHT-COVERAGE-BELOW-FULL",
     "UNKNOWN-DIMENSIONS"
   ],

@@ -40,14 +40,45 @@
       "score": 40,
       "weight": 0.2,
       "metrics": {
-        "metadata_drift_kind": "tools_list",
+        "auth_challenge_status_code": 200,
+        "auth_expectation_mismatch": true,
+        "auth_protection_status": "missing",
+        "command_risk_pattern_count": 3,
+        "descriptor_bytes": 5200,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "missing",
+            "status": "exposed"
+          },
+          "command_surface": {
+            "pattern_count": 3,
+            "status": "risky"
+          },
+          "descriptor_drift": {
+            "drift_kind": "tools_list",
+            "status": "semantic_drift"
+          },
+          "injection_pattern": {
+            "pattern_count": 2,
+            "status": "suspicious"
+          },
+          "transport_exposure": {
+            "status": "exposed"
+          }
+        },
+        "host_origin_guard_ok": false,
         "injection_pattern_count": 2,
-        "command_risk_pattern_count": 3
+        "metadata_drift_kind": "tools_list",
+        "remote_http_without_tls": true
       },
       "finding_refs": [
+        "SEC-INSECURE-TRANSPORT",
+        "SEC-AUTH-MISCONFIG",
         "SEC-TOOLS-LIST-DRIFT",
         "SEC-INJECTION-PATTERN",
-        "SEC-COMMAND-RISK-PATTERN"
+        "SEC-COMMAND-RISK-PATTERN",
+        "SEC-DESCRIPTOR-BLOAT",
+        "SEC-HOST-ORIGIN-MISMATCH"
       ],
       "artifact_refs": []
     }
@@ -72,6 +103,52 @@
   },
   "findings": [
     {
+      "code": "SEC-INSECURE-TRANSPORT",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Insecure transport",
+      "summary": "Server is reachable over plain HTTP; prefer HTTPS for non-local targets.",
+      "evidence": {},
+      "suggested_fix": "Use HTTPS or restrict to localhost.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-INSECURE-TRANSPORT"
+    },
+    {
+      "code": "SEC-AUTH-MISCONFIG",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Remote endpoint allowed unauthenticated access",
+      "summary": "A remote HTTP MCP endpoint responded without an authentication challenge, which expands the exposed attack surface.",
+      "evidence": {
+        "observed_status_code": 200
+      },
+      "suggested_fix": "Require bearer or equivalent authentication for remote HTTP deployments.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-AUTH-MISCONFIG"
+    },
+    {
+      "code": "SEC-TOOLS-LIST-DRIFT",
+      "dimension": "security",
+      "severity": "critical",
+      "title": "Tools list drift",
+      "summary": "Repeated tools/list results are not stable; this can enable tool-poisoning attacks.",
+      "evidence": {
+        "metadata_drift_kind": "tools_list"
+      },
+      "suggested_fix": "Make tools/list deterministic and stable across repeated calls.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-TOOLS-LIST-DRIFT"
+    },
+    {
+      "code": "SEC-INJECTION-PATTERN",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Suspicious injection pattern",
+      "summary": "Tool metadata contains imperative prompt-style instructions that expand the injection surface.",
+      "evidence": {
+        "pattern_count": 2
+      },
+      "suggested_fix": "Remove prompt-injection-like instructions from tool metadata.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-INJECTION-PATTERN"
+    },
+    {
       "code": "SEC-COMMAND-RISK-PATTERN",
       "dimension": "security",
       "severity": "warning",
@@ -82,6 +159,28 @@
       },
       "suggested_fix": "Prefer structured arguments over free-form command execution surfaces.",
       "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-COMMAND-RISK-PATTERN"
+    },
+    {
+      "code": "SEC-DESCRIPTOR-BLOAT",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Oversized tool descriptors",
+      "summary": "Very large tool metadata increases prompt-injection surface and review burden.",
+      "evidence": {
+        "descriptor_bytes": 5200
+      },
+      "suggested_fix": "Trim descriptions, examples, and redundant schema prose.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-DESCRIPTOR-BLOAT"
+    },
+    {
+      "code": "SEC-HOST-ORIGIN-MISMATCH",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Host/origin mismatch accepted",
+      "summary": "Server accepted a request with mismatched Host/Origin headers.",
+      "evidence": {},
+      "suggested_fix": "Validate Host/Origin for remote HTTP targets to mitigate DNS rebinding.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-HOST-ORIGIN-MISMATCH"
     }
   ],
   "artifacts": [],

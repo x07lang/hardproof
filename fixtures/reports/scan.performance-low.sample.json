@@ -39,7 +39,11 @@
       "weight": 0.15,
       "metrics": {
         "workload_profile": "steady_small",
+        "ping_p95_ms": 1180,
+        "ping_p99_ms": 1360,
         "ping_sample_count": 20,
+        "tool_call_p95_ms": 720,
+        "tool_call_p99_ms": 910,
         "tool_call_sample_count": 20,
         "tool_call_confidence": "high",
         "throughput_calls_per_sec": 4

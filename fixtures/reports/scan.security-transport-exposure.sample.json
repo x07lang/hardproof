@@ -1,0 +1,124 @@
+{
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.0",
+  "report_kind": "scan",
+  "target": {
+    "kind": "mcp_server",
+    "transport": "streamable_http",
+    "ref": "http://demo.invalid/mcp",
+    "meta": {}
+  },
+  "transport": "streamable_http",
+  "generated_at": "2026-04-04T00:00:00Z",
+  "methodology_version": "0.4.0",
+  "status": "warn",
+  "overall_status": "warn",
+  "score_available": true,
+  "score_mode": "full",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "overall_score": 82,
+  "partial_score": 82,
+  "dimension_coverage": {
+    "conformance": true,
+    "security": true,
+    "performance": true,
+    "trust": true,
+    "reliability": true
+  },
+  "unknown_dimensions": [],
+  "partial_reasons": [],
+  "gating_reasons": [],
+  "dimensions": [
+    {
+      "name": "security",
+      "status": "warn",
+      "score": 80,
+      "weight": 0.2,
+      "metrics": {
+        "auth_challenge_status_code": 401,
+        "auth_expectation_mismatch": false,
+        "auth_protection_status": "required",
+        "command_risk_pattern_count": 0,
+        "descriptor_bytes": 860,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "required",
+            "status": "bounded"
+          },
+          "command_surface": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "descriptor_drift": {
+            "drift_kind": "none",
+            "status": "stable"
+          },
+          "injection_pattern": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "transport_exposure": {
+            "status": "exposed"
+          }
+        },
+        "host_origin_guard_ok": false,
+        "injection_pattern_count": 0,
+        "metadata_drift_kind": "none",
+        "remote_http_without_tls": true
+      },
+      "finding_refs": [
+        "SEC-INSECURE-TRANSPORT",
+        "SEC-HOST-ORIGIN-MISMATCH"
+      ],
+      "artifact_refs": []
+    }
+  ],
+  "usage_metrics": {
+    "tool_catalog_bytes": 830,
+    "tool_catalog_est_tokens_cl100k": 208,
+    "tool_catalog_est_tokens_o200k": 185,
+    "tool_count": 4,
+    "avg_tool_description_tokens": 24,
+    "max_tool_description_tokens": 38,
+    "input_schema_bytes_total": 500,
+    "input_schema_est_tokens_total": 125,
+    "example_payload_est_tokens_total": 0,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 40,
+    "response_payload_est_tokens_p95": 64,
+    "metadata_to_payload_ratio_pct": 63,
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
+  },
+  "findings": [
+    {
+      "code": "SEC-INSECURE-TRANSPORT",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Insecure transport",
+      "summary": "Server is reachable over plain HTTP; prefer HTTPS for non-local targets.",
+      "evidence": {},
+      "suggested_fix": "Use HTTPS or restrict to localhost.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-INSECURE-TRANSPORT"
+    },
+    {
+      "code": "SEC-HOST-ORIGIN-MISMATCH",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Host/origin mismatch accepted",
+      "summary": "Server accepted a request with mismatched Host/Origin headers.",
+      "evidence": {},
+      "suggested_fix": "Validate Host/Origin for remote HTTP targets to mitigate DNS rebinding.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-HOST-ORIGIN-MISMATCH"
+    }
+  ],
+  "artifacts": [],
+  "spec_baseline": "mcp@2025-11-25",
+  "report_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+  "run_id": "scan-fixture-security-transport-exposure",
+  "elapsed_ms": 145
+}

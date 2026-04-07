@@ -1,0 +1,115 @@
+{
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.0",
+  "report_kind": "scan",
+  "target": {
+    "kind": "mcp_server",
+    "transport": "streamable_http",
+    "ref": "https://demo.invalid/mcp",
+    "meta": {}
+  },
+  "transport": "streamable_http",
+  "generated_at": "2026-04-04T00:00:00Z",
+  "methodology_version": "0.4.0",
+  "status": "warn",
+  "overall_status": "warn",
+  "score_available": true,
+  "score_mode": "full",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "overall_score": 86,
+  "partial_score": 86,
+  "dimension_coverage": {
+    "conformance": true,
+    "security": true,
+    "performance": true,
+    "trust": true,
+    "reliability": true
+  },
+  "unknown_dimensions": [],
+  "partial_reasons": [],
+  "gating_reasons": [],
+  "dimensions": [
+    {
+      "name": "security",
+      "status": "warn",
+      "score": 90,
+      "weight": 0.2,
+      "metrics": {
+        "auth_challenge_status_code": 401,
+        "auth_expectation_mismatch": false,
+        "auth_protection_status": "required",
+        "command_risk_pattern_count": 0,
+        "descriptor_bytes": 960,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "required",
+            "status": "bounded"
+          },
+          "command_surface": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "descriptor_drift": {
+            "drift_kind": "none",
+            "status": "stable"
+          },
+          "injection_pattern": {
+            "pattern_count": 2,
+            "status": "suspicious"
+          },
+          "transport_exposure": {
+            "status": "bounded"
+          }
+        },
+        "host_origin_guard_ok": true,
+        "injection_pattern_count": 2,
+        "metadata_drift_kind": "none",
+        "remote_http_without_tls": false
+      },
+      "finding_refs": [
+        "SEC-INJECTION-PATTERN"
+      ],
+      "artifact_refs": []
+    }
+  ],
+  "usage_metrics": {
+    "tool_catalog_bytes": 900,
+    "tool_catalog_est_tokens_cl100k": 225,
+    "tool_catalog_est_tokens_o200k": 200,
+    "tool_count": 4,
+    "avg_tool_description_tokens": 26,
+    "max_tool_description_tokens": 40,
+    "input_schema_bytes_total": 520,
+    "input_schema_est_tokens_total": 130,
+    "example_payload_est_tokens_total": 0,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 42,
+    "response_payload_est_tokens_p95": 66,
+    "metadata_to_payload_ratio_pct": 64,
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
+  },
+  "findings": [
+    {
+      "code": "SEC-INJECTION-PATTERN",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Suspicious injection pattern",
+      "summary": "Tool metadata contains imperative prompt-style instructions that expand the injection surface.",
+      "evidence": {
+        "pattern_count": 2
+      },
+      "suggested_fix": "Remove prompt-injection-like instructions from tool metadata.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-INJECTION-PATTERN"
+    }
+  ],
+  "artifacts": [],
+  "spec_baseline": "mcp@2025-11-25",
+  "report_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+  "run_id": "scan-fixture-security-injection-pattern",
+  "elapsed_ms": 139
+}

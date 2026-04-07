@@ -9,7 +9,7 @@
     },
     {
       "content_type": "application/json",
-      "digest": "93b43c6dab81e219e8b5efe3c054a1eebf3558c01ee9a31bb20689aa35e0f3a0",
+      "digest": "fc410da1666e8da646b50bd3cd257854d7023bd80c1c0fa91d36378f5f6ce3ff",
       "id": "perf.samples.json",
       "kind": "report",
       "path": "perf.samples.json"
@@ -67,11 +67,35 @@
       "finding_refs": [],
       "metrics": {
         "auth_challenge_status_code": 0,
+        "auth_expectation_mismatch": false,
         "auth_protection_status": "missing",
         "command_risk_pattern_count": 0,
         "descriptor_bytes": 141,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "missing",
+            "status": "local_only"
+          },
+          "command_surface": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "descriptor_drift": {
+            "drift_kind": "none",
+            "status": "stable"
+          },
+          "injection_pattern": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "transport_exposure": {
+            "status": "local_only"
+          }
+        },
+        "host_origin_guard_ok": true,
         "injection_pattern_count": 0,
-        "metadata_drift_kind": "none"
+        "metadata_drift_kind": "none",
+        "remote_http_without_tls": false
       },
       "name": "security",
       "score": 100,
@@ -88,10 +112,12 @@
       ],
       "metrics": {
         "ping_p95_ms": 1,
+        "ping_p99_ms": 1,
         "ping_sample_count": 20,
         "throughput_calls_per_sec": 0,
         "tool_call_confidence": "high",
         "tool_call_p95_ms": 0,
+        "tool_call_p99_ms": 0,
         "tool_call_sample_count": 20,
         "workload_profile": "steady_small"
       },
@@ -103,7 +129,7 @@
     {
       "artifact_refs": [],
       "finding_refs": [
-        "TRUST-SERVER-JSON-MISSING"
+        "TRUST-NOT-EVALUABLE"
       ],
       "metrics": {
         "bundle_consistency": "unknown",
@@ -175,18 +201,19 @@
       "title": "Low concurrent tool-call success"
     },
     {
-      "code": "TRUST-SERVER-JSON-MISSING",
+      "code": "TRUST-NOT-EVALUABLE",
       "dimension": "trust",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-SERVER-JSON-MISSING",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-NOT-EVALUABLE",
       "evidence": {},
       "severity": "info",
-      "suggested_fix": "Provide --server-json (and --mcpb if available) to enable trust checks.",
-      "summary": "Trust checks require a registry server.json and optional .mcpb bundle to verify.",
-      "title": "No server.json provided"
+      "suggested_fix": "Provide --server-json and, when available, --mcpb so trust checks can run.",
+      "summary": "Trust checks could not run because the scan did not receive enough release metadata to evaluate trust.",
+      "title": "Trust not evaluable"
     }
   ],
   "gating_reasons": [
-    "TRUST-UNKNOWN",
+    "TRUST-NOT-EVALUABLE",
+    "SERVER-JSON-MISSING",
     "WEIGHT-COVERAGE-BELOW-FULL",
     "UNKNOWN-DIMENSIONS"
   ],
@@ -195,7 +222,8 @@
   "overall_score": null,
   "overall_status": "warn",
   "partial_reasons": [
-    "TRUST-UNKNOWN",
+    "TRUST-NOT-EVALUABLE",
+    "SERVER-JSON-MISSING",
     "WEIGHT-COVERAGE-BELOW-FULL",
     "UNKNOWN-DIMENSIONS"
   ],

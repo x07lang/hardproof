@@ -100,7 +100,7 @@
   },
   "findings": [
     {
-      "code": "USAGE-CATALOG-OVERSIZE",
+      "code": "USAGE-CATALOG-BLOAT",
       "dimension": "usage",
       "severity": "warning",
       "title": "Tool catalog too large",
@@ -109,7 +109,19 @@
         "estimated_tokens": 3000
       },
       "suggested_fix": "Reduce tool count and shorten descriptions/examples to lower catalog footprint.",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/USAGE-CATALOG-OVERSIZE"
+      "docs_ref": "https://x07.io/docs/hardproof/findings/USAGE-CATALOG-BLOAT"
+    },
+    {
+      "code": "USAGE-INSTRUCTION-DUPLICATION",
+      "dimension": "usage",
+      "severity": "warning",
+      "title": "Duplicated instruction prose",
+      "summary": "Multiple tools repeat the same instruction text, which inflates context without adding meaningful guidance.",
+      "evidence": {
+        "duplicate_description_count": 11
+      },
+      "suggested_fix": "Keep shared guidance in top-level docs and make per-tool descriptions specific.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/USAGE-INSTRUCTION-DUPLICATION"
     }
   ],
   "artifacts": [],

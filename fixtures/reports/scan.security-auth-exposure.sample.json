@@ -1,0 +1,115 @@
+{
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.0",
+  "report_kind": "scan",
+  "target": {
+    "kind": "mcp_server",
+    "transport": "streamable_http",
+    "ref": "https://demo.invalid/mcp",
+    "meta": {}
+  },
+  "transport": "streamable_http",
+  "generated_at": "2026-04-04T00:00:00Z",
+  "methodology_version": "0.4.0",
+  "status": "warn",
+  "overall_status": "warn",
+  "score_available": true,
+  "score_mode": "full",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "overall_score": 83,
+  "partial_score": 83,
+  "dimension_coverage": {
+    "conformance": true,
+    "security": true,
+    "performance": true,
+    "trust": true,
+    "reliability": true
+  },
+  "unknown_dimensions": [],
+  "partial_reasons": [],
+  "gating_reasons": [],
+  "dimensions": [
+    {
+      "name": "security",
+      "status": "warn",
+      "score": 85,
+      "weight": 0.2,
+      "metrics": {
+        "auth_challenge_status_code": 200,
+        "auth_expectation_mismatch": true,
+        "auth_protection_status": "missing",
+        "command_risk_pattern_count": 0,
+        "descriptor_bytes": 820,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "missing",
+            "status": "exposed"
+          },
+          "command_surface": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "descriptor_drift": {
+            "drift_kind": "none",
+            "status": "stable"
+          },
+          "injection_pattern": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "transport_exposure": {
+            "status": "bounded"
+          }
+        },
+        "host_origin_guard_ok": true,
+        "injection_pattern_count": 0,
+        "metadata_drift_kind": "none",
+        "remote_http_without_tls": false
+      },
+      "finding_refs": [
+        "SEC-AUTH-MISCONFIG"
+      ],
+      "artifact_refs": []
+    }
+  ],
+  "usage_metrics": {
+    "tool_catalog_bytes": 810,
+    "tool_catalog_est_tokens_cl100k": 203,
+    "tool_catalog_est_tokens_o200k": 180,
+    "tool_count": 4,
+    "avg_tool_description_tokens": 22,
+    "max_tool_description_tokens": 34,
+    "input_schema_bytes_total": 480,
+    "input_schema_est_tokens_total": 120,
+    "example_payload_est_tokens_total": 0,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 38,
+    "response_payload_est_tokens_p95": 60,
+    "metadata_to_payload_ratio_pct": 60,
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
+  },
+  "findings": [
+    {
+      "code": "SEC-AUTH-MISCONFIG",
+      "dimension": "security",
+      "severity": "warning",
+      "title": "Remote endpoint allowed unauthenticated access",
+      "summary": "A remote HTTP MCP endpoint responded without an authentication challenge, which expands the exposed attack surface.",
+      "evidence": {
+        "observed_status_code": 200
+      },
+      "suggested_fix": "Require bearer or equivalent authentication for remote HTTP deployments.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-AUTH-MISCONFIG"
+    }
+  ],
+  "artifacts": [],
+  "spec_baseline": "mcp@2025-11-25",
+  "report_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+  "run_id": "scan-fixture-security-auth-exposure",
+  "elapsed_ms": 137
+}

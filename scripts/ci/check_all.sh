@@ -173,9 +173,16 @@ run_help_smoke "corpus render --help" corpus render --help
 run_help_smoke "trust verify --help" trust verify --help
 run_help_smoke "bundle verify --help" bundle verify --help
 
+scan_help_out="${tmp_dir}/scan.help.txt"
+"${bin_path}" scan --help >"${scan_help_out}"
+grep -q -- '--max-avg-tool-description-tokens' "${scan_help_out}"
+grep -q -- '--max-tool-count' "${scan_help_out}"
+
 ci_help_out="${tmp_dir}/ci.help.txt"
 "${bin_path}" ci --help >"${ci_help_out}"
 grep -q -- '--allow-partial-score' "${ci_help_out}"
+grep -q -- '--max-avg-tool-description-tokens' "${ci_help_out}"
+grep -q -- '--max-tool-count' "${ci_help_out}"
 
 set +e
 "${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
@@ -183,6 +190,51 @@ explain_perf_exit="$?"
 set -e
 if [[ "${explain_perf_exit}" != "0" ]]; then
   echo "ERROR: hardproof explain PERF-TOOLS-CALL-FAILED failed (exit ${explain_perf_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain USAGE-INSTRUCTION-DUPLICATION >/dev/null
+explain_usage_dup_exit="$?"
+set -e
+if [[ "${explain_usage_dup_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain USAGE-INSTRUCTION-DUPLICATION failed (exit ${explain_usage_dup_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain TRUST-NOT-EVALUABLE >/dev/null
+explain_trust_not_evaluable_exit="$?"
+set -e
+if [[ "${explain_trust_not_evaluable_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain TRUST-NOT-EVALUABLE failed (exit ${explain_trust_not_evaluable_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain BUNDLE-MISSING >/dev/null
+explain_bundle_missing_exit="$?"
+set -e
+if [[ "${explain_bundle_missing_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain BUNDLE-MISSING failed (exit ${explain_bundle_missing_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain SIGNATURE-NOT-PRESENT >/dev/null
+explain_signature_not_present_exit="$?"
+set -e
+if [[ "${explain_signature_not_present_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain SIGNATURE-NOT-PRESENT failed (exit ${explain_signature_not_present_exit})" >&2
+  exit 1
+fi
+
+set +e
+"${bin_path}" explain TLOG-NOT-PRESENT >/dev/null
+explain_tlog_not_present_exit="$?"
+set -e
+if [[ "${explain_tlog_not_present_exit}" != "0" ]]; then
+  echo "ERROR: hardproof explain TLOG-NOT-PRESENT failed (exit ${explain_tlog_not_present_exit})" >&2
   exit 1
 fi
 
@@ -344,8 +396,10 @@ assert report["score_available"] is True, report
 assert report["overall_score"] is None, report
 assert isinstance(report["partial_score"], int), report
 assert 0 <= report["partial_score"] <= 100, report
-assert "TRUST-UNKNOWN" in report["gating_reasons"], report
-assert "TRUST-UNKNOWN" in report["partial_reasons"], report
+assert "TRUST-NOT-EVALUABLE" in report["gating_reasons"], report
+assert "TRUST-NOT-EVALUABLE" in report["partial_reasons"], report
+assert "SERVER-JSON-MISSING" in report["gating_reasons"], report
+assert "SERVER-JSON-MISSING" in report["partial_reasons"], report
 assert report["unknown_dimensions"] == ["trust"], report
 assert report["dimension_coverage"]["trust"] is False, report
 assert report["score_weight_present"] == 80, report

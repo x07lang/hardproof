@@ -404,10 +404,12 @@
               "trust"
             ],
             "partial_reasons": [
-              "TRUST-UNKNOWN"
+              "TRUST-NOT-EVALUABLE",
+              "SERVER-JSON-MISSING"
             ],
             "gating_reasons": [
-              "TRUST-UNKNOWN"
+              "TRUST-NOT-EVALUABLE",
+              "SERVER-JSON-MISSING"
             ],
             "finding_count": "1",
             "artifact_count": "2",

@@ -24,8 +24,12 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
 - `--score-preview` stays provisional until a full score is available. Partial runs still stream preview events with `overall_score=null`, a numeric `partial_score`, and `score_available=true`.
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
+- `--max-avg-tool-description-tokens <INT>`: attach a usage-policy preview threshold to the scan invocation.
+- `--max-tool-count <INT>`: attach a usage-policy preview threshold to the scan invocation.
 - `--require-trust-for-full-score`: require trust evidence before reporting a full overall score.
 - `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
+
+`hardproof scan` accepts the usage-policy threshold flags so the same invocation surface is available in local triage. Enforcement still happens in `hardproof ci`.
 
 Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `overall_score` stays `null`, `partial_score` remains machine-readable, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a full score.
 

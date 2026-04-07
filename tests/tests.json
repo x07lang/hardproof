@@ -73,6 +73,20 @@
       "returns": "bytes_status_v1"
     },
     {
+      "id": "cli/scan_contracts/artifact_digest_brand_accepts_valid_lowerhex",
+      "world": "solve-pure",
+      "entry": "tests.scan_contracts.artifact_digest_brand_accepts_valid_lowerhex_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_score_truth/status_and_availability",
+      "world": "solve-pure",
+      "entry": "tests.scan_score_truth.status_and_availability_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
       "id": "cli/render_rich_snapshot/partial_score",
       "world": "solve-pure",
       "entry": "tests.render_rich_snapshot.partial_score_renders_v1",
@@ -83,6 +97,34 @@
       "id": "cli/render_compact_snapshot/partial_score",
       "world": "solve-pure",
       "entry": "tests.render_compact_snapshot.partial_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_rich_snapshot/full_score",
+      "world": "solve-pure",
+      "entry": "tests.render_rich_snapshot.full_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_rich_snapshot/insufficient_score",
+      "world": "solve-pure",
+      "entry": "tests.render_rich_snapshot.insufficient_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_compact_snapshot/full_score",
+      "world": "solve-pure",
+      "entry": "tests.render_compact_snapshot.full_score_renders_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/render_compact_snapshot/insufficient_score",
+      "world": "solve-pure",
+      "entry": "tests.render_compact_snapshot.insufficient_score_renders_v1",
       "expect": "pass",
       "returns": "bytes_status_v1"
     }
