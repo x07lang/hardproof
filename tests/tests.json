@@ -44,6 +44,34 @@
       "returns": "bytes_status_v1"
     },
     {
+      "id": "cli/scan_mcp_batch/result_count_range",
+      "world": "solve-pure",
+      "entry": "tests.scan_mcp_batch.result_count_range_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_mcp_batch/result_line_by_id",
+      "world": "solve-pure",
+      "entry": "tests.scan_mcp_batch.result_line_by_id_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_mcp_tools/safe_probe_tool_name_prefers_hint",
+      "world": "solve-pure",
+      "entry": "tests.scan_mcp_tools.safe_probe_tool_name_prefers_hint_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_mcp_tools/safe_probe_tool_name_returns_empty_without_safe_candidate",
+      "world": "solve-pure",
+      "entry": "tests.scan_mcp_tools.safe_probe_tool_name_returns_empty_without_safe_candidate_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
       "id": "cli/scan_reliability_rr/rr_fixture_fetch",
       "world": "solve-rr",
       "fixture_root": "fixtures/rr_smoke",

@@ -199,6 +199,7 @@ Local `./scripts/ci/check_all.sh` requires the pinned X07 toolchain plus formal 
 
 - Windows support is through WSL2.
 - Some stdio target flows are still being stabilized; use the checked-in stdio fixtures as the reference shape.
+- Stdio targets use a smoke performance score from a single initialize+ping probe; tool-call and concurrency sampling stay HTTP-only because repeated cold starts distort the signal.
 
 ## Feedback
 

@@ -2,6 +2,9 @@
 
 `hardproof` supports both Streamable HTTP and stdio targets in the public beta.
 
+For stdio targets, `hardproof` reports a smoke performance score from a single initialize+ping probe.
+Tool-call and concurrency sampling stay HTTP-only because repeated cold starts are expensive and distort the signal for one-shot stdio launches.
+
 The verifier treats MCP targets as an explicit **transport + reference** pair:
 
 - `streamable_http`: a URL (example: `http://127.0.0.1:3000/mcp`)

@@ -41,7 +41,7 @@
       "world": "run-os",
       "trust_zone": "test_only",
       "visibility": { "mode": "restricted", "visible_to": [] },
-      "imports": { "deny_prefixes": ["std.os."], "allow_prefixes": ["scan", "std.", "ext.", "tests."] }
+      "imports": { "deny_prefixes": ["std.os."], "allow_prefixes": ["scan", "std.", "ext.", "tests.", "util"] }
     }
   ],
   "rules": [
