@@ -5,6 +5,7 @@ url="${HARDPROOF_ACTION_URL:-}"
 cmd="${HARDPROOF_ACTION_CMD:-}"
 full_suite="${HARDPROOF_ACTION_FULL_SUITE:-false}"
 sarif="${HARDPROOF_ACTION_SARIF:-false}"
+allow_partial_score="${HARDPROOF_ACTION_ALLOW_PARTIAL_SCORE:-false}"
 threshold="${HARDPROOF_ACTION_THRESHOLD:-80}"
 require_trust_for_full_score="${HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE:-false}"
 
@@ -29,6 +30,14 @@ case "${sarif}" in
   true|false) ;;
   *)
     echo "ERROR: invalid 'sarif' value (expected 'true' or 'false'): ${sarif}" >&2
+    exit 2
+    ;;
+esac
+
+case "${allow_partial_score}" in
+  true|false) ;;
+  *)
+    echo "ERROR: invalid 'allow-partial-score' value (expected 'true' or 'false'): ${allow_partial_score}" >&2
     exit 2
     ;;
 esac

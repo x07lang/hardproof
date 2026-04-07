@@ -16,7 +16,7 @@
   "status": "fail",
   "overall_status": "fail",
   "score_available": true,
-  "score_mode": "publishable",
+  "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
   "overall_score": 62,
@@ -30,7 +30,9 @@
   },
   "unknown_dimensions": [],
   "partial_reasons": [],
-  "gating_reasons": ["CRITICAL-SECURITY-FINDINGS"],
+  "gating_reasons": [
+    "CRITICAL-SECURITY-FINDINGS"
+  ],
   "dimensions": [
     {
       "name": "security",
@@ -65,7 +67,8 @@
     "response_payload_est_tokens_p95": 90,
     "metadata_to_payload_ratio_pct": 250,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [
     {
@@ -74,7 +77,9 @@
       "severity": "warning",
       "title": "Command-risk parameter surface",
       "summary": "Tool metadata exposes command or shell execution patterns that deserve manual review.",
-      "evidence": {"pattern_count": 3},
+      "evidence": {
+        "pattern_count": 3
+      },
       "suggested_fix": "Prefer structured arguments over free-form command execution surfaces.",
       "docs_ref": "https://x07.io/docs/hardproof/findings/SEC-COMMAND-RISK-PATTERN"
     }

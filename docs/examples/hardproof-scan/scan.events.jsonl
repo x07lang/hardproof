@@ -27,4 +27,4 @@
 {"ok":true,"run_id":"aafd25173b9701cb","stage":"summary_render","type":"scan.stage.finished"}
 {"run_id":"aafd25173b9701cb","stage":"exit_decision","type":"scan.stage.started"}
 {"ok":true,"run_id":"aafd25173b9701cb","stage":"exit_decision","type":"scan.stage.finished"}
-{"overall_score":null,"partial_score":100,"report_path":"out/scan/scan.json","run_id":"aafd25173b9701cb","score_available":true,"score_truth_status":"partial","status":"warn","type":"scan.finished"}
+{"overall_score":null,"partial_score":94,"report_path":"out/scan/scan.json","run_id":"aafd25173b9701cb","score_available":true,"score_truth_status":"partial","status":"warn","type":"scan.finished"}

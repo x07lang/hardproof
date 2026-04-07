@@ -16,7 +16,7 @@
   "status": "warn",
   "overall_status": "warn",
   "score_available": true,
-  "score_mode": "publishable",
+  "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
   "overall_score": 78,
@@ -48,7 +48,9 @@
         "PERF-HIGH-LATENCY",
         "PERF-CONCURRENT-TOOLS-CALL-LOW"
       ],
-      "artifact_refs": ["perf.samples.json"]
+      "artifact_refs": [
+        "perf.samples.json"
+      ]
     }
   ],
   "usage_metrics": {
@@ -66,7 +68,8 @@
     "response_payload_est_tokens_p95": 65,
     "metadata_to_payload_ratio_pct": 60,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [],
   "artifacts": [

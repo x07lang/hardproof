@@ -4,7 +4,7 @@ This directory contains sample artifacts that website/docs/announcements can emb
 
 Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.0`.
 
-The sample target produces a partial score: core quality dimensions pass, but Trust remains unevaluated, so `overall_score` stays `null` and `partial_score` carries the numeric result.
+The sample target produces a partial score: core quality dimensions pass, but Trust remains unevaluated, so `score_mode` is `partial`, `overall_score` stays `null`, and rich output renders the primary score as withheld.
 
 ## Contents
 
@@ -23,9 +23,5 @@ The sample target produces a partial score: core quality dimensions pass, but Tr
 From the repo root:
 
 ```sh
-x07 bundle --project x07.json --profile os --out out/hardproof
-conformance/scripts/spawn_reference_http.sh good-http noauth
-out/hardproof scan --url "http://127.0.0.1:18080/mcp" --baseline conformance/pinned/conformance-baseline.yml --out out/scan --format rich
-out/hardproof report html --input out/scan/scan.json > out/scan/report.html
-out/hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
+make refresh-example-artifacts
 ```

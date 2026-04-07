@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to build artifacts for (example: v0.3.0-beta.0)"
+        description: "Tag to build artifacts for (example: v0.4.0-beta.0)"
         required: true
         type: string
 
@@ -96,6 +96,8 @@ jobs:
           "${tmp_dir}/hardproof" --help >/dev/null
           "${tmp_dir}/hardproof" doctor --help >/dev/null
           "${tmp_dir}/hardproof" scan --help >/dev/null
+          "${tmp_dir}/hardproof" ci --help >/dev/null
+          "${tmp_dir}/hardproof" ci validate-json --help >/dev/null
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -30,8 +30,12 @@ inputs:
     description: Emit a SARIF report file (default false)
     required: false
     default: "false"
+  allow-partial-score:
+    description: Allow threshold gating to pass when the scan remains partial
+    required: false
+    default: "false"
   require-trust-for-full-score:
-    description: Fail CI when the scan remains partial because trust evidence was not evaluated
+    description: Require a full score and fail when trust evidence was not evaluated
     required: false
     default: "false"
   threshold:
@@ -88,6 +92,7 @@ runs:
         full-suite: ${{ inputs.full-suite }}
         baseline: ${{ inputs.baseline }}
         sarif: ${{ inputs.sarif }}
+        allow-partial-score: ${{ inputs.allow-partial-score }}
         require-trust-for-full-score: ${{ inputs.require-trust-for-full-score }}
         threshold: ${{ inputs.threshold }}
         version: ${{ inputs.version }}

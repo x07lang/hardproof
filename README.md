@@ -21,12 +21,12 @@ A normal scan writes `scan.json`, `scan.events.jsonl`, and optional rendered rep
 
 ## Score Semantics
 
-Hardproof distinguishes between a publishable full score and a partial score.
+Hardproof distinguishes between a full score and a partial score.
 
-- **Publishable scan:** `overall_score` is populated and `score_truth_status` is `publishable`.
-- **Partial scan:** `overall_score` stays `null`, `partial_score` is populated, and `score_truth_status` explains why the result is still useful but not publishable yet.
+- **Full score:** `score_mode` is `full`, `overall_score` is populated, and `score_truth_status` is `publishable`.
+- **Partial score:** `score_mode` is `partial`, `overall_score` stays `null`, `partial_score` stays machine-readable, and rich output renders the score as withheld.
 
-If you want trust-aware publishable scoring, provide `--server-json` and, when available, `--mcpb`. You can also fail CI when trust inputs are missing by adding `--require-trust-for-full-score`.
+Trust is part of the full-score bar. If you want a full score, provide `--server-json` and, when available, `--mcpb`. `hardproof ci` now fails on `score_mode=partial` by default; use `--allow-partial-score` only when partial gating is intentional.
 
 ## Install
 
@@ -97,8 +97,7 @@ hardproof ci \
   --url "http://127.0.0.1:3000/mcp" \
   --min-score 80 \
   --min-dimension conformance=85 \
-  --max-critical 0 \
-  --require-trust-for-full-score
+  --max-critical 0
 ```
 
 Usage-budget gates are available too:
@@ -182,6 +181,12 @@ See [`docs/schema-versioning.md`](docs/schema-versioning.md) for the full list a
 - [`docs/examples/hardproof-scan/README.md`](docs/examples/hardproof-scan/README.md) for a concrete report example
 - [`action/README.md`](action/README.md) and [`hardproof-scan/README.md`](hardproof-scan/README.md) for GitHub Action usage
 - `corpus/README.md` for corpus-driven report generation
+
+Refresh the checked-in example bundle with:
+
+```bash
+make refresh-example-artifacts
+```
 
 ## Development
 

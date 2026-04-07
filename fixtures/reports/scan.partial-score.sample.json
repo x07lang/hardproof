@@ -28,10 +28,66 @@
     "trust": false,
     "reliability": true
   },
-  "unknown_dimensions": ["trust"],
-  "partial_reasons": ["TRUST-UNKNOWN", "WEIGHT-COVERAGE-BELOW-FULL", "UNKNOWN-DIMENSIONS"],
-  "gating_reasons": ["TRUST-UNKNOWN", "WEIGHT-COVERAGE-BELOW-FULL", "UNKNOWN-DIMENSIONS"],
-  "dimensions": [],
+  "unknown_dimensions": [
+    "trust"
+  ],
+  "partial_reasons": [
+    "TRUST-UNKNOWN",
+    "WEIGHT-COVERAGE-BELOW-FULL",
+    "UNKNOWN-DIMENSIONS"
+  ],
+  "gating_reasons": [
+    "TRUST-UNKNOWN",
+    "WEIGHT-COVERAGE-BELOW-FULL",
+    "UNKNOWN-DIMENSIONS"
+  ],
+  "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 95,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "security",
+      "status": "pass",
+      "score": 90,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "performance",
+      "status": "warn",
+      "score": 80,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "trust",
+      "status": "unknown",
+      "score": null,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "reliability",
+      "status": "pass",
+      "score": 92,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    }
+  ],
   "usage_metrics": {
     "tool_catalog_bytes": 1000,
     "tool_catalog_est_tokens_cl100k": 250,
@@ -47,7 +103,8 @@
     "response_payload_est_tokens_p95": 0,
     "metadata_to_payload_ratio_pct": 400,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [],
   "artifacts": [],

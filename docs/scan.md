@@ -7,7 +7,7 @@
 ```sh
 hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan
 hardproof report summary --input out/scan/scan.json --ui rich
-hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --require-trust-for-full-score --max-critical 0
+hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --max-critical 0
 ```
 
 ## Output modes
@@ -22,12 +22,12 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 ## Extra scan options
 
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
-- `--score-preview` stays provisional until a full score is publishable. Partial runs still stream preview events with `overall_score=null`, a numeric `partial_score`, and `score_available=true`.
+- `--score-preview` stays provisional until a full score is available. Partial runs still stream preview events with `overall_score=null`, a numeric `partial_score`, and `score_available=true`.
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
 - `--require-trust-for-full-score`: require trust evidence before reporting a full overall score.
 - `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
 
-Partial scans are explicit in `v0.4.0`: `overall_score` stays `null`, `partial_score` carries the numeric score, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not publishable.
+Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `overall_score` stays `null`, `partial_score` remains machine-readable, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a full score.
 
 ## Output directory layout
 
@@ -78,6 +78,8 @@ Common gates:
 ```sh
 hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --min-dimension conformance=85 --max-critical 0
 hardproof ci --url "http://127.0.0.1:3000/mcp" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000
-hardproof ci --url "http://127.0.0.1:3000/mcp" --require-trust-for-full-score
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-partial-score --max-tool-count 50
 hardproof ci --url "http://127.0.0.1:3000/mcp" --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500
 ```
+
+`hardproof ci` fails on `score_mode=partial` by default. Use `--allow-partial-score` only when you want threshold checks to accept a partial result.

@@ -29,7 +29,6 @@ jobs:
         with:
           url: http://127.0.0.1:3000/mcp
           threshold: "85"
-          require-trust-for-full-score: "true"
           full-suite: "false"
           sarif: "true"
 
@@ -54,7 +53,6 @@ jobs:
     cwd: servers/my-mcp
     env-file: .env.mcp
     threshold: "85"
-    require-trust-for-full-score: "true"
     full-suite: "false"
 ```
 
@@ -67,7 +65,8 @@ jobs:
 - `full-suite` (optional): `"true"` to run the extended suite
 - `baseline` (optional): path to an expected-failures YAML file
 - `sarif` (optional): `"true"` to emit a `report.sarif.json` file
-- `require-trust-for-full-score` (optional): `"true"` to fail when the scan remains partial because trust evidence is missing/unknown
+- `allow-partial-score` (optional): `"true"` to allow threshold gating to pass when `score_mode=partial`
+- `require-trust-for-full-score` (optional): `"true"` to require a full score and fail when trust evidence is missing/unknown
 - `threshold` (optional): minimum score (0-100) required to pass (default `"80"`)
 - `version` (optional): `v0.4.*-beta.*` tag, or `latest-beta`
 
@@ -97,3 +96,5 @@ uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
 ```
 
 The `action/` path remains available during the beta transition.
+
+By default, the Action now fails when the scan only reaches `score_mode=partial`.

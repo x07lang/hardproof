@@ -158,7 +158,9 @@ run_help_smoke() (
 )
 
 run_help_smoke "scan --help" scan --help
+run_help_smoke "ci --help" ci --help
 run_help_smoke "ci validate-fixtures --help" ci validate-fixtures --help
+run_help_smoke "ci validate-json --help" ci validate-json --help
 run_help_smoke "doctor --help" doctor --help
 run_help_smoke "report summary --help" report summary --help
 run_help_smoke "report html --help" report html --help
@@ -170,6 +172,10 @@ run_help_smoke "corpus run --help" corpus run --help
 run_help_smoke "corpus render --help" corpus render --help
 run_help_smoke "trust verify --help" trust verify --help
 run_help_smoke "bundle verify --help" bundle verify --help
+
+ci_help_out="${tmp_dir}/ci.help.txt"
+"${bin_path}" ci --help >"${ci_help_out}"
+grep -q -- '--allow-partial-score' "${ci_help_out}"
 
 set +e
 "${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
@@ -273,9 +279,38 @@ run_cli_regression_smoke() (
     --machine json >"${tmp_dir}/ci.thresholds.stdout.json"
   local ci_threshold_exit="$?"
   set -e
-  if [[ "${ci_threshold_exit}" != "0" ]]; then
-    echo "ERROR: hardproof ci thresholds regression (expected 0, got ${ci_threshold_exit})" >&2
+  if [[ "${ci_threshold_exit}" != "1" ]]; then
+    echo "ERROR: hardproof ci partial-default regression (expected 1, got ${ci_threshold_exit})" >&2
     cat "${tmp_dir}/ci.thresholds.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  python3 - "${tmp_dir}/ci-thresholds/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+assert report["score_mode"] == "partial", report
+assert report["score_truth_status"] == "partial", report
+PY
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-allow-partial" \
+    --min-score 50 \
+    --max-critical 0 \
+    --max-warning 10 \
+    --allow-partial-score \
+    --machine json >"${tmp_dir}/ci.allow_partial.stdout.json"
+  local ci_allow_partial_exit="$?"
+  set -e
+  if [[ "${ci_allow_partial_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ci --allow-partial-score regression (expected 0, got ${ci_allow_partial_exit})" >&2
+    cat "${tmp_dir}/ci.allow_partial.stdout.json" >&2 || true
     tail -n 200 "${server_log}" >&2 || true
     exit 1
   fi
@@ -316,6 +351,38 @@ assert report["dimension_coverage"]["trust"] is False, report
 assert report["score_weight_present"] == 80, report
 PY
 
+  local scan_full_score_out="${tmp_dir}/scan-full-score"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --server-json trust/fixtures/server-good.json \
+    --mcpb trust/fixtures/bundle-good.mcpb \
+    --out "${scan_full_score_out}" \
+    --machine json >"${tmp_dir}/scan.full_score.stdout.json"
+  local scan_full_score_exit="$?"
+  set -e
+  if [[ "${scan_full_score_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan trust-aware full-score regression (expected 0, got ${scan_full_score_exit})" >&2
+    cat "${tmp_dir}/scan.full_score.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  python3 - "${scan_full_score_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+assert report["score_truth_status"] == "publishable", report
+assert report["score_mode"] == "full", report
+assert isinstance(report["overall_score"], int), report
+assert report["dimension_coverage"]["trust"] is True, report
+assert report["score_weight_present"] == 100, report
+assert report["usage_metrics"]["estimator_version"] == "v1", report
+PY
+
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
@@ -323,6 +390,7 @@ PY
     --min-score 50 \
     --max-critical 0 \
     --max-warning 10 \
+    --allow-partial-score \
     --max-avg-tool-description-tokens 500 \
     --max-tool-count 50 \
     --max-metadata-to-payload-ratio-pct 500 \
@@ -390,6 +458,11 @@ run_cli_regression_smoke
 
 echo "==> schema fixtures"
 "${bin_path}" ci validate-fixtures
+
+echo "==> example artifacts"
+./scripts/refresh_example_artifacts.sh --check --bin "${bin_path}" >/dev/null
+python3 scripts/ci/check_example_artifacts.py "${bin_path}"
+python3 scripts/ci/assert_scan_report_consistency.py docs/examples/hardproof-scan/scan.json
 
 echo "==> corpus smoke"
 
@@ -592,6 +665,7 @@ PY
     "${bin_path}" ci \
       --url "${fixture_url}" \
       --min-score 80 \
+      --allow-partial-score \
       --baseline conformance/pinned/conformance-baseline.yml \
       --out "${ci_out_dir}" \
       --machine json >"${ci_out_dir}/summary.stdout.json"

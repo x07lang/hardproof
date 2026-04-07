@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- TBD
+- Tighten score semantics so full scores require Trust plus at least 85% weighted coverage, while partial scores render as withheld in rich output.
+- Make `hardproof ci` fail on partial scores by default and add `--allow-partial-score` for explicit opt-in.
+- Add example-artifact maintenance checks and a reproducible `make refresh-example-artifacts` path for the public docs bundle.
 
 ## v0.4.0-beta.0
 

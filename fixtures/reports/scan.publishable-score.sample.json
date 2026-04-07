@@ -16,7 +16,7 @@
   "status": "pass",
   "overall_status": "pass",
   "score_available": true,
-  "score_mode": "publishable",
+  "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
   "overall_score": 96,
@@ -31,7 +31,53 @@
   "unknown_dimensions": [],
   "partial_reasons": [],
   "gating_reasons": [],
-  "dimensions": [],
+  "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "security",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "performance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "trust",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "reliability",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    }
+  ],
   "usage_metrics": {
     "tool_catalog_bytes": 800,
     "tool_catalog_est_tokens_cl100k": 200,
@@ -47,7 +93,8 @@
     "response_payload_est_tokens_p95": 65,
     "metadata_to_payload_ratio_pct": 60,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [],
   "artifacts": [],

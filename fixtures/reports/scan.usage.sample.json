@@ -13,5 +13,6 @@
   "response_payload_est_tokens_p95": 0,
   "metadata_to_payload_ratio_pct": 400,
   "estimator_family": "bytes_per_token_v1",
+  "estimator_version": "v1",
   "estimator_confidence": "low"
 }

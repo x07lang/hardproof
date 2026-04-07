@@ -16,7 +16,7 @@
   "status": "warn",
   "overall_status": "warn",
   "score_available": true,
-  "score_mode": "publishable",
+  "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
   "overall_score": 81,
@@ -46,7 +46,9 @@
       "finding_refs": [
         "REL-REPLAY-DRIFT"
       ],
-      "artifact_refs": ["reliability.replay.json"]
+      "artifact_refs": [
+        "reliability.replay.json"
+      ]
     }
   ],
   "usage_metrics": {
@@ -64,7 +66,8 @@
     "response_payload_est_tokens_p95": 65,
     "metadata_to_payload_ratio_pct": 60,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [
     {
@@ -73,7 +76,9 @@
       "severity": "warning",
       "title": "Replay outputs drifted across repeated runs",
       "summary": "Repeated replay sessions produced different digests for the same target behavior envelope.",
-      "evidence": {"replay_stable": false},
+      "evidence": {
+        "replay_stable": false
+      },
       "suggested_fix": "Make failure envelopes and replay outputs deterministic across repeated runs.",
       "docs_ref": "https://x07.io/docs/hardproof/findings/REL-REPLAY-DRIFT"
     }

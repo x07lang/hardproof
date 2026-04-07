@@ -87,7 +87,7 @@ def main() -> None:
         fail(f"overall_status invalid: {overall_status}")
 
     score_mode = report.get("score_mode")
-    if score_mode not in {"publishable", "partial"}:
+    if score_mode not in {"full", "partial"}:
         fail(f"score_mode invalid: {score_mode}")
 
     score_truth_status = report.get("score_truth_status")
@@ -132,7 +132,7 @@ def main() -> None:
             f"score_weight_present mismatch: got {score_weight_present}, expected {score_weight_total}"
         )
 
-    computed_mode = "publishable" if score_truth_status == "publishable" else "partial"
+    computed_mode = "full" if score_truth_status == "publishable" else "partial"
     if score_mode != computed_mode:
         fail(f"score_mode mismatch: got {score_mode}, expected {computed_mode}")
 
@@ -207,6 +207,10 @@ def main() -> None:
         fail("usage_metrics must be object")
 
     if usage.get("estimator_family") == "bytes_per_token_v1":
+        estimator_version = usage.get("estimator_version")
+        if estimator_version != "v1":
+            fail(f"usage.estimator_version mismatch: got {estimator_version}, expected v1")
+
         tool_catalog_bytes = usage.get("tool_catalog_bytes")
         tool_catalog_tokens = usage.get("tool_catalog_est_tokens_cl100k")
         tool_count = usage.get("tool_count")

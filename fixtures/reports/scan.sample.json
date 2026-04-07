@@ -28,9 +28,19 @@
     "trust": false,
     "reliability": true
   },
-  "unknown_dimensions": ["trust"],
-  "partial_reasons": ["TRUST-UNKNOWN", "WEIGHT-COVERAGE-BELOW-FULL", "UNKNOWN-DIMENSIONS"],
-  "gating_reasons": ["TRUST-UNKNOWN", "WEIGHT-COVERAGE-BELOW-FULL", "UNKNOWN-DIMENSIONS"],
+  "unknown_dimensions": [
+    "trust"
+  ],
+  "partial_reasons": [
+    "TRUST-UNKNOWN",
+    "WEIGHT-COVERAGE-BELOW-FULL",
+    "UNKNOWN-DIMENSIONS"
+  ],
+  "gating_reasons": [
+    "TRUST-UNKNOWN",
+    "WEIGHT-COVERAGE-BELOW-FULL",
+    "UNKNOWN-DIMENSIONS"
+  ],
   "dimensions": [
     {
       "name": "conformance",
@@ -93,7 +103,8 @@
     "response_payload_est_tokens_p95": 0,
     "metadata_to_payload_ratio_pct": 400,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [],
   "artifacts": [],

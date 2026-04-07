@@ -30,8 +30,12 @@ inputs:
     description: Emit a SARIF report file (default false)
     required: false
     default: "false"
+  allow-partial-score:
+    description: Allow threshold gating to pass when the scan remains partial
+    required: false
+    default: "false"
   require-trust-for-full-score:
-    description: Fail CI when the scan remains partial because trust evidence was not evaluated
+    description: Require a full score and fail when trust evidence was not evaluated
     required: false
     default: "false"
   threshold:
@@ -107,6 +111,7 @@ runs:
         HARDPROOF_ACTION_CMD: ${{ inputs.cmd }}
         HARDPROOF_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
         HARDPROOF_ACTION_SARIF: ${{ inputs.sarif }}
+        HARDPROOF_ACTION_ALLOW_PARTIAL_SCORE: ${{ inputs.allow-partial-score }}
         HARDPROOF_ACTION_THRESHOLD: ${{ inputs.threshold }}
         HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE: ${{ inputs.require-trust-for-full-score }}
       run: |
@@ -143,6 +148,9 @@ runs:
         fi
         if [[ "${{ inputs.full-suite }}" == "true" ]]; then
           args+=(--full-suite)
+        fi
+        if [[ "${{ inputs.allow-partial-score }}" == "true" ]]; then
+          args+=(--allow-partial-score)
         fi
         if [[ "${{ inputs.require-trust-for-full-score }}" == "true" ]]; then
           args+=(--require-trust-for-full-score)

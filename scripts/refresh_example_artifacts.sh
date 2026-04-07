@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "${repo_root}"
+
+check_mode=0
+bin_path=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --check)
+      check_mode=1
+      shift
+      ;;
+    --bin)
+      if [[ $# -lt 2 ]]; then
+        echo "ERROR: --bin requires a path" >&2
+        exit 2
+      fi
+      bin_path="$2"
+      shift 2
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1" >&2
+      exit 2
+      ;;
+  esac
+done
+
+mkdir -p out
+tmp_dir="$(mktemp -d "out/refresh-example-artifacts.XXXXXX")"
+trap 'rm -rf "${tmp_dir}"' EXIT
+
+if [[ -z "${bin_path}" ]]; then
+  bin_path="${tmp_dir}/hardproof"
+  x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >/dev/null
+  chmod +x "${bin_path}"
+fi
+
+server_log="${tmp_dir}/server.log"
+conformance/scripts/spawn_reference_http.sh good-http noauth >"${server_log}" 2>&1 &
+server_pid="$!"
+
+cleanup_server() {
+  kill "${server_pid}" >/dev/null 2>&1 || true
+  wait "${server_pid}" >/dev/null 2>&1 || true
+}
+trap 'cleanup_server; rm -rf "${tmp_dir}"' EXIT
+
+if ! conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null; then
+  echo "ERROR: failed to start good-http fixture" >&2
+  tail -n 200 "${server_log}" >&2 || true
+  exit 1
+fi
+
+gen_dir="${tmp_dir}/generated"
+mkdir -p "${gen_dir}"
+
+"${bin_path}" scan \
+  --url http://127.0.0.1:18080/mcp \
+  --out "${gen_dir}" \
+  --format rich >"${tmp_dir}/scan.rich.txt"
+
+"${bin_path}" report html --input "${gen_dir}/scan.json" >"${gen_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_dir}/scan.json" >"${gen_dir}/report.sarif.json"
+
+python3 - "${gen_dir}" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+gen_dir = Path(sys.argv[1])
+
+scan_generated_at = "2026-04-07T03:02:48.502480000Z"
+conformance_generated_at = "2026-04-07T03:02:48Z"
+run_id = "aafd25173b9701cb"
+target_ref = "http://127.0.0.1:18080/mcp"
+raw_dir = "out/scan/raw/20260407-030248"
+elapsed_ms = 109
+
+scan_path = gen_dir / "scan.json"
+scan = json.loads(scan_path.read_text(encoding="utf-8"))
+scan["generated_at"] = scan_generated_at
+scan["run_id"] = run_id
+scan["elapsed_ms"] = elapsed_ms
+scan["target"]["ref"] = target_ref
+scan["report_digest"] = "2219299e1f07614bcb914dee5e038ba783a69f20579a03cc5a6036a62fcde90f"
+for dim in scan.get("dimensions", []):
+    if dim.get("name") == "conformance":
+        metrics = dim.setdefault("metrics", {})
+        metrics["raw_dir"] = raw_dir
+
+summary_path = gen_dir / "conformance.summary.json"
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+summary["generated_at"] = conformance_generated_at
+summary["target"]["ref"] = target_ref
+details = summary.setdefault("details", {})
+details["raw_dir"] = raw_dir
+
+summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+
+summary_html_path = gen_dir / "conformance.summary.html"
+summary_html = summary_html_path.read_text(encoding="utf-8")
+summary_html = re.sub(
+    r"<p><b>generated_at</b>: .*?</p>",
+    f"<p><b>generated_at</b>: {conformance_generated_at}</p>",
+    summary_html,
+    count=1,
+)
+summary_html = re.sub(
+    r"<p><b>target</b>: .*?</p>",
+    f"<p><b>target</b>: {summary['target']['transport']} {target_ref}</p>",
+    summary_html,
+    count=1,
+)
+summary_html_path.write_text(summary_html, encoding="utf-8")
+
+junit_path = gen_dir / "conformance.summary.junit.xml"
+junit = junit_path.read_text(encoding="utf-8")
+junit = re.sub(
+    r'timestamp="[^"]+"',
+    f'timestamp="{conformance_generated_at}"',
+    junit,
+    count=1,
+)
+junit_path.write_text(junit, encoding="utf-8")
+
+artifacts = scan.get("artifacts", [])
+for artifact in artifacts:
+    path = artifact.get("path")
+    if path == "conformance.summary.json":
+        artifact["digest"] = "926abe066297fff838c19322b33ff08f0e74b7a5ddea83c2e696c0c19a7ff644"
+    elif path == "tools.list.json":
+        artifact["digest"] = "d7e4e6b0ddcb5546b8eb33471543cd7f2bc8efe85ebf7e62b86507f8c0e886ed"
+
+scan_path.write_text(json.dumps(scan, indent=2) + "\n", encoding="utf-8")
+
+events_path = gen_dir / "scan.events.jsonl"
+event_lines = []
+for raw_line in events_path.read_text(encoding="utf-8").splitlines():
+    if not raw_line.strip():
+        continue
+    event = json.loads(raw_line)
+    event["run_id"] = run_id
+    if event.get("type") == "scan.finished":
+        event["report_path"] = "out/scan/scan.json"
+    event_lines.append(json.dumps(event, separators=(",", ":")))
+events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
+PY
+
+"${bin_path}" report html --input "${gen_dir}/scan.json" >"${gen_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_dir}/scan.json" >"${gen_dir}/report.sarif.json"
+"${bin_path}" report summary --input "${gen_dir}/scan.json" --ui rich >"${tmp_dir}/scan.summary.txt"
+python3 - "${tmp_dir}/scan.summary.txt" "${gen_dir}" <<'PY'
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+gen_dir = Path(sys.argv[2])
+text = summary_path.read_text(encoding="utf-8")
+text = text.replace(f"report: {gen_dir}/scan.json", "report: out/scan/scan.json")
+summary_path.write_text(text, encoding="utf-8")
+PY
+python3 scripts/ci/render_terminal_svg.py "${tmp_dir}/scan.summary.txt" "${gen_dir}/terminal.svg"
+
+example_dir="docs/examples/hardproof-scan"
+files=(
+  "scan.json"
+  "scan.events.jsonl"
+  "conformance.summary.json"
+  "conformance.summary.html"
+  "conformance.summary.junit.xml"
+  "conformance.summary.sarif.json"
+  "report.html"
+  "report.sarif.json"
+  "terminal.svg"
+)
+
+if [[ "${check_mode}" == "1" ]]; then
+  for file in "${files[@]}"; do
+    if ! cmp -s "${gen_dir}/${file}" "${example_dir}/${file}"; then
+      echo "ERROR: stale example artifact: ${file}" >&2
+      diff -u "${example_dir}/${file}" "${gen_dir}/${file}" >&2 || true
+      exit 1
+    fi
+  done
+  echo "ok: example artifacts are up to date"
+else
+  for file in "${files[@]}"; do
+    cp "${gen_dir}/${file}" "${example_dir}/${file}"
+  done
+  echo "refreshed example artifacts in ${example_dir}"
+fi

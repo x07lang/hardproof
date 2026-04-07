@@ -192,6 +192,7 @@
         "response_payload_est_tokens_p95",
         "metadata_to_payload_ratio_pct",
         "estimator_family",
+        "estimator_version",
         "estimator_confidence"
       ],
       "properties": {
@@ -209,6 +210,7 @@
         "response_payload_est_tokens_p95": { "type": "integer", "minimum": 0 },
         "metadata_to_payload_ratio_pct": { "type": "integer", "minimum": 0 },
         "estimator_family": { "type": "string", "minLength": 1 },
+        "estimator_version": { "type": "string", "minLength": 1 },
         "estimator_confidence": { "type": "string", "enum": ["low", "medium", "high"] }
       }
     }

@@ -16,7 +16,7 @@
   "status": "warn",
   "overall_status": "warn",
   "score_available": true,
-  "score_mode": "publishable",
+  "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
   "overall_score": 84,
@@ -30,8 +30,56 @@
   },
   "unknown_dimensions": [],
   "partial_reasons": [],
-  "gating_reasons": ["USAGE-BUDGET-EXCEEDED"],
-  "dimensions": [],
+  "gating_reasons": [
+    "USAGE-BUDGET-EXCEEDED"
+  ],
+  "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 84,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "security",
+      "status": "pass",
+      "score": 84,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "performance",
+      "status": "pass",
+      "score": 84,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "trust",
+      "status": "pass",
+      "score": 84,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "reliability",
+      "status": "pass",
+      "score": 84,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    }
+  ],
   "usage_metrics": {
     "tool_catalog_bytes": 12000,
     "tool_catalog_est_tokens_cl100k": 3000,
@@ -47,7 +95,8 @@
     "response_payload_est_tokens_p95": 2100,
     "metadata_to_payload_ratio_pct": 700,
     "estimator_family": "bytes_per_token_v1",
-    "estimator_confidence": "low"
+    "estimator_confidence": "low",
+    "estimator_version": "v1"
   },
   "findings": [
     {
@@ -56,7 +105,9 @@
       "severity": "warning",
       "title": "Tool catalog too large",
       "summary": "tools/list consumes excessive context relative to the tool count.",
-      "evidence": {"estimated_tokens": 3000},
+      "evidence": {
+        "estimated_tokens": 3000
+      },
       "suggested_fix": "Reduce tool count and shorten descriptions/examples to lower catalog footprint.",
       "docs_ref": "https://x07.io/docs/hardproof/findings/USAGE-CATALOG-OVERSIZE"
     }
