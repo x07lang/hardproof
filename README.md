@@ -2,195 +2,199 @@
 
 Deterministic verification for MCP servers.
 
-Hardproof is a standalone verifier for MCP servers. It runs deterministic checks for conformance, replay, trust, and release-grade evidence. Hardproof is built with x07, but you do not need to adopt x07 to use it.
+Hardproof is a standalone verifier for MCP servers. It scans running servers and release artifacts, produces machine-readable evidence, and gives you a clear path for local triage, CI gating, and release review. It is built with X07, but you do not need X07 to use it.
 
-## Who it's for
+**Start here:** [Install](#install) · [Scan docs](docs/scan.md) · [Doctor docs](docs/doctor.md) · [Example report](docs/examples/hardproof-scan/README.md) · [GitHub Action](action/README.md)
 
-- MCP server developers (any language) who want CI-grade verification evidence.
-- Maintainers who want deterministic repro (replay) and reviewable metadata checks (trust/bundle).
+## What Hardproof Checks
 
-## Fastest first success
+Hardproof evaluates five deterministic dimensions plus a usage overlay:
 
-1) Install `hardproof`.
+- conformance
+- security
+- performance
+- reliability
+- trust
+- usage metrics
 
-2) Run diagnostics:
+A normal scan writes `scan.json`, `scan.events.jsonl`, and optional rendered reports such as HTML and SARIF.
 
-```sh
+## Score Semantics
+
+Hardproof distinguishes between a publishable full score and a partial score.
+
+- **Publishable scan:** `overall_score` is populated and `score_truth_status` is `publishable`.
+- **Partial scan:** `overall_score` stays `null`, `partial_score` is populated, and `score_truth_status` explains why the result is still useful but not publishable yet.
+
+If you want trust-aware publishable scoring, provide `--server-json` and, when available, `--mcpb`. You can also fail CI when trust inputs are missing by adding `--require-trust-for-full-score`.
+
+## Install
+
+Release artifacts are published from tags such as `v0.4.0-beta.0`.
+
+### Install script
+
+Each beta release publishes an installer script that downloads the correct archive, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
+
+```bash
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.0"
+```
+
+To resolve the latest beta tag automatically:
+
+```bash
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
+  | bash -s -- --tag latest-beta
+```
+
+Windows is supported through WSL2. Use the `linux_x86_64` release artifact inside WSL.
+
+### Manual install
+
+1. Download `hardproof_<VERSION>_<linux_x86_64|macos_arm64|macos_x86_64>.tar.gz` and `checksums.txt` from GitHub Releases.
+2. Verify the SHA-256 digest.
+3. Extract the archive and place `hardproof` on your `PATH`.
+
+## Fastest First Success
+
+Run diagnostics first:
+
+```bash
 hardproof doctor
 hardproof doctor --machine json
 ```
 
-3) Run a scan (five deterministic dimensions + usage overlay):
+Then scan an MCP endpoint:
 
-```sh
+```bash
 hardproof scan \
   --url "http://127.0.0.1:3000/mcp" \
   --out out/scan \
   --format rich
 ```
 
-## Usage
+Review the result:
 
-- `hardproof --help`
-- `hardproof scan --url "<http url>" --out out/scan --format rich|compact|json|jsonl`
-- `hardproof scan --url "<http url>" --out out/scan --format jsonl --score-preview`
-- `hardproof scan --url "<http url>" --out out/scan --format jsonl --metrics usage,perf`
-- `hardproof scan --url "<http url>" --out out/scan --require-trust-for-full-score`
-- `hardproof scan --url "<http url>" --server-json "<path>" --mcpb "<path>" --out out/scan`
-- `hardproof scan --cmd "<stdio cmd>" --cwd "<dir>" --env-file "<file>" --out out/scan`
-- `hardproof scan --url "<http url>" --full-suite --baseline conformance/pinned/conformance-baseline.yml`
-- `hardproof ci --url "<http url>" --threshold 80`
-- `hardproof ci --url "<http url>" --min-score 80 --min-dimension conformance=85 --max-critical 0`
-- `hardproof ci --url "<http url>" --min-score 80 --require-trust-for-full-score`
-- `hardproof ci --url "<http url>" --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500`
-- `hardproof ci --url "<http url>" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000`
-- `hardproof explain <FINDING_CODE>`
-- `hardproof explain CONFORMANCE.FAIL`
-- `hardproof explain CONFORMANCE.<check-id>`
-- `hardproof report summary --input out/scan/scan.json --ui rich|compact`
-- `hardproof report html --input out/scan/scan.json > out/scan/report.html`
-- `hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json`
-- `hardproof doctor`
-- `hardproof doctor --machine json --cmd "<stdio cmd>" --url "<http url>"`
-- `hardproof conformance run --url "<http url>"`
-- `hardproof replay record --url "<http url>" --out out/replay.session.json --scenario smoke/basic`
-- `hardproof replay record --cmd "<stdio cmd>" --out out/replay.session.json`
-- `hardproof replay verify --session out/replay.session.json --url "<http url>" --out out/replay-verify`
-- `hardproof replay verify --session out/replay.session.json --cmd "<stdio cmd>" --out out/replay-verify`
-- `hardproof trust verify --server-json "<path>"`
-- `hardproof bundle verify --server-json "<path>" --mcpb "<path>"`
-- `hardproof corpus run --manifest corpus/manifests/quality-report-001.json --out out/corpus/quality-report-001`
-- `hardproof corpus render --input out/corpus/quality-report-001/index.json --out out/corpus/quality-report-001`
-
-See `docs/doctor.md`.
-See `docs/scan.md`.
-See `docs/targets.md`.
-See `corpus/README.md`.
-
-Hardproof now makes score truth explicit. Publishable scans set `overall_score`; partial scans keep `overall_score=null`, set `partial_score`, and expose `score_truth_status`, `dimension_coverage`, `unknown_dimensions`, `partial_reasons`, and `gating_reasons`.
-
-For `--score-preview`, JSONL preview events remain provisional until a full score is publishable. Partial runs keep `overall_score=null`, emit `partial_score`, and continue to expose `score_available=true` with the accumulated scored weight.
-
-## Install (beta)
-
-Release artifacts are built via GitHub Actions on tags like `v0.4.*-beta.*`.
-
-On Windows, run inside WSL2 and use the `linux_x86_64` artifact.
-
-### Install script
-
-Each beta release publishes an installer script (`install.sh`) that downloads the right archive for your OS/arch, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
-
-```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
-  | bash -s -- --tag "v0.4.0-beta.0"
+```bash
+hardproof report summary --input out/scan/scan.json --ui rich
 ```
 
-You can also resolve the latest beta tag (requires GitHub API access):
+## Common Workflows
 
-```sh
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.0/install.sh" \
-  | bash -s -- --tag latest-beta
+### Local triage
+
+```bash
+hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --format rich
+hardproof report html --input out/scan/scan.json > out/scan/report.html
+hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
 ```
 
-### Manual install
+### CI gating
 
-1) Download `hardproof_<VERSION>_<linux_x86_64|macos_arm64|macos_x86_64>.tar.gz` and `checksums.txt` from GitHub Releases.
-   (`VERSION` is the tag without the `v` prefix, like `0.4.0-beta.0`.)
+```bash
+hardproof ci \
+  --url "http://127.0.0.1:3000/mcp" \
+  --min-score 80 \
+  --min-dimension conformance=85 \
+  --max-critical 0 \
+  --require-trust-for-full-score
+```
 
-2) Verify `sha256`, extract, and place `hardproof` on your `PATH`.
+Usage-budget gates are available too:
 
-## Development
+```bash
+hardproof ci \
+  --url "http://127.0.0.1:3000/mcp" \
+  --max-avg-tool-description-tokens 500 \
+  --max-tool-count 50 \
+  --max-metadata-to-payload-ratio-pct 500
+```
 
-Running `./scripts/ci/check_all.sh` locally requires the pinned x07 toolchain plus formal verification tools for `x07 verify --prove` / `x07 trust certify`:
+### Explain findings and render reports
 
-- macOS: `brew install cbmc z3`
-- Linux (CI-style pinned install): `./scripts/ci/install_formal_verification_tools_linux.sh` (requires `curl`, `unzip`, and `sudo`)
+```bash
+hardproof explain <FINDING_CODE>
+hardproof report summary --input out/scan/scan.json --ui compact
+hardproof report html --input out/scan/scan.json > out/scan/report.html
+hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
+```
 
-## Schemas
+### Replay, trust, and bundle verification
 
-Report schemas and shared envelope fields are versioned and pinned for consumers:
+```bash
+hardproof replay record --url "http://127.0.0.1:3000/mcp" --out out/replay.session.json --scenario smoke/basic
+hardproof replay verify --session out/replay.session.json --url "http://127.0.0.1:3000/mcp" --out out/replay-verify
+hardproof trust verify --server-json server.json
+hardproof bundle verify --server-json server.json --mcpb server.mcpb
+```
 
-- `x07.mcp.scan.report@0.4.0` (`schemas/x07.mcp.scan.report.schema.json`)
-- `x07.mcp.scan.dimension@0.3.0` (`schemas/x07.mcp.scan.dimension.schema.json`)
-- `x07.mcp.scan.finding@0.3.0` (`schemas/x07.mcp.scan.finding.schema.json`)
-- `x07.mcp.scan.metrics@0.3.0` (`schemas/x07.mcp.scan.metrics.schema.json`)
-- `x07.mcp.scan.usage@0.4.0` (`schemas/x07.mcp.scan.usage.schema.json`)
-- `x07.mcp.conformance.summary@0.2.0` (`schemas/x07.mcp.conformance.summary.schema.json`)
-- `x07.mcp.replay.session@0.2.0` (`schemas/x07.mcp.replay.session.schema.json`)
-- `x07.mcp.replay.verify@0.2.0` (`schemas/x07.mcp.replay.verify.schema.json`)
-- `x07.mcp.trust.summary@0.2.0` (`schemas/x07.mcp.trust.summary.schema.json`)
-- `x07.mcp.bundle.verify@0.2.0` (`schemas/x07.mcp.bundle.verify.schema.json`)
-- `x07.mcp.report.manifest@0.1.0` (`schemas/x07.mcp.report.manifest.schema.json`)
-- `x07.mcp.corpus.result@0.1.0` (`schemas/x07.mcp.corpus.result.schema.json`)
-- `x07.mcp.corpus.summary@0.1.0` (`schemas/x07.mcp.corpus.summary.schema.json`)
-- `x07.mcp.sarif@0.1.0` (`schemas/x07.mcp.sarif.schema.json`)
-
-Sample fixtures live under `fixtures/reports/` and validate in CI.
-
-See `docs/schema-versioning.md`.
-
-## Notes
-
-- Conformance runs in the `hardproof` binary (no Node.js toolchain required). HTTP and stdio emit the same `checks.json` shape/IDs so reports stay comparable across transports.
-- For now, `replay record` records the `smoke/basic` HTTP scenario and stores the cassette at `details.http_session` (schema `x07.mcp.rr.http_session@0.1.0`). See `rr/README.md`.
-- Trust and bundle verification operate on registry artifacts (`server.json` and `.mcpb`) rather than a running HTTP server. See `trust/README.md`.
-- Output paths may be relative (for example `out/...`) or absolute.
-
-## Scan outputs
-
-`hardproof scan --out <DIR>` writes:
-
-- `scan.json` (schema: `x07.mcp.scan.report@0.4.0`)
-- `scan.events.jsonl` (JSONL event stream)
-- `conformance.summary.json` + `conformance.summary.junit.xml` + `conformance.summary.html` + `conformance.summary.sarif.json` (when the conformance dimension runs)
-- other dimension-specific artifacts as they are added (pinned by `scan.json.artifacts[]`)
-
-Exit codes:
-- `0` overall scan status is `pass` or `warn`
-- `1` overall scan status is `fail`
-- `2` invocation/config/runtime precondition failure
-
-## CI / GitHub Action contract
-
-The Action downloads a `hardproof` release binary and runs `hardproof scan` (HTTP or stdio):
+### GitHub Action
 
 ```yaml
 - name: Run Hardproof scan
   uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
   with:
     url: http://127.0.0.1:3000/mcp
-    full-suite: "false"
 ```
 
-See `action/README.md`.
-See `hardproof-scan/README.md`.
+## Outputs
 
-## Fixture targets
+`hardproof scan --out <DIR>` writes:
 
-Local fixture servers live under `scripts/ci/fixtures/` and are wired via:
-- `conformance/fixtures/targets.json`
-- `conformance/scripts/spawn_reference_http.sh`
-- `conformance/scripts/wait_for_http.sh`
+- `scan.json` with schema `x07.mcp.scan.report@0.4.0`
+- `scan.events.jsonl` with the structured event stream
+- conformance artifacts when the conformance dimension runs
+- additional dimension-specific artifacts referenced from `scan.json.artifacts[]`
 
-Ports/URLs:
-- `good-http`: `http://127.0.0.1:18080/mcp`
-- `auth-http`: `http://127.0.0.1:18081/mcp`
-- `broken-http`: `http://127.0.0.1:18082/mcp`
+Exit codes:
 
-Start a fixture server:
-- `conformance/scripts/spawn_reference_http.sh good-http noauth`
-- `conformance/scripts/spawn_reference_stdio.sh good-stdio`
+- `0`: overall scan status is `pass` or `warn`
+- `1`: overall scan status is `fail`
+- `2`: invocation, configuration, or runtime precondition failure
 
-Stdio fixtures:
-- `good-stdio`: `conformance/scripts/spawn_reference_stdio.sh good-stdio`
-- `broken-stdio`: `conformance/scripts/spawn_reference_stdio.sh broken-stdio`
+## Schemas
 
-## Known limitations (beta)
+The report contract is versioned and pinned for consumers. The main schema line is:
 
-- Windows support is via WSL2 (run inside a Linux distro and use `linux_x86_64`).
-- Some stdio target flows are still being stabilized; use the stdio fixtures as the reference shape.
+- `x07.mcp.scan.report@0.4.0`
+
+Related stable schemas include:
+
+- `x07.mcp.scan.dimension@0.3.0`
+- `x07.mcp.scan.finding@0.3.0`
+- `x07.mcp.scan.metrics@0.3.0`
+- `x07.mcp.scan.usage@0.4.0`
+- `x07.mcp.conformance.summary@0.2.0`
+- `x07.mcp.replay.session@0.2.0`
+- `x07.mcp.replay.verify@0.2.0`
+- `x07.mcp.trust.summary@0.2.0`
+- `x07.mcp.bundle.verify@0.2.0`
+- `x07.mcp.sarif@0.1.0`
+
+See [`docs/schema-versioning.md`](docs/schema-versioning.md) for the full list and versioning policy.
+
+## Docs And Examples
+
+- [`docs/doctor.md`](docs/doctor.md) for environment checks and target diagnosis
+- [`docs/scan.md`](docs/scan.md) for scan behavior and report structure
+- [`docs/targets.md`](docs/targets.md) for HTTP and stdio target configuration
+- [`docs/examples/hardproof-scan/README.md`](docs/examples/hardproof-scan/README.md) for a concrete report example
+- [`action/README.md`](action/README.md) and [`hardproof-scan/README.md`](hardproof-scan/README.md) for GitHub Action usage
+- `corpus/README.md` for corpus-driven report generation
+
+## Development
+
+Local `./scripts/ci/check_all.sh` requires the pinned X07 toolchain plus formal verification tools for the proof and certification lanes:
+
+- macOS: `brew install cbmc z3`
+- Linux: `./scripts/ci/install_formal_verification_tools_linux.sh`
+
+## Known Limitations
+
+- Windows support is through WSL2.
+- Some stdio target flows are still being stabilized; use the checked-in stdio fixtures as the reference shape.
 
 ## Feedback
 
-File issues in `x07lang/hardproof` using the issue templates (Alpha feedback / Bug report).
+File issues in `x07lang/hardproof` using the repo issue templates.
