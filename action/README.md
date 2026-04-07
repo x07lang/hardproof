@@ -29,7 +29,7 @@ jobs:
 
       - name: Run Hardproof scan
         id: mcp
-        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
+        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.1
         with:
           url: http://127.0.0.1:3000/mcp
           threshold: "85"
@@ -51,7 +51,7 @@ jobs:
 ```yaml
 - name: Run Hardproof scan (stdio)
   id: mcp
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.0
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.1
   with:
     cmd: ./server --stdio
     cwd: servers/my-mcp

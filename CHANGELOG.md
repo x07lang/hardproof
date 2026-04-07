@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+## v0.4.0-beta.1
+
+- Complete the remaining M2.5b.1 beta gaps: spec-aligned trust reason codes, scan-side usage threshold flags, and branded report boundary types.
+- Deepen the scan coverage with score-truth regressions, security subfamily fixtures, usage duplication findings, and p99 performance metrics.
 - Tighten score semantics so full scores require Trust plus at least 85% weighted coverage, while partial scores render as withheld in rich output.
 - Make `hardproof ci` fail on partial scores by default and add `--allow-partial-score` for explicit opt-in.
 - Add example-artifact maintenance checks and a reproducible `make refresh-example-artifacts` path for the public docs bundle.
+- Refresh release-facing docs, examples, fixtures, and embedded tool-version strings for `0.4.0-beta.1`.
 
 ## v0.4.0-beta.0
 

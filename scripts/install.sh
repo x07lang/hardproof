@@ -14,7 +14,7 @@ Usage:
   install.sh --tag latest-alpha
 
 Options:
-  --tag <TAG>         Git tag to install from (example: v0.4.0-beta.0, latest-beta, v0.1.0-alpha.9, latest-alpha)
+  --tag <TAG>         Git tag to install from (example: v0.4.0-beta.1, latest-beta, v0.1.0-alpha.9, latest-alpha)
   --install-dir <DIR> Install directory (default: ~/.local/bin)
 
 Notes:

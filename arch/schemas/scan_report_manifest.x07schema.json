@@ -2,7 +2,7 @@
   "schema_version": "x07schema.specrows@0.1.0",
   "package": {
     "name": "hardproof",
-    "version": "0.4.0-beta.0"
+    "version": "0.4.0-beta.1"
   },
   "defaults": {
     "max_doc_bytes": 16384,
@@ -363,7 +363,7 @@
             "schema_version": "x07.mcp.scan.report.manifest@0.1.0",
             "tool": "hardproof",
             "tool_family": "hardproof",
-            "tool_version": "0.4.0-beta.0",
+            "tool_version": "0.4.0-beta.1",
             "report_kind": "scan",
             "transport": "streamable_http",
             "generated_at": "2026-04-04T00:00:00Z",
