@@ -69,6 +69,7 @@ mkdir -p "${gen_partial_dir}"
 "${bin_path}" report sarif --input "${gen_partial_dir}/scan.json" >"${gen_partial_dir}/report.sarif.json"
 
 python3 - "${gen_partial_dir}" <<'PY'
+import hashlib
 import json
 import re
 import sys
@@ -94,6 +95,10 @@ for dim in scan.get("dimensions", []):
     if dim.get("name") == "conformance":
         metrics = dim.setdefault("metrics", {})
         metrics["raw_dir"] = raw_dir
+    elif dim.get("name") == "performance":
+        metrics = dim.setdefault("metrics", {})
+        metrics["ping_p95_ms"] = 1
+        metrics["ping_p99_ms"] = 1
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -130,11 +135,26 @@ junit = re.sub(
 )
 junit_path.write_text(junit, encoding="utf-8")
 
+perf_digest = None
+perf_path = gen_dir / "perf.samples.json"
+if perf_path.is_file():
+    perf_samples = json.loads(perf_path.read_text(encoding="utf-8"))
+    if isinstance(perf_samples, dict):
+        ping_ms = perf_samples.get("ping_ms")
+        if isinstance(ping_ms, list) and ping_ms:
+            perf_samples["ping_ms"] = [1 for _ in ping_ms]
+        if "ping_p99_ms" in perf_samples:
+            perf_samples["ping_p99_ms"] = 1
+        perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")
+        perf_digest = hashlib.sha256(perf_path.read_bytes()).hexdigest()
+
 artifacts = scan.get("artifacts", [])
 for artifact in artifacts:
     path = artifact.get("path")
     if path == "conformance.summary.json":
         artifact["digest"] = "926abe066297fff838c19322b33ff08f0e74b7a5ddea83c2e696c0c19a7ff644"
+    elif path == "perf.samples.json" and perf_digest is not None:
+        artifact["digest"] = perf_digest
     elif path == "tools.list.json":
         artifact["digest"] = "d7e4e6b0ddcb5546b8eb33471543cd7f2bc8efe85ebf7e62b86507f8c0e886ed"
 
@@ -182,6 +202,7 @@ mkdir -p "${gen_full_dir}"
 "${bin_path}" report sarif --input "${gen_full_dir}/scan.json" >"${gen_full_dir}/report.sarif.json"
 
 python3 - "${gen_full_dir}" <<'PY'
+import hashlib
 import json
 import re
 import sys
@@ -207,6 +228,10 @@ for dim in scan.get("dimensions", []):
     if dim.get("name") == "conformance":
         metrics = dim.setdefault("metrics", {})
         metrics["raw_dir"] = raw_dir
+    elif dim.get("name") == "performance":
+        metrics = dim.setdefault("metrics", {})
+        metrics["ping_p95_ms"] = 1
+        metrics["ping_p99_ms"] = 1
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -243,11 +268,26 @@ junit = re.sub(
 )
 junit_path.write_text(junit, encoding="utf-8")
 
+perf_digest = None
+perf_path = gen_dir / "perf.samples.json"
+if perf_path.is_file():
+    perf_samples = json.loads(perf_path.read_text(encoding="utf-8"))
+    if isinstance(perf_samples, dict):
+        ping_ms = perf_samples.get("ping_ms")
+        if isinstance(ping_ms, list) and ping_ms:
+            perf_samples["ping_ms"] = [1 for _ in ping_ms]
+        if "ping_p99_ms" in perf_samples:
+            perf_samples["ping_p99_ms"] = 1
+        perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")
+        perf_digest = hashlib.sha256(perf_path.read_bytes()).hexdigest()
+
 artifacts = scan.get("artifacts", [])
 for artifact in artifacts:
     path = artifact.get("path")
     if path == "conformance.summary.json":
         artifact["digest"] = "926abe066297fff838c19322b33ff08f0e74b7a5ddea83c2e696c0c19a7ff644"
+    elif path == "perf.samples.json" and perf_digest is not None:
+        artifact["digest"] = perf_digest
     elif path == "tools.list.json":
         artifact["digest"] = "d7e4e6b0ddcb5546b8eb33471543cd7f2bc8efe85ebf7e62b86507f8c0e886ed"
 
