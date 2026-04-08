@@ -8,7 +8,7 @@ usage() {
 Install the Hardproof verifier binary from GitHub Releases.
 
 Usage:
-  install.sh --tag <v0.3.0-beta.N>
+  install.sh --tag <v0.X.Y-beta.N>
   install.sh --tag latest-beta
   install.sh --tag <v0.1.0-alpha.N>
   install.sh --tag latest-alpha
@@ -74,7 +74,7 @@ import json, re, sys
 data = json.loads(sys.argv[1])
 for r in data:
   t = r.get("tag_name","")
-  if re.match(r"^v0\.3\.\d+-beta\.\d+$", t):
+  if re.match(r"^v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$", t):
     print(t)
     sys.exit(0)
 print("", end="")
@@ -82,7 +82,7 @@ sys.exit(0)
 PY
   )"
   if [[ -z "${tag}" ]]; then
-    echo "ERROR: failed to resolve latest beta tag; pass --tag v0.2.0-beta.N explicitly." >&2
+    echo "ERROR: failed to resolve latest beta tag; pass --tag vX.Y.Z-beta.N explicitly." >&2
     exit 1
   fi
 elif [[ "${tag}" == "latest-alpha" || "${tag}" == "latest-alpha"* ]]; then

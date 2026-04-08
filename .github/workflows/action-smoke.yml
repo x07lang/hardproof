@@ -26,7 +26,7 @@ jobs:
           echo "$!" > out/action-smoke.server.pid
           conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null
 
-      - name: Resolve latest beta release (v0.3.*)
+      - name: Resolve latest beta release (v0.*)
         id: beta
         shell: bash
         env:
@@ -50,7 +50,7 @@ jobs:
           data = json.loads(sys.argv[1])
           for r in data:
             t = (r.get("tag_name") or "").strip()
-            if re.match(r"^v0\\.3\\.\\d+-beta\\.\\d+$", t):
+            if re.match(r"^v[0-9]+\\.[0-9]+\\.[0-9]+-beta\\.[0-9]+$", t):
               print(t)
               raise SystemExit(0)
           print("")
@@ -60,7 +60,7 @@ jobs:
           if [[ -z "${beta_tag}" ]]; then
             echo "found=false" >>"${GITHUB_OUTPUT}"
             echo "beta_tag=" >>"${GITHUB_OUTPUT}"
-            echo "WARN: no v0.3.* beta release found; skipping action smoke." >&2
+            echo "WARN: no v0.* beta release found; skipping action smoke." >&2
             exit 0
           fi
 
