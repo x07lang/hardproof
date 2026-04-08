@@ -518,6 +518,9 @@ run_cli_regression_smoke
 echo "==> schema fixtures"
 "${bin_path}" ci validate-fixtures
 
+echo "==> scan report fixtures"
+python3 scripts/ci/check_scan_report_fixtures.py >/dev/null
+
 echo "==> example artifacts"
 ./scripts/refresh_example_artifacts.sh --check --bin "${bin_path}" >/dev/null
 python3 scripts/ci/check_example_artifacts.py "${bin_path}"

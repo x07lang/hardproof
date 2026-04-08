@@ -19,8 +19,8 @@
   "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
-  "overall_score": 78,
-  "partial_score": 78,
+  "overall_score": 90,
+  "partial_score": 90,
   "dimension_coverage": {
     "conformance": true,
     "security": true,
@@ -32,6 +32,24 @@
   "partial_reasons": [],
   "gating_reasons": [],
   "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "security",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
     {
       "name": "performance",
       "status": "warn",
@@ -55,6 +73,24 @@
       "artifact_refs": [
         "perf.samples.json"
       ]
+    },
+    {
+      "name": "trust",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "reliability",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
     }
   ],
   "usage_metrics": {
@@ -75,7 +111,28 @@
     "estimator_confidence": "low",
     "estimator_version": "v1"
   },
-  "findings": [],
+  "findings": [
+    {
+      "code": "PERF-HIGH-LATENCY",
+      "dimension": "performance",
+      "severity": "warning",
+      "title": "High latency",
+      "summary": "Ping latency is high (p95 > 1000ms).",
+      "evidence": {},
+      "suggested_fix": "Optimize server request handling and reduce cold-start overhead.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-HIGH-LATENCY"
+    },
+    {
+      "code": "PERF-CONCURRENT-TOOLS-CALL-LOW",
+      "dimension": "performance",
+      "severity": "warning",
+      "title": "Low concurrent tool-call success",
+      "summary": "Concurrent tools/call requests did not succeed reliably.",
+      "evidence": {},
+      "suggested_fix": "Audit concurrency limits and ensure the server is safe under bounded parallel calls.",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-CONCURRENT-TOOLS-CALL-LOW"
+    }
+  ],
   "artifacts": [
     {
       "id": "perf.samples.json",

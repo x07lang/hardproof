@@ -19,8 +19,8 @@
   "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
-  "overall_score": 74,
-  "partial_score": 74,
+  "overall_score": 88,
+  "partial_score": 88,
   "dimension_coverage": {
     "conformance": true,
     "security": true,
@@ -34,6 +34,15 @@
     "CRITICAL-SECURITY-FINDINGS"
   ],
   "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
     {
       "name": "security",
       "status": "fail",
@@ -74,6 +83,33 @@
       "finding_refs": [
         "SEC-TOOLS-LIST-DRIFT"
       ],
+      "artifact_refs": []
+    },
+    {
+      "name": "performance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "trust",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "reliability",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
       "artifact_refs": []
     }
   ],

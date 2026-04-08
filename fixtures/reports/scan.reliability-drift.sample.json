@@ -19,8 +19,8 @@
   "score_mode": "full",
   "score_truth_status": "publishable",
   "score_weight_present": 100,
-  "overall_score": 81,
-  "partial_score": 81,
+  "overall_score": 91,
+  "partial_score": 91,
   "dimension_coverage": {
     "conformance": true,
     "security": true,
@@ -32,6 +32,42 @@
   "partial_reasons": [],
   "gating_reasons": [],
   "dimensions": [
+    {
+      "name": "conformance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.3,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "security",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "performance",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.15,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
+    {
+      "name": "trust",
+      "status": "pass",
+      "score": 96,
+      "weight": 0.2,
+      "metrics": {},
+      "finding_refs": [],
+      "artifact_refs": []
+    },
     {
       "name": "reliability",
       "status": "warn",
