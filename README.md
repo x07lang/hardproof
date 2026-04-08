@@ -179,6 +179,7 @@ See [`docs/schema-versioning.md`](docs/schema-versioning.md) for the full list a
 - [`docs/scan.md`](docs/scan.md) for scan behavior and report structure
 - [`docs/targets.md`](docs/targets.md) for HTTP and stdio target configuration
 - [`docs/examples/hardproof-scan/README.md`](docs/examples/hardproof-scan/README.md) for a concrete report example
+- [`fixtures/reports/README.md`](fixtures/reports/README.md) for the JSON fixture corpus (full report samples vs schema-scoped samples)
 - [`action/README.md`](action/README.md) and [`hardproof-scan/README.md`](hardproof-scan/README.md) for GitHub Action usage
 - `corpus/README.md` for corpus-driven report generation
 

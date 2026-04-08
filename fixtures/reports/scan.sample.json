@@ -20,7 +20,7 @@
   "score_truth_status": "partial",
   "score_weight_present": 80,
   "overall_score": null,
-  "partial_score": 89,
+  "partial_score": 90,
   "dimension_coverage": {
     "conformance": true,
     "security": true,
