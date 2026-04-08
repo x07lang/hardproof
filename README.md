@@ -4,7 +4,7 @@ Deterministic verification for MCP servers.
 
 Hardproof is a standalone verifier for MCP servers. It scans running servers and release artifacts, produces machine-readable evidence, and gives you a clear path for local triage, CI gating, and release review. It is built with X07, but you do not need X07 to use it.
 
-**Start here:** [Install](#install) · [Scan docs](docs/scan.md) · [Doctor docs](docs/doctor.md) · [Example report](docs/examples/hardproof-scan/README.md) · [GitHub Action](action/README.md)
+**Start here:** [Install](#install) · [Scan docs](docs/scan.md) · [Doctor docs](docs/doctor.md) · [Example report (partial)](docs/examples/hardproof-scan/README.md) · [Example report (full)](docs/examples/hardproof-scan-full/README.md) · [GitHub Action](action/README.md)
 
 ## What Hardproof Checks
 

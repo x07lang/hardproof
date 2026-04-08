@@ -1,0 +1,266 @@
+{
+  "artifacts": [
+    {
+      "content_type": "application/json; charset=utf-8",
+      "digest": "926abe066297fff838c19322b33ff08f0e74b7a5ddea83c2e696c0c19a7ff644",
+      "id": "conformance.summary.json",
+      "kind": "conformance_artifact",
+      "path": "conformance.summary.json"
+    },
+    {
+      "content_type": "application/json",
+      "digest": "fc410da1666e8da646b50bd3cd257854d7023bd80c1c0fa91d36378f5f6ce3ff",
+      "id": "perf.samples.json",
+      "kind": "report",
+      "path": "perf.samples.json"
+    },
+    {
+      "content_type": "application/json",
+      "digest": "0a80c4b2005cd72e1b3144bd7aed29cc7bd09213f18441274bf30b1f082af2a8",
+      "id": "reliability.cases.json",
+      "kind": "report",
+      "path": "reliability.cases.json"
+    },
+    {
+      "content_type": "application/json",
+      "digest": "e040e3266e87027c0bff195c21a816d82ca81a9eb5108fb8777221940830b15d",
+      "id": "reliability.replay.json",
+      "kind": "report",
+      "path": "reliability.replay.json"
+    },
+    {
+      "content_type": "application/json; charset=utf-8",
+      "digest": "d7e4e6b0ddcb5546b8eb33471543cd7f2bc8efe85ebf7e62b86507f8c0e886ed",
+      "id": "usage.tools.list.json",
+      "kind": "usage_artifact",
+      "path": "tools.list.json"
+    }
+  ],
+  "dimension_coverage": {
+    "conformance": true,
+    "performance": true,
+    "reliability": true,
+    "security": true,
+    "trust": true
+  },
+  "dimensions": [
+    {
+      "artifact_refs": [
+        "conformance.summary.json"
+      ],
+      "finding_refs": [],
+      "metrics": {
+        "failed": 0,
+        "full_suite": false,
+        "passed": 9,
+        "raw_dir": "out/scan/raw/20260407-030312",
+        "total": 9,
+        "warnings": 0
+      },
+      "name": "conformance",
+      "score": 100,
+      "status": "pass",
+      "weight": 0.3
+    },
+    {
+      "artifact_refs": [],
+      "finding_refs": [],
+      "metrics": {
+        "auth_challenge_status_code": 0,
+        "auth_expectation_mismatch": false,
+        "auth_protection_status": "missing",
+        "command_risk_pattern_count": 0,
+        "descriptor_bytes": 141,
+        "families": {
+          "auth_exposure": {
+            "auth_protection_status": "missing",
+            "status": "local_only"
+          },
+          "command_surface": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "descriptor_drift": {
+            "drift_kind": "none",
+            "status": "stable"
+          },
+          "injection_pattern": {
+            "pattern_count": 0,
+            "status": "clear"
+          },
+          "transport_exposure": {
+            "status": "local_only"
+          }
+        },
+        "host_origin_guard_ok": true,
+        "injection_pattern_count": 0,
+        "metadata_drift_kind": "none",
+        "remote_http_without_tls": false
+      },
+      "name": "security",
+      "score": 100,
+      "status": "pass",
+      "weight": 0.2
+    },
+    {
+      "artifact_refs": [
+        "perf.samples.json"
+      ],
+      "finding_refs": [
+        "PERF-TOOLS-CALL-FAILED",
+        "PERF-CONCURRENT-TOOLS-CALL-LOW"
+      ],
+      "metrics": {
+        "budget_fuel_concurrent_probe": 10000000,
+        "budget_fuel_discover": 10000000,
+        "budget_fuel_ping_samples": 10000000,
+        "budget_fuel_tool_call_samples": 10000000,
+        "concurrent_ok_n": 0,
+        "concurrent_slots": 4,
+        "ping_p95_ms": 1,
+        "ping_p99_ms": 1,
+        "ping_sample_count": 20,
+        "throughput_calls_per_sec": 0,
+        "tool_call_confidence": "high",
+        "tool_call_p95_ms": 0,
+        "tool_call_p99_ms": 0,
+        "tool_call_sample_count": 20,
+        "workload_profile": "steady_small"
+      },
+      "name": "performance",
+      "score": 73,
+      "status": "warn",
+      "weight": 0.15
+    },
+    {
+      "artifact_refs": [],
+      "finding_refs": [
+        "TRUST-TRUSTPACK-MISSING"
+      ],
+      "metrics": {
+        "bundle_consistency": "pass",
+        "bundle_status": "pass",
+        "identity_confidence": "medium",
+        "publisher_identity": "pass",
+        "publisher_status": "pass",
+        "signature_integrity": "unknown",
+        "signature_status": "unknown",
+        "tlog_status": "unknown",
+        "transparency_evidence": "unknown",
+        "trust_evaluable": true
+      },
+      "name": "trust",
+      "score": 80,
+      "status": "warn",
+      "weight": 0.2
+    },
+    {
+      "artifact_refs": [
+        "reliability.cases.json",
+        "reliability.replay.json"
+      ],
+      "finding_refs": [],
+      "metrics": {
+        "invalid_elapsed_ms": 1,
+        "invalid_jsonrpc_ok": true,
+        "invalid_status_code": 200,
+        "malformed_elapsed_ms": 1,
+        "malformed_json_ok": true,
+        "malformed_status_code": 400,
+        "oversize_elapsed_ms": 1,
+        "oversize_request_ok": true,
+        "oversize_status_code": 200,
+        "ping_drift": false,
+        "ran": true,
+        "replay_stable": true,
+        "restart_reconnect_ok": true,
+        "timeout_cancel_ok": true,
+        "tools_list_drift": false,
+        "unknown_method_drift": false
+      },
+      "name": "reliability",
+      "score": 100,
+      "status": "pass",
+      "weight": 0.15
+    }
+  ],
+  "elapsed_ms": 112,
+  "findings": [
+    {
+      "code": "PERF-TOOLS-CALL-FAILED",
+      "dimension": "performance",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-TOOLS-CALL-FAILED",
+      "evidence": {},
+      "severity": "warning",
+      "suggested_fix": "Expose at least one low-latency tool that can be called with empty arguments.",
+      "summary": "Representative tools/call attempts did not succeed.",
+      "title": "Tool calls failed"
+    },
+    {
+      "code": "PERF-CONCURRENT-TOOLS-CALL-LOW",
+      "dimension": "performance",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-CONCURRENT-TOOLS-CALL-LOW",
+      "evidence": {},
+      "severity": "warning",
+      "suggested_fix": "Audit concurrency limits and ensure the server is safe under bounded parallel calls.",
+      "summary": "Concurrent tools/call requests did not succeed reliably.",
+      "title": "Low concurrent tool-call success"
+    },
+    {
+      "code": "TRUST-TRUSTPACK-MISSING",
+      "dimension": "trust",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-TRUSTPACK-MISSING",
+      "evidence": {},
+      "severity": "warning",
+      "suggested_fix": "Publish trustPack pins (registry, packId, packVersion, snapshotSha256, checkpointSha256) in server.json.",
+      "summary": "Publisher metadata is present but trustPack pins are missing, so transparency and signature checks cannot run.",
+      "title": "Trust pack metadata missing"
+    }
+  ],
+  "gating_reasons": [],
+  "generated_at": "2026-04-07T03:03:12.000000000Z",
+  "methodology_version": "0.4.0",
+  "overall_score": 91,
+  "overall_status": "warn",
+  "partial_reasons": [],
+  "partial_score": 91,
+  "report_digest": "b1a6a8a9f520a1c72f911ba0c5f1d7a7a6b33c71af4f20e5c0c17b7a0d4a2e7a",
+  "report_kind": "scan",
+  "run_id": "9f4e4e52d59e3db3",
+  "schema_version": "x07.mcp.scan.report@0.4.0",
+  "score_available": true,
+  "score_mode": "full",
+  "score_truth_status": "publishable",
+  "score_weight_present": 100,
+  "spec_baseline": "mcp@2025-11-25",
+  "status": "warn",
+  "target": {
+    "kind": "mcp_server",
+    "meta": {},
+    "ref": "http://127.0.0.1:18080/mcp",
+    "transport": "streamable_http"
+  },
+  "tool": "hardproof",
+  "tool_family": "hardproof",
+  "tool_version": "0.4.0-beta.2",
+  "transport": "streamable_http",
+  "unknown_dimensions": [],
+  "usage_metrics": {
+    "avg_tool_description_tokens": 3,
+    "estimator_confidence": "low",
+    "estimator_family": "bytes_per_token_v1",
+    "estimator_version": "v1",
+    "example_payload_est_tokens_total": 0,
+    "input_schema_bytes_total": 17,
+    "input_schema_est_tokens_total": 5,
+    "max_tool_description_tokens": 3,
+    "metadata_to_payload_ratio_pct": 391,
+    "replay_transcript_est_tokens_total": 0,
+    "response_payload_est_tokens_p50": 9,
+    "response_payload_est_tokens_p95": 9,
+    "tool_catalog_bytes": 141,
+    "tool_catalog_est_tokens_cl100k": 36,
+    "tool_catalog_est_tokens_o200k": 32,
+    "tool_count": 1
+  }
+}

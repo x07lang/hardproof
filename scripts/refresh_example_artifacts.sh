@@ -57,15 +57,18 @@ fi
 gen_dir="${tmp_dir}/generated"
 mkdir -p "${gen_dir}"
 
+gen_partial_dir="${tmp_dir}/generated-partial"
+mkdir -p "${gen_partial_dir}"
+
 "${bin_path}" scan \
   --url http://127.0.0.1:18080/mcp \
-  --out "${gen_dir}" \
-  --format rich >"${tmp_dir}/scan.rich.txt"
+  --out "${gen_partial_dir}" \
+  --format rich >"${tmp_dir}/scan.partial.rich.txt"
 
-"${bin_path}" report html --input "${gen_dir}/scan.json" >"${gen_dir}/report.html"
-"${bin_path}" report sarif --input "${gen_dir}/scan.json" >"${gen_dir}/report.sarif.json"
+"${bin_path}" report html --input "${gen_partial_dir}/scan.json" >"${gen_partial_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_partial_dir}/scan.json" >"${gen_partial_dir}/report.sarif.json"
 
-python3 - "${gen_dir}" <<'PY'
+python3 - "${gen_partial_dir}" <<'PY'
 import json
 import re
 import sys
@@ -150,10 +153,10 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
 
-"${bin_path}" report html --input "${gen_dir}/scan.json" >"${gen_dir}/report.html"
-"${bin_path}" report sarif --input "${gen_dir}/scan.json" >"${gen_dir}/report.sarif.json"
-"${bin_path}" report summary --input "${gen_dir}/scan.json" --ui rich >"${tmp_dir}/scan.summary.txt"
-python3 - "${tmp_dir}/scan.summary.txt" "${gen_dir}" <<'PY'
+"${bin_path}" report html --input "${gen_partial_dir}/scan.json" >"${gen_partial_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_partial_dir}/scan.json" >"${gen_partial_dir}/report.sarif.json"
+"${bin_path}" report summary --input "${gen_partial_dir}/scan.json" --ui rich >"${tmp_dir}/scan.partial.summary.txt"
+python3 - "${tmp_dir}/scan.partial.summary.txt" "${gen_partial_dir}" <<'PY'
 import sys
 from pathlib import Path
 
@@ -163,9 +166,123 @@ text = summary_path.read_text(encoding="utf-8")
 text = text.replace(f"report: {gen_dir}/scan.json", "report: out/scan/scan.json")
 summary_path.write_text(text, encoding="utf-8")
 PY
-python3 scripts/ci/render_terminal_svg.py "${tmp_dir}/scan.summary.txt" "${gen_dir}/terminal.svg"
+python3 scripts/ci/render_terminal_svg.py "${tmp_dir}/scan.partial.summary.txt" "${gen_partial_dir}/terminal.svg"
 
-example_dir="docs/examples/hardproof-scan"
+gen_full_dir="${tmp_dir}/generated-full"
+mkdir -p "${gen_full_dir}"
+
+"${bin_path}" scan \
+  --url http://127.0.0.1:18080/mcp \
+  --server-json trust/fixtures/server-good.json \
+  --mcpb trust/fixtures/bundle-good.mcpb \
+  --out "${gen_full_dir}" \
+  --format rich >"${tmp_dir}/scan.full.rich.txt"
+
+"${bin_path}" report html --input "${gen_full_dir}/scan.json" >"${gen_full_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_full_dir}/scan.json" >"${gen_full_dir}/report.sarif.json"
+
+python3 - "${gen_full_dir}" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+gen_dir = Path(sys.argv[1])
+
+scan_generated_at = "2026-04-07T03:03:12.000000000Z"
+conformance_generated_at = "2026-04-07T03:03:12Z"
+run_id = "9f4e4e52d59e3db3"
+target_ref = "http://127.0.0.1:18080/mcp"
+raw_dir = "out/scan/raw/20260407-030312"
+elapsed_ms = 112
+
+scan_path = gen_dir / "scan.json"
+scan = json.loads(scan_path.read_text(encoding="utf-8"))
+scan["generated_at"] = scan_generated_at
+scan["run_id"] = run_id
+scan["elapsed_ms"] = elapsed_ms
+scan["target"]["ref"] = target_ref
+scan["report_digest"] = "b1a6a8a9f520a1c72f911ba0c5f1d7a7a6b33c71af4f20e5c0c17b7a0d4a2e7a"
+for dim in scan.get("dimensions", []):
+    if dim.get("name") == "conformance":
+        metrics = dim.setdefault("metrics", {})
+        metrics["raw_dir"] = raw_dir
+
+summary_path = gen_dir / "conformance.summary.json"
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+summary["generated_at"] = conformance_generated_at
+summary["target"]["ref"] = target_ref
+details = summary.setdefault("details", {})
+details["raw_dir"] = raw_dir
+
+summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+
+summary_html_path = gen_dir / "conformance.summary.html"
+summary_html = summary_html_path.read_text(encoding="utf-8")
+summary_html = re.sub(
+    r"<p><b>generated_at</b>: .*?</p>",
+    f"<p><b>generated_at</b>: {conformance_generated_at}</p>",
+    summary_html,
+    count=1,
+)
+summary_html = re.sub(
+    r"<p><b>target</b>: .*?</p>",
+    f"<p><b>target</b>: {summary['target']['transport']} {target_ref}</p>",
+    summary_html,
+    count=1,
+)
+summary_html_path.write_text(summary_html, encoding="utf-8")
+
+junit_path = gen_dir / "conformance.summary.junit.xml"
+junit = junit_path.read_text(encoding="utf-8")
+junit = re.sub(
+    r'timestamp="[^"]+"',
+    f'timestamp="{conformance_generated_at}"',
+    junit,
+    count=1,
+)
+junit_path.write_text(junit, encoding="utf-8")
+
+artifacts = scan.get("artifacts", [])
+for artifact in artifacts:
+    path = artifact.get("path")
+    if path == "conformance.summary.json":
+        artifact["digest"] = "926abe066297fff838c19322b33ff08f0e74b7a5ddea83c2e696c0c19a7ff644"
+    elif path == "tools.list.json":
+        artifact["digest"] = "d7e4e6b0ddcb5546b8eb33471543cd7f2bc8efe85ebf7e62b86507f8c0e886ed"
+
+scan_path.write_text(json.dumps(scan, indent=2) + "\n", encoding="utf-8")
+
+events_path = gen_dir / "scan.events.jsonl"
+event_lines = []
+for raw_line in events_path.read_text(encoding="utf-8").splitlines():
+    if not raw_line.strip():
+        continue
+    event = json.loads(raw_line)
+    event["run_id"] = run_id
+    if event.get("type") == "scan.finished":
+        event["report_path"] = "out/scan/scan.json"
+    event_lines.append(json.dumps(event, separators=(",", ":")))
+events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
+PY
+
+"${bin_path}" report html --input "${gen_full_dir}/scan.json" >"${gen_full_dir}/report.html"
+"${bin_path}" report sarif --input "${gen_full_dir}/scan.json" >"${gen_full_dir}/report.sarif.json"
+"${bin_path}" report summary --input "${gen_full_dir}/scan.json" --ui rich >"${tmp_dir}/scan.full.summary.txt"
+python3 - "${tmp_dir}/scan.full.summary.txt" "${gen_full_dir}" <<'PY'
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+gen_dir = Path(sys.argv[2])
+text = summary_path.read_text(encoding="utf-8")
+text = text.replace(f"report: {gen_dir}/scan.json", "report: out/scan/scan.json")
+summary_path.write_text(text, encoding="utf-8")
+PY
+python3 scripts/ci/render_terminal_svg.py "${tmp_dir}/scan.full.summary.txt" "${gen_full_dir}/terminal.svg"
+
+example_partial_dir="docs/examples/hardproof-scan"
+example_full_dir="docs/examples/hardproof-scan-full"
 files=(
   "scan.json"
   "scan.events.jsonl"
@@ -180,16 +297,23 @@ files=(
 
 if [[ "${check_mode}" == "1" ]]; then
   for file in "${files[@]}"; do
-    if ! cmp -s "${gen_dir}/${file}" "${example_dir}/${file}"; then
-      echo "ERROR: stale example artifact: ${file}" >&2
-      diff -u "${example_dir}/${file}" "${gen_dir}/${file}" >&2 || true
+    if ! cmp -s "${gen_partial_dir}/${file}" "${example_partial_dir}/${file}"; then
+      echo "ERROR: stale example artifact (partial): ${file}" >&2
+      diff -u "${example_partial_dir}/${file}" "${gen_partial_dir}/${file}" >&2 || true
+      exit 1
+    fi
+    if ! cmp -s "${gen_full_dir}/${file}" "${example_full_dir}/${file}"; then
+      echo "ERROR: stale example artifact (full): ${file}" >&2
+      diff -u "${example_full_dir}/${file}" "${gen_full_dir}/${file}" >&2 || true
       exit 1
     fi
   done
   echo "ok: example artifacts are up to date"
 else
+  mkdir -p "${example_partial_dir}" "${example_full_dir}"
   for file in "${files[@]}"; do
-    cp "${gen_dir}/${file}" "${example_dir}/${file}"
+    cp "${gen_partial_dir}/${file}" "${example_partial_dir}/${file}"
+    cp "${gen_full_dir}/${file}" "${example_full_dir}/${file}"
   done
-  echo "refreshed example artifacts in ${example_dir}"
+  echo "refreshed example artifacts in ${example_partial_dir} and ${example_full_dir}"
 fi

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1110" viewBox="0 0 960 1110">
+  <rect width="960" height="1110" rx="12" fill="#0b0e14" />
+  <circle cx="24" cy="22" r="6" fill="#ff5f56" />
+  <circle cx="44" cy="22" r="6" fill="#ffbd2e" />
+  <circle cx="64" cy="22" r="6" fill="#27c93f" />
+  <text
+    x="24"
+    y="58"
+    font-family="SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+    font-size="14"
+    fill="#c0caf5"
+    xml:space="preserve"
+  >
+    <tspan x="24" dy="0">+-----------------------------------------------+</tspan>
+    <tspan x="24" dy="20">| Hardproof - FULL SCORE                        |</tspan>
+    <tspan x="24" dy="20">+-----------------------------------------------+</tspan>
+    <tspan x="24" dy="20">| AI Infrastructure Score | Score Truth: [PASS] |</tspan>
+    <tspan x="24" dy="20">|                                               |</tspan>
+    <tspan x="24" dy="20">| target: http://127.0.0.1:18080/mcp            |</tspan>
+    <tspan x="24" dy="20">| transport: streamable_http                    |</tspan>
+    <tspan x="24" dy="20">| elapsed_ms: 112ms                             |</tspan>
+    <tspan x="24" dy="20">| status: [WARN]                                |</tspan>
+    <tspan x="24" dy="20">| score: 91                                     |</tspan>
+    <tspan x="24" dy="20">| findings: critical 0, warning 3               |</tspan>
+    <tspan x="24" dy="20">+-----------------------------------------------+</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Dimensions ==</tspan>
+    <tspan x="24" dy="20">conformance  [########|#] 100 [PASS]</tspan>
+    <tspan x="24" dy="20">security     [########|#] 100 [PASS]</tspan>
+    <tspan x="24" dy="20">performance  [#######-~-] 73 [WARN]</tspan>
+    <tspan x="24" dy="20">trust        [########~-] 80 [WARN]</tspan>
+    <tspan x="24" dy="20">reliability  [########|#] 100 [PASS]</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Performance ==</tspan>
+    <tspan x="24" dy="20">profile: steady_small</tspan>
+    <tspan x="24" dy="20">ping: p95 1ms, p99 1ms (n=20)</tspan>
+    <tspan x="24" dy="20">tools/call: p95 &lt;1ms, p99 &lt;1ms (n=20, confidence=high)</tspan>
+    <tspan x="24" dy="20">concurrency: slots=4, ok=0</tspan>
+    <tspan x="24" dy="20">throughput: 0 calls/s</tspan>
+    <tspan x="24" dy="20">budget_fuel: discover=10000000, ping_samples=10000000, tool_call_samples=10000000, concurrent_probe=10000000</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Usage ==</tspan>
+    <tspan x="24" dy="20">catalog_tokens: 36</tspan>
+    <tspan x="24" dy="20">response_p95_tokens: 9</tspan>
+    <tspan x="24" dy="20">input_schema_tokens: 5</tspan>
+    <tspan x="24" dy="20">estimator: bytes_per_token_v1/v1</tspan>
+    <tspan x="24" dy="20">confidence: low</tspan>
+    <tspan x="24" dy="20">note: Token values are deterministic estimates, not billing-grade truth.</tspan>
+    <tspan x="24" dy="20">findings: none</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Findings ==</tspan>
+    <tspan x="24" dy="20">critical: none</tspan>
+    <tspan x="24" dy="20">warning:</tspan>
+    <tspan x="24" dy="20">- PERF-TOOLS-CALL-FAILED: Tool calls failed</tspan>
+    <tspan x="24" dy="20">- PERF-CONCURRENT-TOOLS-CALL-LOW: Low concurrent tool-call success</tspan>
+    <tspan x="24" dy="20">- TRUST-TRUSTPACK-MISSING: Trust pack metadata missing</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Artifacts ==</tspan>
+    <tspan x="24" dy="20">report: out/scan/scan.json</tspan>
+  </text>
+</svg>

@@ -53,130 +53,147 @@ def main() -> None:
     if not bin_path.is_file():
         fail(f"missing hardproof binary: {bin_path}")
 
-    example_dir = repo_root / "docs" / "examples" / "hardproof-scan"
-    scan_path = example_dir / "scan.json"
-    scan_events_path = example_dir / "scan.events.jsonl"
-    scan_html_path = example_dir / "report.html"
-    scan_sarif_path = example_dir / "report.sarif.json"
-    conformance_json_path = example_dir / "conformance.summary.json"
-    conformance_html_path = example_dir / "conformance.summary.html"
-    conformance_junit_path = example_dir / "conformance.summary.junit.xml"
-    conformance_sarif_path = example_dir / "conformance.summary.sarif.json"
+    def validate_example(example_name: str, expect_score_mode: str) -> None:
+        example_dir = repo_root / "docs" / "examples" / example_name
 
-    validate_json(bin_path, "schemas/x07.mcp.scan.report.schema.json", "docs/examples/hardproof-scan/scan.json", repo_root)
-    validate_json(
-        bin_path,
-        "schemas/x07.mcp.conformance.summary.schema.json",
-        "docs/examples/hardproof-scan/conformance.summary.json",
-        repo_root,
-    )
-    validate_json(
-        bin_path,
-        "schemas/x07.mcp.sarif.schema.json",
-        "docs/examples/hardproof-scan/report.sarif.json",
-        repo_root,
-    )
-    validate_json(
-        bin_path,
-        "schemas/x07.mcp.sarif.schema.json",
-        "docs/examples/hardproof-scan/conformance.summary.sarif.json",
-        repo_root,
-    )
+        scan_rel = f"docs/examples/{example_name}/scan.json"
+        conformance_rel = f"docs/examples/{example_name}/conformance.summary.json"
+        scan_sarif_rel = f"docs/examples/{example_name}/report.sarif.json"
+        conformance_sarif_rel = f"docs/examples/{example_name}/conformance.summary.sarif.json"
 
-    scan_text = scan_path.read_text(encoding="utf-8")
-    scan = json.loads(scan_text)
-    if scan.get("schema_version") != "x07.mcp.scan.report@0.4.0":
-        fail(f"unexpected scan schema_version: {scan.get('schema_version')!r}")
-    if scan.get("tool_version") != CURRENT_TOOL_VERSION:
-        fail(f"unexpected scan tool_version: {scan.get('tool_version')!r}")
-    if scan.get("usage_metrics", {}).get("estimator_version") != "v1":
-        fail("scan usage_metrics.estimator_version must be 'v1'")
-    if scan.get("score_mode") not in {"full", "partial"}:
-        fail(f"unexpected scan score_mode: {scan.get('score_mode')!r}")
+        validate_json(bin_path, "schemas/x07.mcp.scan.report.schema.json", scan_rel, repo_root)
+        validate_json(bin_path, "schemas/x07.mcp.conformance.summary.schema.json", conformance_rel, repo_root)
+        validate_json(bin_path, "schemas/x07.mcp.sarif.schema.json", scan_sarif_rel, repo_root)
+        validate_json(bin_path, "schemas/x07.mcp.sarif.schema.json", conformance_sarif_rel, repo_root)
 
-    report_html = scan_html_path.read_text(encoding="utf-8")
-    match = re.search(r"<pre>(.*)</pre>", report_html, re.DOTALL)
-    if match is None:
-        fail("report.html is missing the embedded JSON body")
-    embedded_scan = json.loads(html.unescape(match.group(1)))
-    if embedded_scan != scan:
-        fail("report.html does not embed the current scan.json payload")
+        scan_path = example_dir / "scan.json"
+        scan_events_path = example_dir / "scan.events.jsonl"
+        scan_html_path = example_dir / "report.html"
+        scan_sarif_path = example_dir / "report.sarif.json"
+        conformance_json_path = example_dir / "conformance.summary.json"
+        conformance_html_path = example_dir / "conformance.summary.html"
+        conformance_junit_path = example_dir / "conformance.summary.junit.xml"
+        conformance_sarif_path = example_dir / "conformance.summary.sarif.json"
+        terminal_svg_path = example_dir / "terminal.svg"
 
-    events = []
-    for line in scan_events_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        events.append(json.loads(line))
-    if not events:
-        fail("scan.events.jsonl is empty")
-    run_id = scan.get("run_id")
-    if any(event.get("run_id") != run_id for event in events):
-        fail("scan.events.jsonl run_id drifted from scan.json")
-    finished = events[-1]
-    if finished.get("type") != "scan.finished":
-        fail("scan.events.jsonl is missing a final scan.finished event")
-    if finished.get("report_path") != "out/scan/scan.json":
-        fail(f"unexpected scan.finished report_path: {finished.get('report_path')!r}")
-    for key in ("score_truth_status", "status", "overall_score", "partial_score"):
-        if finished.get(key) != scan.get(key):
-            fail(f"scan.finished {key} does not match scan.json")
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        if scan.get("schema_version") != "x07.mcp.scan.report@0.4.0":
+            fail(f"{example_name}: unexpected scan schema_version: {scan.get('schema_version')!r}")
+        if scan.get("tool_version") != CURRENT_TOOL_VERSION:
+            fail(f"{example_name}: unexpected scan tool_version: {scan.get('tool_version')!r}")
+        if scan.get("usage_metrics", {}).get("estimator_version") != "v1":
+            fail(f"{example_name}: scan usage_metrics.estimator_version must be 'v1'")
+        if scan.get("score_mode") != expect_score_mode:
+            fail(f"{example_name}: expected score_mode={expect_score_mode!r} (got {scan.get('score_mode')!r})")
 
-    conformance = json.loads(conformance_json_path.read_text(encoding="utf-8"))
-    if conformance.get("schema_version") != "x07.mcp.conformance.summary@0.2.0":
-        fail(f"unexpected conformance schema_version: {conformance.get('schema_version')!r}")
-    if conformance.get("tool_version") != CURRENT_TOOL_VERSION:
-        fail(f"unexpected conformance tool_version: {conformance.get('tool_version')!r}")
+        if expect_score_mode == "partial":
+            if scan.get("score_truth_status") != "partial":
+                fail(f"{example_name}: expected score_truth_status=partial")
+            if scan.get("overall_score") is not None:
+                fail(f"{example_name}: expected overall_score=null for partial")
+            if scan.get("unknown_dimensions") != ["trust"]:
+                fail(f"{example_name}: expected unknown_dimensions=['trust']")
+            if scan.get("dimension_coverage", {}).get("trust") is not False:
+                fail(f"{example_name}: expected trust dimension_coverage=false")
+        else:
+            if scan.get("score_truth_status") != "publishable":
+                fail(f"{example_name}: expected score_truth_status=publishable")
+            if not isinstance(scan.get("overall_score"), int):
+                fail(f"{example_name}: expected overall_score integer for full score")
+            if scan.get("unknown_dimensions") != []:
+                fail(f"{example_name}: expected unknown_dimensions=[] for full score")
+            if scan.get("dimension_coverage", {}).get("trust") is not True:
+                fail(f"{example_name}: expected trust dimension_coverage=true")
 
-    details = conformance.get("details")
-    if not isinstance(details, dict):
-        fail("conformance.summary.json missing details object")
-    counts = details.get("counts")
-    if not isinstance(counts, dict):
-        fail("conformance.summary.json missing details.counts object")
+        report_html = scan_html_path.read_text(encoding="utf-8")
+        match = re.search(r"<pre>(.*)</pre>", report_html, re.DOTALL)
+        if match is None:
+            fail(f"{example_name}: report.html is missing the embedded JSON body")
+        embedded_scan = json.loads(html.unescape(match.group(1)))
+        if embedded_scan != scan:
+            fail(f"{example_name}: report.html does not embed the current scan.json payload")
 
-    conformance_html = conformance_html_path.read_text(encoding="utf-8")
-    expected_target = f"{conformance['target']['transport']} {conformance['target']['ref']}"
-    expected_counts = (
-        f"{counts['total']} total, {counts['failed']} failed, {counts['warnings']} warnings"
-    )
-    for needle in (
-        conformance["generated_at"],
-        expected_target,
-        expected_counts,
-        conformance["schema_version"],
-    ):
-        if needle not in conformance_html:
-            fail(f"conformance.summary.html is stale: missing {needle!r}")
+        events = []
+        for line in scan_events_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            events.append(json.loads(line))
+        if not events:
+            fail(f"{example_name}: scan.events.jsonl is empty")
+        run_id = scan.get("run_id")
+        if any(event.get("run_id") != run_id for event in events):
+            fail(f"{example_name}: scan.events.jsonl run_id drifted from scan.json")
+        finished = events[-1]
+        if finished.get("type") != "scan.finished":
+            fail(f"{example_name}: scan.events.jsonl is missing a final scan.finished event")
+        if finished.get("report_path") != "out/scan/scan.json":
+            fail(f"{example_name}: unexpected scan.finished report_path: {finished.get('report_path')!r}")
+        for key in ("score_truth_status", "status", "overall_score", "partial_score"):
+            if finished.get(key) != scan.get(key):
+                fail(f"{example_name}: scan.finished {key} does not match scan.json")
 
-    suite = ET.parse(conformance_junit_path).getroot()
-    if suite.tag != "testsuite":
-        fail(f"unexpected JUnit root tag: {suite.tag!r}")
-    if suite.attrib.get("timestamp") != conformance["generated_at"]:
-        fail("conformance.summary.junit.xml timestamp drifted from conformance.summary.json")
-    if int(suite.attrib.get("tests", "-1")) != counts["total"]:
-        fail("conformance.summary.junit.xml tests count drifted from conformance.summary.json")
-    if int(suite.attrib.get("failures", "-1")) != counts["failed"]:
-        fail("conformance.summary.junit.xml failures count drifted from conformance.summary.json")
+        conformance = json.loads(conformance_json_path.read_text(encoding="utf-8"))
+        if conformance.get("schema_version") != "x07.mcp.conformance.summary@0.2.0":
+            fail(f"{example_name}: unexpected conformance schema_version: {conformance.get('schema_version')!r}")
+        if conformance.get("tool_version") != CURRENT_TOOL_VERSION:
+            fail(f"{example_name}: unexpected conformance tool_version: {conformance.get('tool_version')!r}")
 
-    scan_sarif = json.loads(scan_sarif_path.read_text(encoding="utf-8"))
-    scan_runs = scan_sarif.get("runs")
-    if not isinstance(scan_runs, list) or len(scan_runs) != 1:
-        fail("report.sarif.json must contain exactly one run")
-    scan_driver = scan_runs[0].get("tool", {}).get("driver", {})
-    if scan_driver.get("name") != "hardproof":
-        fail("report.sarif.json driver.name must be 'hardproof'")
-    if len(scan_runs[0].get("results", [])) != len(scan.get("findings", [])):
-        fail("report.sarif.json results count drifted from scan.json findings")
+        details = conformance.get("details")
+        if not isinstance(details, dict):
+            fail(f"{example_name}: conformance.summary.json missing details object")
+        counts = details.get("counts")
+        if not isinstance(counts, dict):
+            fail(f"{example_name}: conformance.summary.json missing details.counts object")
 
-    conformance_sarif = json.loads(conformance_sarif_path.read_text(encoding="utf-8"))
-    conformance_runs = conformance_sarif.get("runs")
-    if not isinstance(conformance_runs, list) or len(conformance_runs) != 1:
-        fail("conformance.summary.sarif.json must contain exactly one run")
-    conformance_driver = conformance_runs[0].get("tool", {}).get("driver", {})
-    if conformance_driver.get("name") != "hardproof":
-        fail("conformance.summary.sarif.json driver.name must be 'hardproof'")
-    if conformance_driver.get("version") != CURRENT_TOOL_VERSION:
-        fail("conformance.summary.sarif.json driver.version drifted from current tool_version")
+        conformance_html = conformance_html_path.read_text(encoding="utf-8")
+        expected_target = f"{conformance['target']['transport']} {conformance['target']['ref']}"
+        expected_counts = f"{counts['total']} total, {counts['failed']} failed, {counts['warnings']} warnings"
+        for needle in (conformance["generated_at"], expected_target, expected_counts, conformance["schema_version"]):
+            if needle not in conformance_html:
+                fail(f"{example_name}: conformance.summary.html is stale: missing {needle!r}")
+
+        suite = ET.parse(conformance_junit_path).getroot()
+        if suite.tag != "testsuite":
+            fail(f"{example_name}: unexpected JUnit root tag: {suite.tag!r}")
+        if suite.attrib.get("timestamp") != conformance["generated_at"]:
+            fail(f"{example_name}: conformance.summary.junit.xml timestamp drifted from conformance.summary.json")
+        if int(suite.attrib.get("tests", "-1")) != counts["total"]:
+            fail(f"{example_name}: conformance.summary.junit.xml tests count drifted from conformance.summary.json")
+        if int(suite.attrib.get("failures", "-1")) != counts["failed"]:
+            fail(f"{example_name}: conformance.summary.junit.xml failures count drifted from conformance.summary.json")
+
+        scan_sarif = json.loads(scan_sarif_path.read_text(encoding="utf-8"))
+        scan_runs = scan_sarif.get("runs")
+        if not isinstance(scan_runs, list) or len(scan_runs) != 1:
+            fail(f"{example_name}: report.sarif.json must contain exactly one run")
+        scan_driver = scan_runs[0].get("tool", {}).get("driver", {})
+        if scan_driver.get("name") != "hardproof":
+            fail(f"{example_name}: report.sarif.json driver.name must be 'hardproof'")
+        if len(scan_runs[0].get("results", [])) != len(scan.get("findings", [])):
+            fail(f"{example_name}: report.sarif.json results count drifted from scan.json findings")
+
+        conformance_sarif = json.loads(conformance_sarif_path.read_text(encoding="utf-8"))
+        conformance_runs = conformance_sarif.get("runs")
+        if not isinstance(conformance_runs, list) or len(conformance_runs) != 1:
+            fail(f"{example_name}: conformance.summary.sarif.json must contain exactly one run")
+        conformance_driver = conformance_runs[0].get("tool", {}).get("driver", {})
+        if conformance_driver.get("name") != "hardproof":
+            fail(f"{example_name}: conformance.summary.sarif.json driver.name must be 'hardproof'")
+        if conformance_driver.get("version") != CURRENT_TOOL_VERSION:
+            fail(f"{example_name}: conformance.summary.sarif.json driver.version drifted from current tool_version")
+
+        svg_text = terminal_svg_path.read_text(encoding="utf-8")
+        if expect_score_mode == "partial":
+            if "Hardproof - PARTIAL SCORE" not in svg_text:
+                fail(f"{example_name}: terminal.svg is missing PARTIAL SCORE banner")
+        else:
+            if "Hardproof - FULL SCORE" not in svg_text:
+                fail(f"{example_name}: terminal.svg is missing FULL SCORE banner")
+        if "deterministic estimates" not in svg_text:
+            fail(f"{example_name}: terminal.svg is missing estimate-grade usage note")
+
+    validate_example("hardproof-scan", "partial")
+    validate_example("hardproof-scan-full", "full")
 
     print("ok: example artifacts")
 

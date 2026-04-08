@@ -557,6 +557,7 @@ echo "==> example artifacts"
 ./scripts/refresh_example_artifacts.sh --check --bin "${bin_path}" >/dev/null
 python3 scripts/ci/check_example_artifacts.py "${bin_path}"
 python3 scripts/ci/assert_scan_report_consistency.py docs/examples/hardproof-scan/scan.json
+python3 scripts/ci/assert_scan_report_consistency.py docs/examples/hardproof-scan-full/scan.json
 
 echo "==> corpus smoke"
 
