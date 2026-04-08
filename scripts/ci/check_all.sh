@@ -177,12 +177,14 @@ scan_help_out="${tmp_dir}/scan.help.txt"
 "${bin_path}" scan --help >"${scan_help_out}"
 grep -q -- '--max-avg-tool-description-tokens' "${scan_help_out}"
 grep -q -- '--max-tool-count' "${scan_help_out}"
+grep -q -- '--perf-profile' "${scan_help_out}"
 
 ci_help_out="${tmp_dir}/ci.help.txt"
 "${bin_path}" ci --help >"${ci_help_out}"
 grep -q -- '--allow-partial-score' "${ci_help_out}"
 grep -q -- '--max-avg-tool-description-tokens' "${ci_help_out}"
 grep -q -- '--max-tool-count' "${ci_help_out}"
+grep -q -- '--perf-profile' "${ci_help_out}"
 
 set +e
 "${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
