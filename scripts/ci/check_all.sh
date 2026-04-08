@@ -178,15 +178,28 @@ run_help_smoke "bundle verify --help" bundle verify --help
 
 scan_help_out="${tmp_dir}/scan.help.txt"
 "${bin_path}" scan --help >"${scan_help_out}"
+grep -q -- '--baseline' "${scan_help_out}"
+grep -q -- '--env-file' "${scan_help_out}"
+grep -q -- '--full-suite' "${scan_help_out}"
+grep -q -- '--metrics' "${scan_help_out}"
+grep -q -- '--score-preview' "${scan_help_out}"
 grep -q -- '--max-avg-tool-description-tokens' "${scan_help_out}"
 grep -q -- '--max-tool-count' "${scan_help_out}"
 grep -q -- '--perf-profile' "${scan_help_out}"
+grep -q -- '--require-trust-for-full-score' "${scan_help_out}"
+grep -q -- '--transport' "${scan_help_out}"
 
 ci_help_out="${tmp_dir}/ci.help.txt"
 "${bin_path}" ci --help >"${ci_help_out}"
 grep -q -- '--allow-partial-score' "${ci_help_out}"
+grep -q -- '--max-input-schema-tokens' "${ci_help_out}"
+grep -q -- '--max-metadata-to-payload-ratio-pct' "${ci_help_out}"
 grep -q -- '--max-avg-tool-description-tokens' "${ci_help_out}"
+grep -q -- '--max-response-p95-tokens' "${ci_help_out}"
+grep -q -- '--max-tool-catalog-tokens' "${ci_help_out}"
 grep -q -- '--max-tool-count' "${ci_help_out}"
+grep -q -- '--min-dimension' "${ci_help_out}"
+grep -q -- '--policy' "${ci_help_out}"
 grep -q -- '--perf-profile' "${ci_help_out}"
 
 set +e
@@ -296,6 +309,7 @@ run_cli_regression_smoke() (
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --transport http \
     --out "${abs_scan_out}" \
     --format json >"${tmp_dir}/scan.abs.stdout.json"
   local scan_abs_exit="$?"
@@ -308,6 +322,35 @@ run_cli_regression_smoke() (
   fi
   test -s "${abs_scan_out}/scan.json"
   test -s "${abs_scan_out}/scan.events.jsonl"
+
+  local abs_full_suite_out="${abs_root}/scan-full-suite"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --transport http \
+    --full-suite \
+    --out "${abs_full_suite_out}" \
+    --machine json >"${tmp_dir}/scan.full_suite.stdout.json"
+  local scan_full_suite_exit="$?"
+  set -e
+  if [[ "${scan_full_suite_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan --full-suite regression (expected 0, got ${scan_full_suite_exit})" >&2
+    cat "${tmp_dir}/scan.full_suite.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${abs_full_suite_out}/scan.json"
+  python3 - "${abs_full_suite_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+conformance = next(dim for dim in report["dimensions"] if dim["name"] == "conformance")
+metrics = conformance["metrics"]
+assert metrics["full_suite"] is True, metrics
+PY
 
   local abs_conformance_out="${abs_root}/conformance"
   set +e
@@ -371,6 +414,72 @@ PY
     tail -n 200 "${server_log}" >&2 || true
     exit 1
   fi
+
+  local ci_policy_path="${tmp_dir}/ci.policy.json"
+  cat >"${ci_policy_path}" <<'JSON'
+{
+  "min_score": 50,
+  "max_critical": 0,
+  "max_warning": 10,
+  "allow_partial_score": true
+}
+JSON
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-policy" \
+    --policy "${ci_policy_path}" \
+    --machine json >"${tmp_dir}/ci.policy.stdout.json"
+  local ci_policy_exit="$?"
+  set -e
+  if [[ "${ci_policy_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ci --policy regression (expected 0, got ${ci_policy_exit})" >&2
+    cat "${tmp_dir}/ci.policy.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${tmp_dir}/ci-policy/scan.json"
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-min-dimension-pass" \
+    --min-score 0 \
+    --max-critical 100 \
+    --max-warning 100 \
+    --allow-partial-score \
+    --min-dimension conformance=0,security=0 \
+    --machine json >"${tmp_dir}/ci.min_dimension.pass.stdout.json"
+  local ci_min_dimension_pass_exit="$?"
+  set -e
+  if [[ "${ci_min_dimension_pass_exit}" != "0" ]]; then
+    echo "ERROR: hardproof ci --min-dimension pass regression (expected 0, got ${ci_min_dimension_pass_exit})" >&2
+    cat "${tmp_dir}/ci.min_dimension.pass.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  set +e
+  "${bin_path}" ci \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${tmp_dir}/ci-min-dimension-fail" \
+    --min-score 0 \
+    --max-critical 100 \
+    --max-warning 100 \
+    --allow-partial-score \
+    --min-dimension trust=0 \
+    >"${tmp_dir}/ci.min_dimension.fail.stdout.txt"
+  local ci_min_dimension_fail_exit="$?"
+  set -e
+  if [[ "${ci_min_dimension_fail_exit}" != "1" ]]; then
+    echo "ERROR: hardproof ci --min-dimension fail regression (expected 1, got ${ci_min_dimension_fail_exit})" >&2
+    cat "${tmp_dir}/ci.min_dimension.fail.stdout.txt" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  grep -q -- 'error: hardproof ci policy failed' "${tmp_dir}/ci.min_dimension.fail.stdout.txt"
+  grep -q -- 'min_dimension: trust=0' "${tmp_dir}/ci.min_dimension.fail.stdout.txt"
 
   local scan_require_trust_out="${tmp_dir}/scan-require-trust"
   set +e
@@ -485,6 +594,9 @@ PY
     --max-avg-tool-description-tokens 500 \
     --max-tool-count 50 \
     --max-metadata-to-payload-ratio-pct 500 \
+    --max-tool-catalog-tokens 5000 \
+    --max-response-p95-tokens 500 \
+    --max-input-schema-tokens 5000 \
     --machine json >"${tmp_dir}/ci.new_usage_thresholds.stdout.json"
   local ci_new_usage_thresholds_exit="$?"
   set -e
@@ -933,9 +1045,17 @@ run_conformance_stdio_fixture() (
   rm -rf "${fixture_out_dir}"
   mkdir -p "${fixture_out_dir}"
 
+  local env_file="${fixture_out_dir}/server.env"
+  cat >"${env_file}" <<'EOF'
+HARDPROOF_TEST_ENV=1
+EOF
+
   set +e
   "${bin_path}" scan \
     --cmd "bash conformance/scripts/spawn_reference_stdio.sh ${target_id}" \
+    --transport stdio \
+    --cwd "${repo_root}" \
+    --env-file "${env_file}" \
     --baseline conformance/pinned/conformance-baseline.yml \
     --out "${fixture_out_dir}" \
     --machine json >"${fixture_out_dir}/summary.stdout.json"
