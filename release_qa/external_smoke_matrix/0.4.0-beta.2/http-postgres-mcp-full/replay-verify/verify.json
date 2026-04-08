@@ -1,0 +1,1 @@
+{"schema_version":"x07.mcp.replay.verify@0.2.0","generated_at":"2026-04-08T15:32:01.902205000Z","tool":"hardproof","tool_version":"0.4.0-beta.2","target":{"kind":"mcp_server","meta":{},"ref":"http://127.0.0.1:8403/mcp","transport":"streamable_http"},"ok":true,"errors":[],"warnings":[],"details":{"session":"demos/postgres-public-beta/out/replay.session.json"}}

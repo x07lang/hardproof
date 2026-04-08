@@ -1,0 +1,387 @@
+ Container postgres-public-beta-postgres-1  Running
+{"ok":true,"command":"pkg.lock","result":{"project":"/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp/x07.json","index":null,"lockfile":"/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp/x07.lock.json","fetched":[]}}
+{
+  "schema_version": "x07.bundle.report@0.4.0",
+  "runner": "host",
+  "world": "run-os",
+  "target": {
+    "kind": "project",
+    "path": "x07.json",
+    "project_root": "/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp",
+    "lockfile": "x07.lock.json",
+    "resolved_module_roots": [
+      "src",
+      "tests",
+      ".x07/deps/ext-auth-jwt/0.1.7/modules",
+      ".x07/deps/ext-base64-rs/0.1.4/modules",
+      ".x07/deps/ext-crypto-rs/0.1.5/modules",
+      ".x07/deps/ext-csv-rs/0.1.5/modules",
+      ".x07/deps/ext-curl-c/0.1.6/modules",
+      ".x07/deps/ext-data-model/0.1.11/modules",
+      ".x07/deps/ext-db-core/0.1.12/modules",
+      ".x07/deps/ext-db-sqlite/0.1.12/modules",
+      ".x07/deps/ext-fs/0.1.5/modules",
+      ".x07/deps/ext-hex-rs/0.1.4/modules",
+      ".x07/deps/ext-ini-rs/0.1.4/modules",
+      ".x07/deps/ext-json-rs/0.1.7/modules",
+      ".x07/deps/ext-jsonschema-rs/0.1.0/modules",
+      ".x07/deps/ext-math/0.1.4/modules",
+      ".x07/deps/ext-mcp-auth/0.4.9/modules",
+      ".x07/deps/ext-mcp-auth-core/0.1.3/modules",
+      ".x07/deps/ext-mcp-core/0.3.6/modules",
+      ".x07/deps/ext-mcp-obs/0.1.5/modules",
+      ".x07/deps/ext-mcp-rr/0.3.21/modules",
+      ".x07/deps/ext-mcp-sandbox/0.3.15/modules",
+      ".x07/deps/ext-mcp-toolkit/0.3.12/modules",
+      ".x07/deps/ext-mcp-transport-http/0.3.25/modules",
+      ".x07/deps/ext-mcp-worker/0.3.8/modules",
+      ".x07/deps/ext-net/0.1.11/modules",
+      ".x07/deps/ext-obs/0.1.6/modules",
+      ".x07/deps/ext-openssl-c/0.1.9/modules",
+      ".x07/deps/ext-pb-rs/0.1.5/modules",
+      ".x07/deps/ext-rand/0.1.0/modules",
+      ".x07/deps/ext-regex/0.2.4/modules",
+      ".x07/deps/ext-sockets-c/0.1.6/modules",
+      ".x07/deps/ext-stdio/0.1.0/modules",
+      ".x07/deps/ext-time-rs/0.1.6/modules",
+      ".x07/deps/ext-toml-rs/0.1.5/modules",
+      ".x07/deps/ext-u64-rs/0.1.4/modules",
+      ".x07/deps/ext-unicode-rs/0.1.5/modules",
+      ".x07/deps/ext-url-rs/0.1.5/modules",
+      ".x07/deps/ext-xml-rs/0.1.4/modules",
+      ".x07/deps/ext-yaml-rs/0.1.4/modules",
+      "/Users/webik/.x07/toolchains/v0.1.110/stdlib/os/0.2.0/modules"
+    ]
+  },
+  "bundle": {
+    "out": "out/postgres-mcp",
+    "name": "postgres-mcp",
+    "abi": {
+      "kind": "argv_v1"
+    },
+    "policy": null,
+    "emit_dir": null,
+    "kind": "native",
+    "guest": null
+  },
+  "report": {
+    "compile": {
+      "c_source_size": 10761634,
+      "compile_error": null,
+      "compiled_exe": "out/postgres-mcp",
+      "compiled_exe_size": 16482000,
+      "exit_status": 0,
+      "fuel_used": 348668,
+      "lang_id": "x07-core@0.2.0",
+      "native_requires": {
+        "requires": [
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.db.sqlite",
+            "features": [
+              "os.db.sqlite.close_v1",
+              "os.db.sqlite.exec_v1",
+              "os.db.sqlite.open_v1",
+              "os.db.sqlite.query_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.fs",
+            "features": [
+              "os.fs.append_all_v1",
+              "os.fs.read_all_v1",
+              "os.fs.write_all_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.jsonschema",
+            "features": [
+              "jsonschema.compile_v1",
+              "jsonschema.validate_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.rand",
+            "features": [
+              "os.rand.bytes_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.regex",
+            "features": [
+              "regex.compile_opts_v1",
+              "regex.exec_from_v1",
+              "regex.replace_all_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.stdio",
+            "features": [
+              "os.stdio.flush_stdout_v1",
+              "os.stdio.write_stderr_v1",
+              "os.stdio.write_stdout_v1"
+            ]
+          }
+        ],
+        "schema_version": "x07.native-requires@0.1.0",
+        "world": "run-os"
+      },
+      "ok": true,
+      "stderr_b64": "c3RkL21jcC9zYW5kYm94L3JvdXRlcl9leGVjLngwNy5qc29uOjMyMTQ6NTU6IHdhcm5pbmc6IHBhc3NpbmcgJ3VpbnQzMl90IConIChha2EgJ3Vuc2lnbmVkIGludCAqJykgdG8gcGFyYW1ldGVyIG9mIHR5cGUgJ2ludDMyX3QgKicgKGFrYSAnaW50IConKSBjb252ZXJ0cyBiZXR3ZWVuIHBvaW50ZXJzIHRvIGludGVnZXIgdHlwZXMgd2l0aCBkaWZmZXJlbnQgc2lnbiBbLVdwb2ludGVyLXNpZ25dCiAzMjE0IHwgICBpZiAocnRfb3NfcHJvY2Vzc19qb2luX2V4aXRfcG9sbChjdHgsIGYtPnRfYXJnXzI2NywgJmYtPnRfYmVnaW5fMjY2KSkgZ290byBzdF82MDM7CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn5+Ci92YXIvZm9sZGVycy93bC9odnl2ZGxkMTE4NTk4em1wel9wZ24ydjAwMDAwZ3AvVC94MDctbmF0aXZlLWNhY2hlLzJmZTZiYTM2MDM2MDBhNDUzNDcyMGUwODA2NGZmY2EzNWIyN2ZkNTBhZjczNDlhOGE5ZTZjZTY1YjlmOTU5NjIvc29sdmVyXzk1MDkwXzAuYzo5NTcxOjgzOiBub3RlOiBwYXNzaW5nIGFyZ3VtZW50IHRvIHBhcmFtZXRlciAnb3V0JyBoZXJlCiA5NTcxIHwgc3RhdGljIHVpbnQzMl90IHJ0X29zX3Byb2Nlc3Nfam9pbl9leGl0X3BvbGwoY3R4X3QqIGN0eCwgaW50MzJfdCBoYW5kbGUsIGludDMyX3QqIG91dCkgewogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCnN0ZC9tY3Avc2FuZGJveC9yb3V0ZXJfZXhlYy54MDcuanNvbjozNTI1OjU1OiB3YXJuaW5nOiBwYXNzaW5nICd1aW50MzJfdCAqJyAoYWthICd1bnNpZ25lZCBpbnQgKicpIHRvIHBhcmFtZXRlciBvZiB0eXBlICdpbnQzMl90IConIChha2EgJ2ludCAqJykgY29udmVydHMgYmV0d2VlbiBwb2ludGVycyB0byBpbnRlZ2VyIHR5cGVzIHdpdGggZGlmZmVyZW50IHNpZ24gWy1XcG9pbnRlci1zaWduXQogMzUyNSB8ICAgaWYgKHJ0X29zX3Byb2Nlc3Nfam9pbl9leGl0X3BvbGwoY3R4LCBmLT50X2FyZ18zMTMsICZmLT50X2JlZ2luXzMxMikpIGdvdG8gc3RfNjcwOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fgovdmFyL2ZvbGRlcnMvd2wvaHZ5dmRsZDExODU5OHptcHpfcGduMnYwMDAwMGdwL1QveDA3LW5hdGl2ZS1jYWNoZS8yZmU2YmEzNjAzNjAwYTQ1MzQ3MjBlMDgwNjRmZmNhMzViMjdmZDUwYWY3MzQ5YThhOWU2Y2U2NWI5Zjk1OTYyL3NvbHZlcl85NTA5MF8wLmM6OTU3MTo4Mzogbm90ZTogcGFzc2luZyBhcmd1bWVudCB0byBwYXJhbWV0ZXIgJ291dCcgaGVyZQogOTU3MSB8IHN0YXRpYyB1aW50MzJfdCBydF9vc19wcm9jZXNzX2pvaW5fZXhpdF9wb2xsKGN0eF90KiBjdHgsIGludDMyX3QgaGFuZGxlLCBpbnQzMl90KiBvdXQpIHsKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgoyIHdhcm5pbmdzIGdlbmVyYXRlZC4K",
+      "stdout_b64": "",
+      "trap": null
+    },
+    "exit_code": 0,
+    "mode": "project-compile",
+    "schema_version": "x07-host-runner.report@0.3.0",
+    "solve": null
+  }
+}
+{
+  "schema_version": "x07.bundle.report@0.4.0",
+  "runner": "host",
+  "world": "run-os-sandboxed",
+  "target": {
+    "kind": "project",
+    "path": "x07.json",
+    "project_root": "/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp",
+    "lockfile": "x07.lock.json",
+    "resolved_module_roots": [
+      "src",
+      "tests",
+      ".x07/deps/ext-auth-jwt/0.1.7/modules",
+      ".x07/deps/ext-base64-rs/0.1.4/modules",
+      ".x07/deps/ext-crypto-rs/0.1.5/modules",
+      ".x07/deps/ext-csv-rs/0.1.5/modules",
+      ".x07/deps/ext-curl-c/0.1.6/modules",
+      ".x07/deps/ext-data-model/0.1.11/modules",
+      ".x07/deps/ext-db-core/0.1.12/modules",
+      ".x07/deps/ext-db-sqlite/0.1.12/modules",
+      ".x07/deps/ext-fs/0.1.5/modules",
+      ".x07/deps/ext-hex-rs/0.1.4/modules",
+      ".x07/deps/ext-ini-rs/0.1.4/modules",
+      ".x07/deps/ext-json-rs/0.1.7/modules",
+      ".x07/deps/ext-jsonschema-rs/0.1.0/modules",
+      ".x07/deps/ext-math/0.1.4/modules",
+      ".x07/deps/ext-mcp-auth/0.4.9/modules",
+      ".x07/deps/ext-mcp-auth-core/0.1.3/modules",
+      ".x07/deps/ext-mcp-core/0.3.6/modules",
+      ".x07/deps/ext-mcp-obs/0.1.5/modules",
+      ".x07/deps/ext-mcp-rr/0.3.21/modules",
+      ".x07/deps/ext-mcp-sandbox/0.3.15/modules",
+      ".x07/deps/ext-mcp-toolkit/0.3.12/modules",
+      ".x07/deps/ext-mcp-transport-http/0.3.25/modules",
+      ".x07/deps/ext-mcp-worker/0.3.8/modules",
+      ".x07/deps/ext-net/0.1.11/modules",
+      ".x07/deps/ext-obs/0.1.6/modules",
+      ".x07/deps/ext-openssl-c/0.1.9/modules",
+      ".x07/deps/ext-pb-rs/0.1.5/modules",
+      ".x07/deps/ext-rand/0.1.0/modules",
+      ".x07/deps/ext-regex/0.2.4/modules",
+      ".x07/deps/ext-sockets-c/0.1.6/modules",
+      ".x07/deps/ext-stdio/0.1.0/modules",
+      ".x07/deps/ext-time-rs/0.1.6/modules",
+      ".x07/deps/ext-toml-rs/0.1.5/modules",
+      ".x07/deps/ext-u64-rs/0.1.4/modules",
+      ".x07/deps/ext-unicode-rs/0.1.5/modules",
+      ".x07/deps/ext-url-rs/0.1.5/modules",
+      ".x07/deps/ext-xml-rs/0.1.4/modules",
+      ".x07/deps/ext-yaml-rs/0.1.4/modules",
+      "/Users/webik/.x07/toolchains/v0.1.110/stdlib/os/0.2.0/modules"
+    ]
+  },
+  "bundle": {
+    "out": "out/mcp-worker",
+    "name": "mcp-worker",
+    "abi": {
+      "kind": "argv_v1"
+    },
+    "policy": {
+      "base_policy": "/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp/policy/mcp.worker.base.policy.json",
+      "effective_policy": "/Users/webik/projects/x07lang/x07-mcp/servers/postgres-mcp/policy/mcp.worker.base.policy.json",
+      "embedded_env_keys": [
+        "X07_WORLD",
+        "X07_OS_SANDBOXED",
+        "X07_OS_FS",
+        "X07_OS_NET",
+        "X07_OS_DB",
+        "X07_OS_ENV",
+        "X07_OS_TIME",
+        "X07_OS_PROC",
+        "X07_OS_THREADS",
+        "X07_OS_THREADS_MAX_WORKERS",
+        "X07_OS_THREADS_MAX_BLOCKING",
+        "X07_OS_THREADS_MAX_QUEUE",
+        "X07_OS_DENY_HIDDEN",
+        "X07_OS_FS_READ_ROOTS",
+        "X07_OS_FS_WRITE_ROOTS",
+        "X07_OS_FS_ALLOW_SYMLINKS",
+        "X07_OS_FS_ALLOW_MKDIR",
+        "X07_OS_FS_ALLOW_REMOVE",
+        "X07_OS_FS_ALLOW_RENAME",
+        "X07_OS_FS_ALLOW_WALK",
+        "X07_OS_FS_ALLOW_GLOB",
+        "X07_OS_FS_MAX_READ_BYTES",
+        "X07_OS_FS_MAX_WRITE_BYTES",
+        "X07_OS_FS_MAX_ENTRIES",
+        "X07_OS_FS_MAX_DEPTH",
+        "X07_OS_ENV_ALLOW_KEYS",
+        "X07_OS_ENV_DENY_KEYS",
+        "X07_OS_DB_SQLITE",
+        "X07_OS_DB_PG",
+        "X07_OS_DB_MYSQL",
+        "X07_OS_DB_REDIS",
+        "X07_OS_DB_SQLITE_READONLY_ONLY",
+        "X07_OS_DB_SQLITE_ALLOW_CREATE",
+        "X07_OS_DB_SQLITE_ALLOW_IN_MEMORY",
+        "X07_OS_DB_SQLITE_ALLOW_PATHS",
+        "X07_OS_DB_MAX_LIVE_CONNS",
+        "X07_OS_DB_MAX_QUERIES",
+        "X07_OS_DB_MAX_CONNECT_TIMEOUT_MS",
+        "X07_OS_DB_MAX_QUERY_TIMEOUT_MS",
+        "X07_OS_DB_MAX_SQL_BYTES",
+        "X07_OS_DB_MAX_ROWS",
+        "X07_OS_DB_MAX_RESP_BYTES",
+        "X07_OS_DB_NET_ALLOW_DNS",
+        "X07_OS_DB_NET_ALLOW_CIDRS",
+        "X07_OS_DB_NET_ALLOW_PORTS",
+        "X07_OS_DB_NET_REQUIRE_TLS",
+        "X07_OS_DB_NET_REQUIRE_VERIFY",
+        "X07_OS_TIME_ALLOW_WALL_CLOCK",
+        "X07_OS_TIME_ALLOW_MONOTONIC",
+        "X07_OS_TIME_ALLOW_SLEEP",
+        "X07_OS_TIME_MAX_SLEEP_MS",
+        "X07_OS_TIME_ALLOW_LOCAL_TZID",
+        "X07_OS_PROC_ALLOW_EXIT",
+        "X07_OS_PROC_ALLOW_SPAWN",
+        "X07_OS_PROC_MAX_LIVE",
+        "X07_OS_PROC_MAX_SPAWNS",
+        "X07_OS_PROC_MAX_EXE_BYTES",
+        "X07_OS_PROC_MAX_ARGS",
+        "X07_OS_PROC_MAX_ARG_BYTES",
+        "X07_OS_PROC_MAX_ENV",
+        "X07_OS_PROC_MAX_ENV_KEY_BYTES",
+        "X07_OS_PROC_MAX_ENV_VAL_BYTES",
+        "X07_OS_PROC_MAX_RUNTIME_MS",
+        "X07_OS_PROC_MAX_STDOUT_BYTES",
+        "X07_OS_PROC_MAX_STDERR_BYTES",
+        "X07_OS_PROC_MAX_TOTAL_BYTES",
+        "X07_OS_PROC_MAX_STDIN_BYTES",
+        "X07_OS_PROC_KILL_ON_DROP",
+        "X07_OS_PROC_KILL_TREE",
+        "X07_OS_PROC_ALLOW_CWD",
+        "X07_OS_PROC_ALLOW_CWD_ROOTS",
+        "X07_OS_PROC_ALLOW_EXEC",
+        "X07_OS_PROC_ALLOW_EXECS",
+        "X07_OS_PROC_ALLOW_EXEC_PREFIXES",
+        "X07_OS_PROC_ALLOW_ARGS_REGEX_LITE",
+        "X07_OS_PROC_ALLOW_ENV_KEYS",
+        "X07_OS_NET_ALLOW_TCP",
+        "X07_OS_NET_ALLOW_UDP",
+        "X07_OS_NET_ALLOW_DNS",
+        "X07_OS_NET_ALLOW_HOSTS"
+      ]
+    },
+    "emit_dir": null,
+    "kind": "native",
+    "guest": null
+  },
+  "report": {
+    "compile": {
+      "c_source_size": 1441801,
+      "compile_error": null,
+      "compiled_exe": "out/mcp-worker",
+      "compiled_exe_size": 9684608,
+      "exit_status": 0,
+      "fuel_used": 220380,
+      "lang_id": "x07-core@0.2.0",
+      "native_requires": {
+        "requires": [
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.jsonschema",
+            "features": [
+              "jsonschema.compile_v1",
+              "jsonschema.validate_v1"
+            ]
+          },
+          {
+            "abi_major": 1,
+            "backend_id": "x07.ext.stdio",
+            "features": [
+              "os.stdio.flush_stdout_v1",
+              "os.stdio.read_line_v1",
+              "os.stdio.write_stdout_v1"
+            ]
+          }
+        ],
+        "schema_version": "x07.native-requires@0.1.0",
+        "world": "run-os-sandboxed"
+      },
+      "ok": true,
+      "stderr_b64": "",
+      "stdout_b64": "",
+      "trap": null
+    },
+    "exit_code": 0,
+    "mode": "project-compile",
+    "schema_version": "x07-host-runner.report@0.3.0",
+    "solve": null
+  }
+}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"43d2f63fe1e30c947edf3830bc60fbf55067f604e9a8da1cf9af3a734a77e9ab","kind":"tool.invocation","mcp":{"requestId":2},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"4f5bdb7fdd0d8e1d47ff3edffa45103ca67e2388a4227967e76cbc32a89360c7","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"2ab02bbd71933a9f2e519050f0844c29e7db4f2434ccc96f3cdc9859ebefe723","kind":"tool.invocation","mcp":{"requestId":2},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"7f79d628948728aaf25db890bd7d41668ac0348fa9e0c855c3d26d1050a4c37c","kind":"tool.invocation","mcp":{"requestId":5},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}
+{"auth":{"mode":"none","principal":null,"scopes":[]},"invocationId":"778470725b12af2688b928464c85389b2136e60967acd019e30baaea2f72b376","kind":"tool.invocation","mcp":{"requestId":2},"outcome":{"isError":false},"policy":{"budgets":{"limits_profile":"mcp_tool_standard_v1"},"sandbox":{"env":{"allowlist":["PG_URI"]},"net":{"allowlist":["127.0.0.1:5432"]}}},"schema_version":"x07.mcp.audit_event@0.1.0","timing":{"durationMs":1000},"tool":"db.ping","ts":"1970-01-01T00:00:00Z"}

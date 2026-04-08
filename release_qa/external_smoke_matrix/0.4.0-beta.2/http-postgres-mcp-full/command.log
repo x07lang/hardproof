@@ -1,0 +1,61 @@
+$ /Users/webik/projects/x07lang/hardproof/out/hardproof replay record --url http://127.0.0.1:8403/mcp --scenario smoke/basic --sanitize auth\,token --out demos/postgres-public-beta/out/replay.session.json --machine json
+{"schema_version":"x07.mcp.replay.session@0.2.0","generated_at":"2026-04-08T15:32:01.483921000Z","tool":"hardproof","tool_version":"0.4.0-beta.2","target":{"kind":"mcp_server","meta":{},"ref":"http://127.0.0.1:8403/mcp","transport":"streamable_http"},"ok":true,"errors":[],"warnings":[],"details":{"scenario":"smoke/basic","http_session":{"base_url":"http://127.0.0.1:8403","id":"smoke.basic","mcp_path":"/mcp","profile":"record","project_files":{},"schema_version":"x07.mcp.rr.http_session@0.1.0","steps":[{"name":"initialize","req":{"body_json":{"id":1,"jsonrpc":"2.0","method":"initialize","params":{"capabilities":{},"protocolVersion":"2025-11-25"}},"headers":{"Accept":"application/json, text/event-stream","Content-Type":"application/json","MCP-Protocol-Version":"2025-11-25","Origin":"http://localhost:3000"},"method":"POST","path":"/mcp"},"res":{"body_json":{"id":1,"jsonrpc":"2.0","result":{"capabilities":{"logging":{},"tools":{"listChanged":false}},"protocolVersion":"2025-11-25","serverInfo":{"name":"io.x07/postgres-mcp","version":"0.1.0"}}},"headers":{"MCP-Session-Id":""},"status":200}},{"name":"initialized_notification","req":{"body_json":{"jsonrpc":"2.0","method":"notifications/initialized","params":{}},"headers":{"Accept":"application/json, text/event-stream","Content-Type":"application/json","MCP-Protocol-Version":"2025-11-25","MCP-Session-Id":"","Origin":"http://localhost:3000"},"method":"POST","path":"/mcp"},"res":{"body_empty":true,"headers":{},"status":202}},{"name":"tools_list","req":{"body_json":{"id":2,"jsonrpc":"2.0","method":"tools/list","params":{}},"headers":{"Accept":"application/json, text/event-stream","Content-Type":"application/json","MCP-Protocol-Version":"2025-11-25","MCP-Session-Id":"","Origin":"http://localhost:3000"},"method":"POST","path":"/mcp"},"res":{"body_json":{"id":2,"jsonrpc":"2.0","result":{"tools":[{"annotations":{"idempotentHint":true,"readOnlyHint":true},"description":"Check database liveness in deterministic stub mode.","inputSchema":{"additionalProperties":false,"properties":{},"type":"object"},"name":"db.ping"},{"annotations":{"idempotentHint":true,"readOnlyHint":false},"description":"Run a deterministic query stub and return rows.","inputSchema":{"additionalProperties":false,"properties":{},"type":"object"},"name":"db.query"},{"annotations":{"idempotentHint":true,"readOnlyHint":true},"description":"Conformance fixture: emits progress notifications and returns text.","inputSchema":{"additionalProperties":false,"properties":{},"type":"object"},"name":"test_tool_with_progress"}]}},"headers":{},"status":200}}]}}}
+$ /Users/webik/projects/x07lang/hardproof/out/hardproof replay verify --session demos/postgres-public-beta/out/replay.session.json --url http://127.0.0.1:8403/mcp --out demos/postgres-public-beta/out/replay-verify --machine json
+{"schema_version":"x07.mcp.replay.verify@0.2.0","generated_at":"2026-04-08T15:32:01.902205000Z","tool":"hardproof","tool_version":"0.4.0-beta.2","target":{"kind":"mcp_server","meta":{},"ref":"http://127.0.0.1:8403/mcp","transport":"streamable_http"},"ok":true,"errors":[],"warnings":[],"details":{"session":"demos/postgres-public-beta/out/replay.session.json"}}
+$ /Users/webik/projects/x07lang/hardproof/out/hardproof trust verify --server-json servers/postgres-mcp/dist/server.json --machine json --out demos/postgres-public-beta/out/trust.summary.json
+{"schema_version":"x07.mcp.trust.summary@0.2.0","generated_at":"2026-04-08T15:32:49.672509000Z","tool":"hardproof","tool_version":"0.4.0-beta.2","target":{"kind":"file","meta":{},"ref":"servers/postgres-mcp/dist/server.json","transport":"file"},"ok":true,"errors":[],"warnings":[],"details":{"server_json":"servers/postgres-mcp/dist/server.json","publisher_meta_present":true,"x07_meta_present":true,"legacy_meta_present":false,"legacy_prm_present":false,"require_signed_prm":true,"trust_framework_sha256":"89554b497bea3255754cd211e26f86ba70bcb31d02e151a2e9810dfe9ba2274a","trust_lock_sha256":"e9745b2d1e94066adabdd560ef61e1479a793acca5f93e74c9f459930e4f2679","trust_pack_present":false,"trust_pack_pack_id":"","trust_pack_pack_version":"","trust_pack_registry":"","trust_pack_lock_sha256":"","trust_pack_min_snapshot_version":"","trust_pack_snapshot_sha256":"","trust_pack_checkpoint_sha256":""}}
+$ /Users/webik/projects/x07lang/hardproof/out/hardproof bundle verify --server-json servers/postgres-mcp/dist/server.json --mcpb servers/postgres-mcp/dist/postgres-mcp.mcpb --machine json --out demos/postgres-public-beta/out/bundle.verify.json
+{"schema_version":"x07.mcp.bundle.verify@0.2.0","generated_at":"2026-04-08T15:32:49.701088000Z","tool":"hardproof","tool_version":"0.4.0-beta.2","target":{"kind":"file","meta":{},"ref":"servers/postgres-mcp/dist/postgres-mcp.mcpb","transport":"file"},"ok":true,"errors":[],"warnings":[],"details":{"server_json":"servers/postgres-mcp/dist/server.json","sha_expected":"6485c7e6ffabc4491fcd4b4a52fd6a730fd76d5195d9160226a44a68ac4b35dd","sha_actual":"6485c7e6ffabc4491fcd4b4a52fd6a730fd76d5195d9160226a44a68ac4b35dd"}}
+$ /Users/webik/projects/x07lang/hardproof/out/hardproof scan --url http://127.0.0.1:8403/mcp --server-json servers/postgres-mcp/dist/server.json --mcpb servers/postgres-mcp/dist/postgres-mcp.mcpb --out demos/postgres-public-beta/out/scan
++-----------------------------------------------+
+| Hardproof - FULL SCORE                        |
++-----------------------------------------------+
+| AI Infrastructure Score | Score Truth: [PASS] |
+|                                               |
+| target: http://127.0.0.1:8403/mcp             |
+| transport: streamable_http                    |
+| elapsed_ms: 14089ms                           |
+| status: [WARN]                                |
+| score: 93                                     |
+| findings: critical 0, warning 2               |
++-----------------------------------------------+
+
+
+== Dimensions ==
+conformance  [########|#] 100 [PASS]
+security     [########|#] 100 [PASS]
+performance  [########~-] 83 [WARN]
+trust        [########~-] 80 [WARN]
+reliability  [########|#] 100 [PASS]
+
+
+== Performance ==
+profile: steady_small
+ping: p95 145ms, p99 145ms (n=20)
+tools/call: p95 166ms, p99 166ms (n=20, confidence=high)
+concurrency: slots=4, ok=4
+throughput: 6 calls/s
+budget_fuel: discover=10000000, ping_samples=10000000, tool_call_samples=10000000, concurrent_probe=10000000
+
+
+== Usage ==
+catalog_tokens: 186
+response_p95_tokens: 9
+input_schema_tokens: 47
+estimator: bytes_per_token_v1/v1
+confidence: low
+note: Token values are deterministic estimates, not billing-grade truth.
+findings: none
+
+
+== Findings ==
+critical: none
+warning:
+- PERF-CONCURRENT-TOOLS-CALL-LOW: Low concurrent tool-call success
+- TRUST-TRUSTPACK-MISSING: Trust pack metadata missing
+
+
+== Artifacts ==
+report: demos/postgres-public-beta/out/scan/scan.json
+events: demos/postgres-public-beta/out/scan/scan.events.jsonl
+

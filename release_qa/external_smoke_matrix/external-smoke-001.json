@@ -1,0 +1,23 @@
+{
+  "schema_version": "x07.mcp.report.manifest@0.1.0",
+  "report_id": "external-smoke-001",
+  "targets": [
+    {
+      "id": "postgres-mcp-demo",
+      "source": {
+        "repo": "https://github.com/x07lang/x07-mcp",
+        "version": "workspace"
+      },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "streamable_http",
+        "ref": "http://127.0.0.1:8403/mcp",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    }
+  ],
+  "notes": "Release QA smoke manifest. Run while the x07-mcp Postgres demo server is active."
+}
+

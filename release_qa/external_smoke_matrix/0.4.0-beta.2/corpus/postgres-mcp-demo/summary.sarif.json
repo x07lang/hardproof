@@ -1,0 +1,1 @@
+{"$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"results":[],"tool":{"driver":{"name":"hardproof","version":"0.4.0-beta.2"}}}],"version":"2.1.0"}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="hardproof conformance" tests="9" failures="0" timestamp="2026-04-08T15:30:51Z">
+  <testcase classname="server" name="server-initialize"></testcase>
+  <testcase classname="ping" name="ping"></testcase>
+  <testcase classname="tools" name="tools-list"></testcase>
+  <testcase classname="tools" name="tools-call-with-progress"></testcase>
+  <testcase classname="resources" name="resources-subscribe"></testcase>
+  <testcase classname="resources" name="resources-unsubscribe"></testcase>
+  <testcase classname="server" name="server-sse-multiple-streams-session"></testcase>
+  <testcase classname="localhost" name="localhost-host-rebinding-rejected"></testcase>
+  <testcase classname="localhost" name="localhost-host-valid-accepted"></testcase>
+</testsuite>

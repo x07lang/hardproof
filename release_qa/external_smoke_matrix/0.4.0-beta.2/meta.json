@@ -1,0 +1,13 @@
+{
+  "hardproof": {
+    "version": "0.4.0-beta.2",
+    "commit": "345bd66599bb59123e9a05a7e37d71f2679531f7"
+  },
+  "x07": {
+    "version": "x07 0.1.110"
+  },
+  "x07_mcp": {
+    "commit": "f6e3b7f3879cabbba70d49bf29077237cfd86cbd",
+    "root": "/Users/webik/projects/x07lang/hardproof/../x07-mcp"
+  }
+}
