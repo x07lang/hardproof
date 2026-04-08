@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.4.0-beta.2
+
+- Add `--perf-profile` to `hardproof scan` / `hardproof ci` for selecting the performance dimension profile.
+- Fix `install.sh --tag latest-beta` resolution to follow the latest `vX.Y.Z-beta.N` release.
+- Add `scripts/bump_version.py` to automate version bumps across CLI/doc/action/fixture surfaces.
+- Refresh release-facing docs, fixtures, and example artifacts for `0.4.0-beta.2`.
+
 ## v0.4.0-beta.1
 
 - Complete the remaining M2.5b.1 beta gaps: spec-aligned trust reason codes, scan-side usage threshold flags, and branded report boundary types.

@@ -25,7 +25,7 @@ jobs:
 
       - name: Run Hardproof scan
         id: mcp
-        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.1
+        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.2
         with:
           url: http://127.0.0.1:3000/mcp
           threshold: "85"
@@ -47,7 +47,7 @@ jobs:
 ```yaml
 - name: Run Hardproof scan (stdio)
   id: mcp
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.1
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.2
   with:
     cmd: ./server --stdio
     cwd: servers/my-mcp
@@ -92,7 +92,7 @@ uses: x07lang/hardproof/action@v0.1.0-alpha.9
 Switch to:
 
 ```yaml
-uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.1
+uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.2
 ```
 
 The `action/` path remains available during the beta transition.

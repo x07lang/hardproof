@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-VERSION_RE = re.compile(r"^(?P<core>[0-9]+\\.[0-9]+\\.[0-9]+-(?:alpha|beta)\\.[0-9]+)$")
+VERSION_RE = re.compile(r"^(?P<core>[0-9]+\.[0-9]+\.[0-9]+-(?:alpha|beta)\.[0-9]+)$")
 
 
 def fail(message: str) -> None:
@@ -43,7 +43,7 @@ def replace_all(path: Path, old: str, new: str) -> int:
 
 def parse_current_tool_version(check_script: Path) -> str:
     text = read_text(check_script)
-    m = re.search(r'^CURRENT_TOOL_VERSION\\s*=\\s*"([^"]+)"\\s*$', text, flags=re.MULTILINE)
+    m = re.search(r'^CURRENT_TOOL_VERSION\s*=\s*"([^"]+)"\s*$', text, flags=re.MULTILINE)
     if m is None:
         fail(f"failed to locate CURRENT_TOOL_VERSION in {check_script}")
     return normalize_version(m.group(1))
@@ -79,7 +79,7 @@ def main() -> None:
         fail(f"old and new versions are the same: {old_version}")
 
     replace_paths: list[Path] = [
-        repo_root / "cli" / "src" / "app.x07.json",
+        repo_root / "arch" / "schemas" / "scan_report_manifest.x07schema.json",
         repo_root / "scripts" / "ci" / "check_example_artifacts.py",
         repo_root / "scripts" / "ci" / "build_release_binaries.sh",
         repo_root / "scripts" / "install.sh",
@@ -89,7 +89,12 @@ def main() -> None:
         repo_root / "hardproof-scan" / "README.md",
         repo_root / "hardproof-scan" / "action.yml",
         repo_root / "docs" / "examples" / "hardproof-scan" / "README.md",
+        repo_root / "tests" / "scan_contracts.x07.json",
     ]
+
+    # X07 AST sources are minified (single-line JSON), so treat these as text replacements.
+    for src_path in sorted((repo_root / "cli" / "src").rglob("*.x07.json")):
+        replace_paths.append(src_path)
 
     for fixture_path in sorted((repo_root / "fixtures" / "reports").glob("*.json")):
         replace_paths.append(fixture_path)
@@ -113,4 +118,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

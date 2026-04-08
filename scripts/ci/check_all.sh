@@ -16,6 +16,9 @@ while IFS= read -r path; do
   x07 fmt --input "${path}" --check --report-json >/dev/null
 done < <(find cli/src score_core/src score_core/tests -name '*.x07.json' -print | LC_ALL=C sort)
 
+echo "==> version consistency"
+python3 scripts/ci/check_version_consistency.py >/dev/null
+
 echo "==> pkg lock"
 x07 pkg lock --project x07.json --check --json=off >/dev/null
 

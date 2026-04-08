@@ -80,6 +80,6 @@
     "transport": "streamable_http"
   },
   "tool": "hardproof",
-  "tool_version": "0.4.0-beta.1",
+  "tool_version": "0.4.0-beta.2",
   "warnings": []
 }

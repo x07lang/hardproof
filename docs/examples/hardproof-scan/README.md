@@ -2,7 +2,7 @@
 
 This directory contains sample artifacts that website/docs/announcements can embed directly.
 
-Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.1`.
+Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.2`.
 
 The sample target produces a partial score: core quality dimensions pass, but Trust remains unevaluated, so `score_mode` is `partial`, `overall_score` stays `null`, and rich output renders the primary score as withheld.
 
