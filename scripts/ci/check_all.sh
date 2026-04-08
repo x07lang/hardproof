@@ -442,6 +442,38 @@ assert report["score_weight_present"] == 100, report
 assert report["usage_metrics"]["estimator_version"] == "v1", report
 PY
 
+  local scan_perf_profile_out="${tmp_dir}/scan-perf-profile-smoke"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --out "${scan_perf_profile_out}" \
+    --perf-profile smoke \
+    --machine json >"${tmp_dir}/scan.perf_profile.stdout.json"
+  local scan_perf_profile_exit="$?"
+  set -e
+  if [[ "${scan_perf_profile_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan --perf-profile smoke regression (expected 0, got ${scan_perf_profile_exit})" >&2
+    cat "${tmp_dir}/scan.perf_profile.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  python3 - "${scan_perf_profile_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+performance = next(dim for dim in report["dimensions"] if dim["name"] == "performance")
+metrics = performance["metrics"]
+assert metrics["workload_profile"] == "smoke", metrics
+assert metrics["ping_sample_count"] == 6, metrics
+assert metrics["tool_call_sample_count"] == 4, metrics
+assert metrics["concurrent_slots"] == 2, metrics
+assert metrics["tool_call_confidence"] == "low", metrics
+PY
+
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
@@ -795,6 +827,101 @@ done
 if [[ "${fixture_failed}" == "1" ]]; then
   exit 1
 fi
+
+echo "==> security fixtures"
+
+run_security_fixture() (
+  local fixture_id="${1:?missing fixture_id}"
+  local fixture_url="${2:?missing fixture_url}"
+  local expected_exit="${3:?missing expected_exit}"
+
+  local fixture_out_dir="out/ci-security/${fixture_id}"
+  rm -rf "${fixture_out_dir}"
+  mkdir -p "${fixture_out_dir}"
+
+  local server_log="${fixture_out_dir}/server.log"
+  conformance/scripts/spawn_reference_http.sh "${fixture_id}" noauth >"${server_log}" 2>&1 &
+  local server_pid="$!"
+
+  cleanup() {
+    kill "${server_pid}" >/dev/null 2>&1 || true
+    wait "${server_pid}" >/dev/null 2>&1 || true
+  }
+  trap cleanup EXIT
+
+  if ! conformance/scripts/wait_for_http.sh "${fixture_url}" >/dev/null; then
+    echo "ERROR: fixture failed to start: ${fixture_id} (${fixture_url})" >&2
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  set +e
+  "${bin_path}" scan \
+    --url "${fixture_url}" \
+    --baseline conformance/pinned/conformance-baseline.yml \
+    --out "${fixture_out_dir}" \
+    --machine json >"${fixture_out_dir}/summary.stdout.json"
+  local exit_code="$?"
+  set -e
+  if [[ "${exit_code}" != "${expected_exit}" ]]; then
+    echo "ERROR: scan exit code mismatch for ${fixture_id} (expected ${expected_exit}, got ${exit_code})" >&2
+    cat "${fixture_out_dir}/summary.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+
+  "${bin_path}" ci validate-json \
+    --schema schemas/x07.mcp.scan.report.schema.json \
+    --input "${fixture_out_dir}/scan.json"
+  python3 scripts/ci/assert_scan_report_consistency.py "${fixture_out_dir}/scan.json"
+
+  test -s "${fixture_out_dir}/perf.samples.json"
+
+  if [[ "${fixture_id}" == "meta-risk-http" ]]; then
+    python3 - "${fixture_out_dir}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+codes = {finding["code"] for finding in report["findings"]}
+for code in ("SEC-INJECTION-PATTERN", "SEC-COMMAND-RISK-PATTERN", "SEC-DESCRIPTOR-BLOAT"):
+    assert code in codes, codes
+PY
+  fi
+
+  if [[ "${fixture_id}" == "drift-http" ]]; then
+    python3 - "${fixture_out_dir}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+codes = {finding["code"] for finding in report["findings"]}
+assert "SEC-TOOLS-LIST-DRIFT" in codes, codes
+PY
+  fi
+
+  if [[ "${fixture_id}" == "remote-loose-http" ]]; then
+    python3 - "${fixture_out_dir}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+codes = {finding["code"] for finding in report["findings"]}
+for code in ("SEC-INSECURE-TRANSPORT", "SEC-AUTH-MISCONFIG", "SEC-HOST-ORIGIN-MISMATCH"):
+    assert code in codes, codes
+PY
+  fi
+)
+
+run_security_fixture meta-risk-http http://127.0.0.1:18083/mcp 1
+run_security_fixture drift-http http://127.0.0.1:18084/mcp 1
+run_security_fixture remote-loose-http http://2130706433:18085/mcp 0
 
 run_conformance_stdio_fixture() (
   local fixture_id="${1:?missing fixture_id}"

@@ -9,6 +9,7 @@ The sample target produces a partial score: core quality dimensions pass, but Tr
 ## Contents
 
 - `scan.json`: scan report (schema `x07.mcp.scan.report@0.4.0`)
+- `scan.json` references additional dimension artifacts (for example `perf.samples.json`) that are emitted in a real scan output directory but are not checked into this example bundle.
 - `scan.events.jsonl`: scan event stream
 - `conformance.summary.json`: conformance dimension summary (schema `x07.mcp.conformance.summary@0.2.0`)
 - `conformance.summary.html`: conformance dimension HTML report

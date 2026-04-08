@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="990" viewBox="0 0 960 990">
-  <rect width="960" height="990" rx="12" fill="#0b0e14" />
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1170" viewBox="0 0 960 1170">
+  <rect width="960" height="1170" rx="12" fill="#0b0e14" />
   <circle cx="24" cy="22" r="6" fill="#ff5f56" />
   <circle cx="44" cy="22" r="6" fill="#ffbd2e" />
   <circle cx="64" cy="22" r="6" fill="#27c93f" />
@@ -35,6 +35,15 @@
     <tspan x="24" dy="20">performance  [#######-~-] 73 [WARN]</tspan>
     <tspan x="24" dy="20">trust        n/a n/a [UNKNOWN]</tspan>
     <tspan x="24" dy="20">reliability  [########|#] 100 [PASS]</tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20"></tspan>
+    <tspan x="24" dy="20">== Performance ==</tspan>
+    <tspan x="24" dy="20">profile: steady_small</tspan>
+    <tspan x="24" dy="20">ping: p95 1ms, p99 1ms (n=20)</tspan>
+    <tspan x="24" dy="20">tools/call: p95 &lt;1ms, p99 &lt;1ms (n=20, confidence=high)</tspan>
+    <tspan x="24" dy="20">concurrency: slots=4, ok=0</tspan>
+    <tspan x="24" dy="20">throughput: 0 calls/s</tspan>
+    <tspan x="24" dy="20">budget_fuel: discover=10000000, ping_samples=10000000, tool_call_samples=10000000, concurrent_probe=10000000</tspan>
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20">== Usage ==</tspan>

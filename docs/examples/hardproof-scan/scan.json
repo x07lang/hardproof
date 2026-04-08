@@ -111,6 +111,12 @@
         "PERF-CONCURRENT-TOOLS-CALL-LOW"
       ],
       "metrics": {
+        "budget_fuel_concurrent_probe": 10000000,
+        "budget_fuel_discover": 10000000,
+        "budget_fuel_ping_samples": 10000000,
+        "budget_fuel_tool_call_samples": 10000000,
+        "concurrent_ok_n": 0,
+        "concurrent_slots": 4,
         "ping_p95_ms": 1,
         "ping_p99_ms": 1,
         "ping_sample_count": 20,

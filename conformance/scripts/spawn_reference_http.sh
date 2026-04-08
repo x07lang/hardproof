@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-TARGET_ID="${1:?missing target id (good-http|auth-http|broken-http)}"
+TARGET_ID="${1:?missing target id (good-http|auth-http|broken-http|meta-risk-http|drift-http|remote-loose-http)}"
 MODE="${2:-noauth}"
 
 case "${TARGET_ID}" in
@@ -22,6 +22,24 @@ case "${TARGET_ID}" in
     export MCP_FIXTURE_PORT="${MCP_FIXTURE_PORT:-18082}"
     exec python3 "${ROOT}/scripts/ci/fixtures/mcp_http_fixture_server.py" \
       --fixture-id broken-http \
+      --port "${MCP_FIXTURE_PORT}"
+    ;;
+  meta-risk-http)
+    export MCP_FIXTURE_PORT="${MCP_FIXTURE_PORT:-18083}"
+    exec python3 "${ROOT}/scripts/ci/fixtures/mcp_http_fixture_server.py" \
+      --fixture-id meta-risk-http \
+      --port "${MCP_FIXTURE_PORT}"
+    ;;
+  drift-http)
+    export MCP_FIXTURE_PORT="${MCP_FIXTURE_PORT:-18084}"
+    exec python3 "${ROOT}/scripts/ci/fixtures/mcp_http_fixture_server.py" \
+      --fixture-id drift-http \
+      --port "${MCP_FIXTURE_PORT}"
+    ;;
+  remote-loose-http)
+    export MCP_FIXTURE_PORT="${MCP_FIXTURE_PORT:-18085}"
+    exec python3 "${ROOT}/scripts/ci/fixtures/mcp_http_fixture_server.py" \
+      --fixture-id remote-loose-http \
       --port "${MCP_FIXTURE_PORT}"
     ;;
   *)
