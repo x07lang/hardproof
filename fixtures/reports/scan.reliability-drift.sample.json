@@ -2,7 +2,7 @@
   "schema_version": "x07.mcp.scan.report@0.4.0",
   "tool": "hardproof",
   "tool_family": "hardproof",
-  "tool_version": "0.4.0-beta.2",
+  "tool_version": "0.4.0-beta.3",
   "report_kind": "scan",
   "target": {
     "kind": "mcp_server",

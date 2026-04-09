@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.4.0-beta.3
+
+- Make `hardproof scan` a live, event-driven terminal experience: rich live progress, an alternate-screen `--format tui`, and the supporting `--no-live`, `--event-log`, and `--render-interval-ms` controls.
+- Add token/context truth classes in scan usage metrics: tokenizer-exact counts for `openai:o200k_base` + `openai:cl100k_base`, plus trace-observed usage via `--token-trace` and `--usage-mode`.
+- Refresh release-facing docs, fixtures, and example artifacts for `0.4.0-beta.3`.
+
 ## v0.4.0-beta.2
 
 - Add `--perf-profile` to `hardproof scan` / `hardproof ci` for selecting the performance dimension profile.
