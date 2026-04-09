@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1170" viewBox="0 0 960 1170">
-  <rect width="960" height="1170" rx="12" fill="#0b0e14" />
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1190" viewBox="0 0 960 1190">
+  <rect width="960" height="1190" rx="12" fill="#0b0e14" />
   <circle cx="24" cy="22" r="6" fill="#ff5f56" />
   <circle cx="44" cy="22" r="6" fill="#ffbd2e" />
   <circle cx="64" cy="22" r="6" fill="#27c93f" />
@@ -47,11 +47,12 @@
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20">== Usage ==</tspan>
-    <tspan x="24" dy="20">catalog_tokens: 36</tspan>
-    <tspan x="24" dy="20">response_p95_tokens: 9</tspan>
-    <tspan x="24" dy="20">input_schema_tokens: 5</tspan>
-    <tspan x="24" dy="20">estimator: bytes_per_token_v1/v1</tspan>
+    <tspan x="24" dy="20">mode: estimate</tspan>
     <tspan x="24" dy="20">confidence: low</tspan>
+    <tspan x="24" dy="20">catalog_tokens: 36 (estimated)</tspan>
+    <tspan x="24" dy="20">response_p95_tokens: 9 (estimated)</tspan>
+    <tspan x="24" dy="20">input_schema_tokens: 5 (estimated)</tspan>
+    <tspan x="24" dy="20">estimator: bytes_per_token_v1/v1</tspan>
     <tspan x="24" dy="20">note: Token values are deterministic estimates, not billing-grade truth.</tspan>
     <tspan x="24" dy="20">findings: none</tspan>
     <tspan x="24" dy="20"></tspan>

@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
@@ -53,6 +54,10 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self) -> None:  # noqa: N802
+        delay_ms = getattr(self.server, "delay_ms", 0)
+        if isinstance(delay_ms, int) and delay_ms > 0:
+            time.sleep(delay_ms / 1000.0)
+
         host = self.headers.get("Host", "")
         origin = self.headers.get("Origin", "")
         if self.server.fixture_id != "remote-loose-http":
@@ -260,10 +265,11 @@ class _Handler(BaseHTTPRequestHandler):
 
 
 class _FixtureHttpServer(ThreadingHTTPServer):
-    def __init__(self, addr: tuple[str, int], fixture_id: str):
+    def __init__(self, addr: tuple[str, int], fixture_id: str, delay_ms: int):
         super().__init__(addr, _Handler)
         self.fixture_id = fixture_id
         self.tools_list_calls = 0
+        self.delay_ms = delay_ms
 
 
 def main(argv: list[str]) -> int:
@@ -274,9 +280,10 @@ def main(argv: list[str]) -> int:
         choices=("good-http", "auth-http", "broken-http", "meta-risk-http", "drift-http", "remote-loose-http"),
     )
     parser.add_argument("--port", type=int, required=True)
+    parser.add_argument("--delay-ms", type=int, default=0)
     args = parser.parse_args(argv[1:])
 
-    server = _FixtureHttpServer(("0.0.0.0", args.port), args.fixture_id)
+    server = _FixtureHttpServer(("0.0.0.0", args.port), args.fixture_id, args.delay_ms)
     server.serve_forever(poll_interval=0.1)
     return 0
 

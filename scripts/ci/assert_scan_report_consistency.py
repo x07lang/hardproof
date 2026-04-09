@@ -255,6 +255,90 @@ def main() -> None:
                 f"usage.metadata_to_payload_ratio_pct must be non-negative integer (got {metadata_ratio})"
             )
 
+    usage_mode = usage.get("usage_mode") or "estimate"
+    if usage_mode not in {"estimate", "tokenizer_exact", "trace_observed", "mixed"}:
+        fail(f"usage.usage_mode invalid: {usage_mode}")
+
+    usage_confidence = usage.get("usage_confidence")
+    if usage_confidence is not None and usage_confidence not in {"low", "medium", "high"}:
+        fail(f"usage.usage_confidence invalid: {usage_confidence}")
+
+    exact_keys = [
+        "tool_catalog_tokens_exact",
+        "avg_tool_description_tokens_exact",
+        "max_tool_description_tokens_exact",
+        "input_schema_tokens_exact_total",
+        "response_payload_tokens_exact_p50",
+        "response_payload_tokens_exact_p95",
+    ]
+    observed_keys = [
+        "tool_catalog_tokens_observed",
+        "avg_tool_description_tokens_observed",
+        "max_tool_description_tokens_observed",
+        "input_schema_tokens_observed_total",
+        "response_payload_tokens_observed_p50",
+        "response_payload_tokens_observed_p95",
+    ]
+
+    def assert_int_or_none(key: str) -> None:
+        value = usage.get(key)
+        if value is None:
+            return
+        if not isinstance(value, int) or value < 0:
+            fail(f"usage.{key} must be non-negative integer or null (got {value})")
+
+    for key in exact_keys + observed_keys:
+        assert_int_or_none(key)
+
+    tokenizer_id = usage.get("tokenizer_id")
+    trace_source = usage.get("trace_source")
+    if tokenizer_id is not None and not isinstance(tokenizer_id, str):
+        fail(f"usage.tokenizer_id must be string or null (got {tokenizer_id})")
+    if trace_source is not None and not isinstance(trace_source, str):
+        fail(f"usage.trace_source must be string or null (got {trace_source})")
+
+    if usage_mode == "estimate":
+        if usage_confidence is not None and usage_confidence != "low":
+            fail(f"usage_confidence must be low for estimate mode (got {usage_confidence})")
+        for key in exact_keys + observed_keys:
+            if usage.get(key) is not None:
+                fail(f"{key} must be null for estimate mode (got {usage.get(key)})")
+        if tokenizer_id not in (None, ""):
+            fail(f"tokenizer_id must be empty for estimate mode (got {tokenizer_id})")
+        if trace_source not in (None, ""):
+            fail(f"trace_source must be empty for estimate mode (got {trace_source})")
+    elif usage_mode == "tokenizer_exact":
+        if usage_confidence is not None and usage_confidence == "low":
+            fail(f"usage_confidence too low for tokenizer_exact mode (got {usage_confidence})")
+        if not tokenizer_id:
+            fail("tokenizer_id must be present for tokenizer_exact mode")
+        for key in observed_keys:
+            if usage.get(key) is not None:
+                fail(f"{key} must be null for tokenizer_exact mode (got {usage.get(key)})")
+        if usage.get("tool_catalog_tokens_exact") is None:
+            fail("tool_catalog_tokens_exact must be present for tokenizer_exact mode")
+    elif usage_mode == "trace_observed":
+        if usage_confidence is not None and usage_confidence == "low":
+            fail(f"usage_confidence too low for trace_observed mode (got {usage_confidence})")
+        if not trace_source:
+            fail("trace_source must be present for trace_observed mode")
+        for key in exact_keys:
+            if usage.get(key) is not None:
+                fail(f"{key} must be null for trace_observed mode (got {usage.get(key)})")
+        if all(usage.get(key) is None for key in observed_keys):
+            fail("trace_observed mode requires at least one observed metric value")
+    else:
+        if usage_confidence is not None and usage_confidence == "low":
+            fail(f"usage_confidence too low for mixed mode (got {usage_confidence})")
+        if not tokenizer_id:
+            fail("tokenizer_id must be present for mixed mode")
+        if not trace_source:
+            fail("trace_source must be present for mixed mode")
+        if usage.get("tool_catalog_tokens_exact") is None:
+            fail("tool_catalog_tokens_exact must be present for mixed mode")
+        if usage.get("tool_catalog_tokens_observed") is None:
+            fail("tool_catalog_tokens_observed must be present for mixed mode")
+
 
 if __name__ == "__main__":
     main()

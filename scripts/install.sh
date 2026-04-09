@@ -19,6 +19,8 @@ Options:
 
 Notes:
   - Windows is supported via WSL2. Run this script inside WSL2 to install the linux_x86_64 artifact.
+  - Tokenizer tables are installed to:
+      $XDG_DATA_HOME/hardproof/tokenizers (fallback: ~/.local/share/hardproof/tokenizers)
 USAGE
 }
 
@@ -142,6 +144,8 @@ version="${tag#v}"
 base_url="https://github.com/${REPO}/releases/download/${tag}"
 
 install_path="${install_dir}/hardproof"
+data_home="${XDG_DATA_HOME:-${HOME}/.local/share}"
+tokenizers_install_dir="${data_home}/hardproof/tokenizers"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
@@ -275,6 +279,14 @@ mkdir -p "${install_dir}"
 tar -xzf "${archive_path}" -C "${tmp_dir}"
 cp "${tmp_dir}/hardproof" "${install_path}"
 chmod +x "${install_path}"
+
+if [[ -d "${tmp_dir}/tokenizers" ]]; then
+  mkdir -p "${tokenizers_install_dir}"
+  if ls "${tmp_dir}/tokenizers/"*.table.bin >/dev/null 2>&1; then
+    cp "${tmp_dir}/tokenizers/"*.table.bin "${tokenizers_install_dir}/"
+    echo "==> installed tokenizer tables to ${tokenizers_install_dir}"
+  fi
+fi
 
 echo "==> ok: ${install_path}"
 echo

@@ -167,8 +167,14 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         continue
     event = json.loads(raw_line)
     event["run_id"] = run_id
+    if "timestamp" in event:
+        event["timestamp"] = scan_generated_at
+    if event.get("type") == "scan.started":
+        event["target"] = target_ref
     if event.get("type") == "scan.finished":
         event["report_path"] = "out/scan/scan.json"
+        if "events_path" in event:
+            event["events_path"] = "out/scan/scan.events.jsonl"
     event_lines.append(json.dumps(event, separators=(",", ":")))
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
@@ -300,8 +306,14 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         continue
     event = json.loads(raw_line)
     event["run_id"] = run_id
+    if "timestamp" in event:
+        event["timestamp"] = scan_generated_at
+    if event.get("type") == "scan.started":
+        event["target"] = target_ref
     if event.get("type") == "scan.finished":
         event["report_path"] = "out/scan/scan.json"
+        if "events_path" in event:
+            event["events_path"] = "out/scan/scan.events.jsonl"
     event_lines.append(json.dumps(event, separators=(",", ":")))
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY

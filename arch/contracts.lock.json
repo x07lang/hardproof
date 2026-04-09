@@ -9,6 +9,9 @@
     "arch/budgets/profiles/scan_conformance_v1.budget.json": {
       "jcs_sha256_hex": "dd95d64d3e37dda812fc64b58285e0257944de59d66f72704600072975ad4a36"
     },
+    "arch/budgets/profiles/scan_live_render_v1.budget.json": {
+      "jcs_sha256_hex": "ada0cdacd3f0f244b8f941d25249678a77a76e15c77ce24d8ff87b824af8d360"
+    },
     "arch/budgets/profiles/scan_performance_v1.budget.json": {
       "jcs_sha256_hex": "540c3cd0425a14fbed49951df76ad3f10c7e50e52bcb324f4b5c0b906c560405"
     },
@@ -33,7 +36,7 @@
   },
   "indexes": {
     "arch/budgets/index.x07budgets.json": {
-      "jcs_sha256_hex": "99a04f04008b9de59da0cceb5c4eb543d714840b63c470e03666527df6f5c8af"
+      "jcs_sha256_hex": "cef68f5e1a4021679ed5e24478925b2969b231d1c9f779609eb3b7dcd153c059"
     },
     "arch/sm/index.x07sm.json": {
       "jcs_sha256_hex": "18c864132b3219a1b36026449659f4db07e2edbb47afba058d408795d4c1947a"

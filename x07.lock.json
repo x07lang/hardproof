@@ -48,24 +48,30 @@
     },
     {
       "name": "ext-cli-ux",
-      "version": "0.1.5",
-      "path": ".x07/deps/ext-cli-ux/0.1.5",
-      "package_manifest_sha256": "efb239baa8dee178f23deaa3c2ff91a109aeeea6b066650721eea882dbf692aa",
+      "version": "0.1.6",
+      "path": ".x07/deps/ext-cli-ux/0.1.6",
+      "package_manifest_sha256": "c0ba8501168c3365e4bad70bdb0a801e8f03c9f7fee68a2aada21de8e8b2f34a",
       "module_root": "modules",
       "modules_sha256": {
-        "std.cli.bar": "e7a86f4378d528b6aa02e746fc11857b8cd0bf2b8ceaea248610d36261a1a9e8",
-        "std.cli.events": "e795926c5f782d04ff774c11626999b06cd5a55c2ec53fbe3ea6dccc38adedc2",
+        "std.cli.bar": "26aa3dedb543ebdb381c6262500eebbe7478348d9055f06b7262ee4b4c694000",
+        "std.cli.events": "6441d2368d22611cc0f2068dc5d537cfd43b3f493643e50cae3f1bcaef6800be",
+        "std.cli.findings_list": "c5aa5ea51741b5a3060d655ff64a9bd1cb0a9e325241d316715df211854e448c",
+        "std.cli.frame_diff": "7392efa120ca0b4d324267c55906d56b2dee3cc03b3d4a194987604ea17ebe9e",
         "std.cli.jsonl": "51f6653a4a523e3e4a2b747caf98f779a892d12fd5205fab91186142d27c30f4",
         "std.cli.kv": "593ed123097350245d0a81a7016bad6d66bc06425ee0b4b70d83fa4681ff87a7",
-        "std.cli.layout": "25a7b095ee62e7b6cad66a3881c328689f0064ccded2d754d938fea20b34e075",
-        "std.cli.panel": "565aa5bc4b087b00b13ac04e08522afced7cbebd1c3412ae3a7ac3936e4653cf",
+        "std.cli.layout": "0a47c37fac42ddf11506235083471226786de7f62e48644a811cb650686cf25b",
+        "std.cli.live_table": "1562cdc551bf2915c700d713f3834022df2943b6d748e318b3fade4cae0d629e",
+        "std.cli.panel": "ce9264c90a3562e61bbe31af89adcc01e2a909c22e3c4ff242b07fe54241c0ac",
         "std.cli.profile": "78c421662ab42929eda91843475c3a475ddb3b2c36fe5e89a9bdceaf74b8a87f",
         "std.cli.progress": "1c19a01507c59facd1cf7db73da66ad4e6f0a651b972ce12f1a3503378d3890f",
+        "std.cli.progress_stage": "71727e647edda2301f22cefaa3598b23f1df9090e5360ee2a905ac3b1d0ecacf",
         "std.cli.section": "ecbac52d335b90dc2bf0bc0c10903b45594ab15cf4169b062e609706695df28a",
-        "std.cli.status": "e9a9cfd4be270bef555c8214b5e6d7ed1f87124c98a663f100ce15fa33ee56d9",
+        "std.cli.spinner": "26301e4a39cccbaebfbb6723e434fbac0909af559cc50b64de108e7b849d72eb",
+        "std.cli.status": "e45e7e56c823b8938510af87b3e80c409cc5d499e50bca72e2330fc281765d88",
+        "std.cli.summary_grid": "b0ad12ad3d41c6754de26bf91d3a89bbb7ddf33c4470be1ab21ca72735724991",
         "std.cli.table": "9c49241060448a0f83a46b8f1760f7767cf22e6fb7385ee15df8e52acd5af988",
-        "std.cli.term": "0472e5c9f91c173c2dafad4f08bbe5c9a46b3da4c5895f4b52b707454437c977",
-        "std.cli.tests": "f61bca4eeb430c0a497ede4d31213014f548d41b001498a772b146147ee65daa"
+        "std.cli.term": "67e375016e4750b98f555c93726b090764519368ddba7e6daaae17b821f974aa",
+        "std.cli.tests": "f1527f4f29e85bfd06b48135626ca927847b4eaed7e6b69404ad7f6d11c15a80"
       },
       "yanked": false
     },
@@ -556,14 +562,15 @@
     },
     {
       "name": "ext-regex",
-      "version": "0.2.4",
-      "path": ".x07/deps/ext-regex/0.2.4",
-      "package_manifest_sha256": "5f10da1b19bbb296e460cf903d4b93954b55411f59c913eb6044354c497c6a18",
+      "version": "0.2.5",
+      "path": ".x07/deps/ext-regex/0.2.5",
+      "package_manifest_sha256": "2b050b0695dd3dddb28b2aa40c7180ce15bc75f33e067fd6235a73dc746b3c2e",
       "module_root": "modules",
       "modules_sha256": {
-        "ext.regex": "2167fb0d3ffb85e92cdac612dfb8b5de4dbb52a211bfadc8630d67d91fba16be",
+        "ext.regex": "478683d110a814a169f9ddffb69dc7cbdfe8a666a8365b7676778a81a9068ca5",
         "ext.regex.tests": "3626ebe4b5b487e82bc4ded9745cd3acd6a21258ac3a3b8e6f6696ee1fa75f5d"
       },
+      "overridden_by": "ext-regex",
       "yanked": false
     },
     {

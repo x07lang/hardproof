@@ -14,10 +14,13 @@ hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --max-critical 0
 
 Use `--format` (or `--ui`) to choose a presentation mode:
 
-- `rich` (default): terminal scorecard using `ext-cli-ux`
-- `compact`: condensed text
+- `rich` (default): live progress on interactive terminals + final scorecard
+- `tui`: alternate-screen live UI (falls back to `rich` when the terminal is non-interactive)
+- `compact`: stable, line-oriented output suited to CI logs
 - `json`: the full report JSON
-- `jsonl`: the scan event stream
+- `jsonl`: the scan event stream only (live JSONL to stdout)
+
+Live rendering is enabled by default for `rich`, `compact`, `jsonl`, and `tui` on interactive terminals. Use `--no-live` to disable live rendering and only print the final report render.
 
 ## Extra scan options
 
@@ -29,10 +32,56 @@ Use `--format` (or `--ui`) to choose a presentation mode:
 - `--max-tool-count <INT>`: attach a usage-policy preview threshold to the scan invocation.
 - `--require-trust-for-full-score`: require trust evidence before reporting a full overall score.
 - `--server-json <PATH>` / `--mcpb <PATH>`: enable deeper Trust checks by providing registry artifacts.
+- `--event-log <PATH>`: override the default `scan.events.jsonl` path.
+- `--render-interval-ms <INT>`: live render cadence for debugging/profiling.
 
 `hardproof scan` accepts the usage-policy threshold flags so the same invocation surface is available in local triage. Enforcement still happens in `hardproof ci`.
 
 Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `overall_score` stays `null`, `partial_score` remains machine-readable, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a full score.
+
+## Token truth modes
+
+Hardproof’s token/context metrics support multiple truth classes:
+
+- `estimate`: deterministic estimates (not billing-grade)
+- `tokenizer_exact`: exact counts under a selected tokenizer profile
+- `trace_observed`: observed counts from a real client trace
+- `mixed`: a mix of exact + observed, per-metric
+
+Key flags:
+
+```sh
+hardproof scan --tokenizer openai:o200k_base
+hardproof scan --usage-mode exact --tokenizer openai:o200k_base
+hardproof scan --usage-mode observed --token-trace path/to/trace.json
+hardproof scan --usage-mode estimate
+```
+
+Notes:
+
+- `--usage-mode exact` requires `--tokenizer`.
+- `--usage-mode observed` requires `--token-trace`.
+- `--usage-mode auto` selects the best available truth source (tokenizer and/or trace), otherwise falls back to `estimate`.
+- Hardproof locates tokenizer tables in this order:
+  - `HARDPROOF_TOKENIZERS_DIR`
+  - `$XDG_DATA_HOME/hardproof/tokenizers` (fallback: `~/.local/share/hardproof/tokenizers`)
+  - `./tokenizers`
+
+`--token-trace` currently expects a JSON object shaped like:
+
+```json
+{
+  "source": "trace:<id>",
+  "metrics": {
+    "tool_catalog_tokens": 3068,
+    "avg_tool_description_tokens": 42,
+    "max_tool_description_tokens": 120,
+    "input_schema_tokens_total": 900,
+    "response_tokens_p50": 12,
+    "response_tokens_p95": 48
+  }
+}
+```
 
 ## Output directory layout
 

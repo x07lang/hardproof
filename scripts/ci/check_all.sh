@@ -4,6 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${repo_root}"
 
+export HARDPROOF_TOKENIZERS_DIR="${repo_root}/tokenizers"
+
 echo "==> repo hygiene"
 python3 scripts/ci/check_repo_hygiene.py >/dev/null
 
@@ -121,7 +123,7 @@ x07 trust report \
   --json=off >/dev/null
 test -s "${score_core_trust_report}"
 
-bin_path="${tmp_dir}/hardproof"
+bin_path="${repo_root}/${tmp_dir}/hardproof"
 bundle_log="${tmp_dir}/bundle.log"
 if ! x07 bundle --project x07.json --profile os --json=off --out "${bin_path}" >"${bundle_log}" 2>&1; then
   echo "ERROR: x07 bundle failed." >&2
@@ -141,6 +143,8 @@ rm -rf "${release_extract_dir}"
 mkdir -p "${release_extract_dir}"
 tar -xzf "${release_archive}" -C "${release_extract_dir}"
 "${release_extract_dir}/hardproof" --help >/dev/null
+test -s "${release_extract_dir}/tokenizers/cl100k_base.table.bin"
+test -s "${release_extract_dir}/tokenizers/o200k_base.table.bin"
 
 echo "==> cli smoke"
 "${bin_path}" --help >/dev/null
@@ -186,8 +190,14 @@ grep -q -- '--score-preview' "${scan_help_out}"
 grep -q -- '--max-avg-tool-description-tokens' "${scan_help_out}"
 grep -q -- '--max-tool-count' "${scan_help_out}"
 grep -q -- '--perf-profile' "${scan_help_out}"
+grep -q -- '--no-live' "${scan_help_out}"
+grep -q -- '--event-log' "${scan_help_out}"
+grep -q -- '--render-interval-ms' "${scan_help_out}"
 grep -q -- '--require-trust-for-full-score' "${scan_help_out}"
 grep -q -- '--transport' "${scan_help_out}"
+grep -q -- '--tokenizer' "${scan_help_out}"
+grep -q -- '--usage-mode' "${scan_help_out}"
+grep -q -- '--token-trace' "${scan_help_out}"
 
 ci_help_out="${tmp_dir}/ci.help.txt"
 "${bin_path}" ci --help >"${ci_help_out}"
@@ -201,6 +211,9 @@ grep -q -- '--max-tool-count' "${ci_help_out}"
 grep -q -- '--min-dimension' "${ci_help_out}"
 grep -q -- '--policy' "${ci_help_out}"
 grep -q -- '--perf-profile' "${ci_help_out}"
+grep -q -- '--tokenizer' "${ci_help_out}"
+grep -q -- '--usage-mode' "${ci_help_out}"
+grep -q -- '--token-trace' "${ci_help_out}"
 
 set +e
 "${bin_path}" explain PERF-TOOLS-CALL-FAILED >/dev/null
@@ -304,6 +317,7 @@ run_cli_regression_smoke() (
 
   local abs_root
   abs_root="$(mktemp -d "${tmp_dir}/cli-abs.XXXXXX")"
+  abs_root="$(cd "${abs_root}" && pwd)"
 
   local abs_scan_out="${abs_root}/scan"
   set +e
@@ -322,6 +336,83 @@ run_cli_regression_smoke() (
   fi
   test -s "${abs_scan_out}/scan.json"
   test -s "${abs_scan_out}/scan.events.jsonl"
+
+  local abs_exact_usage_out="${abs_root}/scan-usage-exact"
+  set +e
+  "${bin_path}" scan \
+    --url http://127.0.0.1:18080/mcp \
+    --transport http \
+    --out "${abs_exact_usage_out}" \
+    --usage-mode exact \
+    --tokenizer openai:o200k_base \
+    --machine json >"${tmp_dir}/scan.usage_exact.stdout.json"
+  local scan_exact_usage_exit="$?"
+  set -e
+  if [[ "${scan_exact_usage_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan exact usage regression (expected 0, got ${scan_exact_usage_exit})" >&2
+    cat "${tmp_dir}/scan.usage_exact.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${abs_exact_usage_out}/scan.json"
+
+  python3 - "${abs_exact_usage_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+usage = report["usage_metrics"]
+assert usage["usage_mode"] == "tokenizer_exact", usage
+assert usage["usage_confidence"] == "high", usage
+assert usage["tokenizer_id"] == "openai:o200k_base", usage
+assert isinstance(usage["tool_catalog_tokens_exact"], int), usage
+assert usage["tool_catalog_tokens_exact"] >= 0, usage
+PY
+
+  local abs_xdg_data_home="${abs_root}/xdg-data-home"
+  mkdir -p "${abs_xdg_data_home}/hardproof/tokenizers"
+  cp "${repo_root}/tokenizers/"*.table.bin "${abs_xdg_data_home}/hardproof/tokenizers/"
+
+  local abs_xdg_usage_out="${abs_root}/scan-usage-xdg"
+  local abs_isolated_cwd="${abs_root}/isolated-cwd"
+  mkdir -p "${abs_isolated_cwd}"
+  set +e
+  (
+    cd "${abs_isolated_cwd}"
+    HARDPROOF_TOKENIZERS_DIR="" XDG_DATA_HOME="${abs_xdg_data_home}" "${bin_path}" scan \
+      --url http://127.0.0.1:18080/mcp \
+      --transport http \
+      --out "${abs_xdg_usage_out}" \
+      --usage-mode exact \
+      --tokenizer openai:o200k_base \
+      --machine json
+  ) >"${tmp_dir}/scan.usage_xdg.stdout.json"
+  local scan_xdg_usage_exit="$?"
+  set -e
+  if [[ "${scan_xdg_usage_exit}" != "0" ]]; then
+    echo "ERROR: hardproof scan exact usage via XDG_DATA_HOME regression (expected 0, got ${scan_xdg_usage_exit})" >&2
+    cat "${tmp_dir}/scan.usage_xdg.stdout.json" >&2 || true
+    tail -n 200 "${server_log}" >&2 || true
+    exit 1
+  fi
+  test -s "${abs_xdg_usage_out}/scan.json"
+
+  python3 - "${abs_xdg_usage_out}/scan.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    report = json.load(f)
+
+usage = report["usage_metrics"]
+assert usage["usage_mode"] == "tokenizer_exact", usage
+assert usage["usage_confidence"] == "high", usage
+assert usage["tokenizer_id"] == "openai:o200k_base", usage
+assert isinstance(usage["tool_catalog_tokens_exact"], int), usage
+assert usage["tool_catalog_tokens_exact"] >= 0, usage
+PY
 
   local abs_full_suite_out="${abs_root}/scan-full-suite"
   set +e

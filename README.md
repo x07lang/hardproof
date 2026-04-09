@@ -74,6 +74,12 @@ hardproof scan \
   --format rich
 ```
 
+For an alternate-screen live UI:
+
+```bash
+hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --ui tui
+```
+
 Review the result:
 
 ```bash
@@ -109,6 +115,29 @@ hardproof ci \
   --max-tool-count 50 \
   --max-metadata-to-payload-ratio-pct 500
 ```
+
+### Token truth (usage metrics)
+
+Hardproof labels token metrics by truth class:
+
+- `estimate`: deterministic estimates
+- `tokenizer_exact`: exact counts under a chosen tokenizer profile
+- `trace_observed`: observed counts from a real client trace
+- `mixed`: per-metric mix of exact + observed
+
+Examples:
+
+```bash
+hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode estimate
+hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode exact --tokenizer openai:o200k_base
+hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode observed --token-trace trace.json
+```
+
+Tokenizer tables are resolved in this order:
+
+- `HARDPROOF_TOKENIZERS_DIR`
+- `$XDG_DATA_HOME/hardproof/tokenizers` (fallback: `~/.local/share/hardproof/tokenizers`)
+- `./tokenizers`
 
 ### Explain findings and render reports
 

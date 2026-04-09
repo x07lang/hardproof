@@ -38,6 +38,8 @@ bin_name="hardproof"
 bin_path="${work_dir}/${bin_name}"
 readme_name="README-beta.txt"
 readme_path="${work_dir}/${readme_name}"
+tokenizers_name="tokenizers"
+tokenizers_src_dir="${repo_root}/${tokenizers_name}"
 
 if ! command -v cc >/dev/null 2>&1; then
   echo "ERROR: missing C compiler (cc) required for x07 bundle packaging." >&2
@@ -70,13 +72,29 @@ Next:
   ./hardproof --help
   ./hardproof doctor
   ./hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --machine json
+
+Tokenizer tables:
+  Exact usage-mode requires tokenizer tables. This archive includes them under ./tokenizers/.
 TXT
 
 version="${tag#v}"
 archive_base="hardproof_${version}_${artifact_suffix}"
 archive_path="${dist_dir}/${archive_base}.tar.gz"
 
+if [[ -d "${tokenizers_src_dir}" ]]; then
+  echo "==> stage tokenizer tables"
+  rm -rf "${work_dir}/${tokenizers_name}"
+  mkdir -p "${work_dir}/${tokenizers_name}"
+  if ls "${tokenizers_src_dir}"/*.table.bin >/dev/null 2>&1; then
+    cp "${tokenizers_src_dir}"/*.table.bin "${work_dir}/${tokenizers_name}/"
+  fi
+fi
+
 echo "==> package ${archive_path}"
-tar -C "${work_dir}" -czf "${archive_path}" "${bin_name}" "${readme_name}"
+tar_items=("${bin_name}" "${readme_name}")
+if [[ -d "${work_dir}/${tokenizers_name}" ]]; then
+  tar_items+=("${tokenizers_name}")
+fi
+tar -C "${work_dir}" -czf "${archive_path}" "${tar_items[@]}"
 
 echo "${archive_path}"
