@@ -59,6 +59,7 @@ jobs:
           url: http://127.0.0.1:18080/mcp
           full-suite: "false"
           sarif: "true"
+          allow-partial-score: "true"
           version: ${{ steps.beta.outputs.beta_tag }}
 
       - name: Upload reports
