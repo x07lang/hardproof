@@ -24,27 +24,27 @@ A normal scan writes `scan.json`, `scan.events.jsonl`, and optional rendered rep
 Hardproof distinguishes between a full score and a partial score.
 
 - **Full score:** `score_mode` is `full`, `overall_score` is populated, and `score_truth_status` is `publishable`.
-- **Partial score:** `score_mode` is `partial`, `overall_score` stays `null`, `partial_score` stays machine-readable, and rich output renders the score as withheld.
+- **Partial score:** `score_mode` is `partial`, `score_truth_status` is `partial`, and `overall_score` is still computed as the effective score (matching `partial_score`).
 
-Trust is part of the full-score bar. If you want a full score, provide `--server-json` and, when available, `--mcpb`. `hardproof ci` now fails on `score_mode=partial` by default; use `--allow-partial-score` only when partial gating is intentional.
+Hardproof uses `score_truth_status` to distinguish publishable (“full”) scores from partial ones. To make Trust publishable, provide `--server-json` and, when available, `--mcpb`. If you need strict withholding, pass `--require-trust-for-full-score` (the scan remains `score_truth_status=partial` until Trust evidence is present). `hardproof ci` fails on `score_mode=partial` by default; use `--allow-partial-score` only when partial gating is intentional.
 
 ## Install
 
-Release artifacts are published from tags such as `v0.4.0-beta.3`.
+Release artifacts are published from tags such as `v0.4.0-beta.4`.
 
 ### Install script
 
 Each beta release publishes an installer script that downloads the correct archive, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.3/install.sh" \
-  | bash -s -- --tag "v0.4.0-beta.3"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.4/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.4"
 ```
 
 To resolve the latest beta tag automatically:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.3/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.4/install.sh" \
   | bash -s -- --tag latest-beta
 ```
 
@@ -137,7 +137,8 @@ Tokenizer tables are resolved in this order:
 
 - `HARDPROOF_TOKENIZERS_DIR`
 - `$XDG_DATA_HOME/hardproof/tokenizers` (fallback: `~/.local/share/hardproof/tokenizers`)
-- `./tokenizers`
+- `<hardproof_exe_dir>/tokenizers` (release archives ship tables next to the binary)
+- `./tokenizers` (fallback)
 
 ### Explain findings and render reports
 
@@ -161,7 +162,7 @@ hardproof bundle verify --server-json server.json --mcpb server.mcpb
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.3
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.4
   with:
     url: http://127.0.0.1:3000/mcp
 ```

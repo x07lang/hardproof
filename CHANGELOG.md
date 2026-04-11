@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v0.4.0-beta.4
+
+- Fix release packaging so human scan formats (`--format rich|compact|tui`) work from any working directory (ships `arch/cli` and resolves runtime assets relative to the executable).
+- Build Linux release artifacts for a conservative x86_64 baseline to avoid `Illegal instruction` crashes on older CPUs.
+- Make performance probes trustworthy: record real tool-call/concurrency samples, derive confidence from successes, and keep ms evidence non-zero in reports.
+- Default token usage to tokenizer-exact truth in `--usage-mode auto` when tokenizer tables are available (default tokenizer: `openai:o200k_base`).
+- Emit check-level lifecycle events (`scan.check.started`/`scan.check.finished`) and finding events to support live rich/tui progress.
+- Make Trust deterministic for plain URL scans (missing evidence → Trust FAIL, overall score still computed) and add trust auto-discovery for `--url` scans.
+- Refresh docs, examples, website sample reports, and add a release QA matrix script.
+
 ## v0.4.0-beta.3
 
 - Make `hardproof scan` a live, event-driven terminal experience: rich live progress, an alternate-screen `--format tui`, and the supporting `--no-live`, `--event-log`, and `--render-interval-ms` controls.

@@ -164,6 +164,13 @@
       "returns": "bytes_status_v1"
     },
     {
+      "id": "cli/view_model_live_check_events/progress_updates",
+      "world": "run-os",
+      "entry": "tests.view_model_live_check_events.progress_updates_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
       "id": "cli/tokenizers_truth/openai_cl100k",
       "world": "run-os",
       "entry": "tests.tokenizers_truth.openai_cl100k_v1",

@@ -9,7 +9,7 @@
     },
     {
       "content_type": "application/json",
-      "digest": "fc410da1666e8da646b50bd3cd257854d7023bd80c1c0fa91d36378f5f6ce3ff",
+      "digest": "ceab7bf39a337982e3849910f039068f75882768bcbceb256035edc68fe0d26e",
       "id": "perf.samples.json",
       "kind": "report",
       "path": "perf.samples.json"
@@ -106,30 +106,27 @@
       "artifact_refs": [
         "perf.samples.json"
       ],
-      "finding_refs": [
-        "PERF-TOOLS-CALL-FAILED",
-        "PERF-CONCURRENT-TOOLS-CALL-LOW"
-      ],
+      "finding_refs": [],
       "metrics": {
         "budget_fuel_concurrent_probe": 10000000,
         "budget_fuel_discover": 10000000,
         "budget_fuel_ping_samples": 10000000,
         "budget_fuel_tool_call_samples": 10000000,
-        "concurrent_ok_n": 0,
+        "concurrent_ok_n": 4,
         "concurrent_slots": 4,
         "ping_p95_ms": 1,
         "ping_p99_ms": 1,
         "ping_sample_count": 20,
-        "throughput_calls_per_sec": 0,
+        "throughput_calls_per_sec": 1000,
         "tool_call_confidence": "high",
-        "tool_call_p95_ms": 0,
-        "tool_call_p99_ms": 0,
+        "tool_call_p95_ms": 1,
+        "tool_call_p99_ms": 1,
         "tool_call_sample_count": 20,
         "workload_profile": "steady_small"
       },
       "name": "performance",
-      "score": 73,
-      "status": "warn",
+      "score": 100,
+      "status": "pass",
       "weight": 0.15
     },
     {
@@ -187,26 +184,6 @@
   "elapsed_ms": 112,
   "findings": [
     {
-      "code": "PERF-TOOLS-CALL-FAILED",
-      "dimension": "performance",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-TOOLS-CALL-FAILED",
-      "evidence": {},
-      "severity": "warning",
-      "suggested_fix": "Expose at least one low-latency tool that can be called with empty arguments.",
-      "summary": "Representative tools/call attempts did not succeed.",
-      "title": "Tool calls failed"
-    },
-    {
-      "code": "PERF-CONCURRENT-TOOLS-CALL-LOW",
-      "dimension": "performance",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-CONCURRENT-TOOLS-CALL-LOW",
-      "evidence": {},
-      "severity": "warning",
-      "suggested_fix": "Audit concurrency limits and ensure the server is safe under bounded parallel calls.",
-      "summary": "Concurrent tools/call requests did not succeed reliably.",
-      "title": "Low concurrent tool-call success"
-    },
-    {
       "code": "TRUST-TRUSTPACK-MISSING",
       "dimension": "trust",
       "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-TRUSTPACK-MISSING",
@@ -220,10 +197,10 @@
   "gating_reasons": [],
   "generated_at": "2026-04-07T03:03:12.000000000Z",
   "methodology_version": "0.4.0",
-  "overall_score": 91,
+  "overall_score": 96,
   "overall_status": "warn",
   "partial_reasons": [],
-  "partial_score": 91,
+  "partial_score": 96,
   "report_digest": "b1a6a8a9f520a1c72f911ba0c5f1d7a7a6b33c71af4f20e5c0c17b7a0d4a2e7a",
   "report_kind": "scan",
   "run_id": "9f4e4e52d59e3db3",
@@ -242,12 +219,12 @@
   },
   "tool": "hardproof",
   "tool_family": "hardproof",
-  "tool_version": "0.4.0-beta.3",
+  "tool_version": "0.4.0-beta.4",
   "transport": "streamable_http",
   "unknown_dimensions": [],
   "usage_metrics": {
     "avg_tool_description_tokens": 3,
-    "avg_tool_description_tokens_exact": null,
+    "avg_tool_description_tokens_exact": 2,
     "avg_tool_description_tokens_observed": null,
     "estimator_confidence": "low",
     "estimator_family": "bytes_per_token_v1",
@@ -255,28 +232,28 @@
     "example_payload_est_tokens_total": 0,
     "input_schema_bytes_total": 17,
     "input_schema_est_tokens_total": 5,
-    "input_schema_tokens_exact_total": null,
+    "input_schema_tokens_exact_total": 5,
     "input_schema_tokens_observed_total": null,
     "max_tool_description_tokens": 3,
-    "max_tool_description_tokens_exact": null,
+    "max_tool_description_tokens_exact": 2,
     "max_tool_description_tokens_observed": null,
     "metadata_to_payload_ratio_pct": 391,
     "replay_transcript_est_tokens_total": 0,
     "response_payload_est_tokens_p50": 9,
     "response_payload_est_tokens_p95": 9,
-    "response_payload_tokens_exact_p50": null,
-    "response_payload_tokens_exact_p95": null,
+    "response_payload_tokens_exact_p50": 16,
+    "response_payload_tokens_exact_p95": 16,
     "response_payload_tokens_observed_p50": null,
     "response_payload_tokens_observed_p95": null,
-    "tokenizer_id": "",
+    "tokenizer_id": "openai:o200k_base",
     "tool_catalog_bytes": 141,
     "tool_catalog_est_tokens_cl100k": 36,
     "tool_catalog_est_tokens_o200k": 32,
-    "tool_catalog_tokens_exact": null,
+    "tool_catalog_tokens_exact": 39,
     "tool_catalog_tokens_observed": null,
     "tool_count": 1,
     "trace_source": "",
-    "usage_confidence": "low",
-    "usage_mode": "estimate"
+    "usage_confidence": "high",
+    "usage_mode": "tokenizer_exact"
   }
 }

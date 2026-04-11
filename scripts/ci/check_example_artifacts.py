@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
-CURRENT_TOOL_VERSION = "0.4.0-beta.3"
+CURRENT_TOOL_VERSION = "0.4.0-beta.4"
 
 
 def fail(message: str) -> None:
@@ -89,12 +89,14 @@ def main() -> None:
         if expect_score_mode == "partial":
             if scan.get("score_truth_status") != "partial":
                 fail(f"{example_name}: expected score_truth_status=partial")
-            if scan.get("overall_score") is not None:
-                fail(f"{example_name}: expected overall_score=null for partial")
-            if scan.get("unknown_dimensions") != ["trust"]:
-                fail(f"{example_name}: expected unknown_dimensions=['trust']")
-            if scan.get("dimension_coverage", {}).get("trust") is not False:
-                fail(f"{example_name}: expected trust dimension_coverage=false")
+            if not isinstance(scan.get("overall_score"), int):
+                fail(f"{example_name}: expected overall_score integer for partial")
+            if scan.get("overall_score") != scan.get("partial_score"):
+                fail(f"{example_name}: expected overall_score to match partial_score for partial")
+            if scan.get("unknown_dimensions") != []:
+                fail(f"{example_name}: expected unknown_dimensions=[] for partial")
+            if scan.get("dimension_coverage", {}).get("trust") is not True:
+                fail(f"{example_name}: expected trust dimension_coverage=true")
         else:
             if scan.get("score_truth_status") != "publishable":
                 fail(f"{example_name}: expected score_truth_status=publishable")
@@ -123,6 +125,12 @@ def main() -> None:
         run_id = scan.get("run_id")
         if any(event.get("run_id") != run_id for event in events):
             fail(f"{example_name}: scan.events.jsonl run_id drifted from scan.json")
+        has_check_started = any(event.get("type") == "scan.check.started" for event in events)
+        has_check_finished = any(event.get("type") == "scan.check.finished" for event in events)
+        if not has_check_started:
+            fail(f"{example_name}: scan.events.jsonl is missing scan.check.started events")
+        if not has_check_finished:
+            fail(f"{example_name}: scan.events.jsonl is missing scan.check.finished events")
         finished = events[-1]
         if finished.get("type") != "scan.finished":
             fail(f"{example_name}: scan.events.jsonl is missing a final scan.finished event")
@@ -189,8 +197,9 @@ def main() -> None:
         else:
             if "Hardproof - FULL SCORE" not in svg_text:
                 fail(f"{example_name}: terminal.svg is missing FULL SCORE banner")
-        if "deterministic estimates" not in svg_text:
-            fail(f"{example_name}: terminal.svg is missing estimate-grade usage note")
+        for needle in ("mode: tokenizer_exact", "confidence: high", "tokenizer: openai:o200k_base"):
+            if needle not in svg_text:
+                fail(f"{example_name}: terminal.svg is missing usage truth line: {needle!r}")
 
     validate_example("hardproof-scan", "partial")
     validate_example("hardproof-scan-full", "full")

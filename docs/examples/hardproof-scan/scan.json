@@ -9,7 +9,7 @@
     },
     {
       "content_type": "application/json",
-      "digest": "fc410da1666e8da646b50bd3cd257854d7023bd80c1c0fa91d36378f5f6ce3ff",
+      "digest": "ceab7bf39a337982e3849910f039068f75882768bcbceb256035edc68fe0d26e",
       "id": "perf.samples.json",
       "kind": "report",
       "path": "perf.samples.json"
@@ -41,7 +41,7 @@
     "performance": true,
     "reliability": true,
     "security": true,
-    "trust": false
+    "trust": true
   },
   "dimensions": [
     {
@@ -106,40 +106,38 @@
       "artifact_refs": [
         "perf.samples.json"
       ],
-      "finding_refs": [
-        "PERF-TOOLS-CALL-FAILED",
-        "PERF-CONCURRENT-TOOLS-CALL-LOW"
-      ],
+      "finding_refs": [],
       "metrics": {
         "budget_fuel_concurrent_probe": 10000000,
         "budget_fuel_discover": 10000000,
         "budget_fuel_ping_samples": 10000000,
         "budget_fuel_tool_call_samples": 10000000,
-        "concurrent_ok_n": 0,
+        "concurrent_ok_n": 4,
         "concurrent_slots": 4,
         "ping_p95_ms": 1,
         "ping_p99_ms": 1,
         "ping_sample_count": 20,
-        "throughput_calls_per_sec": 0,
+        "throughput_calls_per_sec": 1000,
         "tool_call_confidence": "high",
-        "tool_call_p95_ms": 0,
-        "tool_call_p99_ms": 0,
+        "tool_call_p95_ms": 1,
+        "tool_call_p99_ms": 1,
         "tool_call_sample_count": 20,
         "workload_profile": "steady_small"
       },
       "name": "performance",
-      "score": 73,
-      "status": "warn",
+      "score": 100,
+      "status": "pass",
       "weight": 0.15
     },
     {
       "artifact_refs": [],
       "finding_refs": [
-        "TRUST-NOT-EVALUABLE"
+        "TRUST-EVIDENCE-MISSING",
+        "TRUST-PUBLISHER-META-MISSING"
       ],
       "metrics": {
-        "bundle_consistency": "unknown",
-        "bundle_status": "unknown",
+        "bundle_consistency": "fail",
+        "bundle_status": "fail",
         "identity_confidence": "low",
         "publisher_identity": "warn",
         "publisher_status": "warn",
@@ -147,11 +145,11 @@
         "signature_status": "unknown",
         "tlog_status": "unknown",
         "transparency_evidence": "unknown",
-        "trust_evaluable": false
+        "trust_evaluable": true
       },
       "name": "trust",
-      "score": null,
-      "status": "unknown",
+      "score": 0,
+      "status": "fail",
       "weight": 0.2
     },
     {
@@ -187,53 +185,33 @@
   "elapsed_ms": 109,
   "findings": [
     {
-      "code": "PERF-TOOLS-CALL-FAILED",
-      "dimension": "performance",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-TOOLS-CALL-FAILED",
-      "evidence": {},
-      "severity": "warning",
-      "suggested_fix": "Expose at least one low-latency tool that can be called with empty arguments.",
-      "summary": "Representative tools/call attempts did not succeed.",
-      "title": "Tool calls failed"
-    },
-    {
-      "code": "PERF-CONCURRENT-TOOLS-CALL-LOW",
-      "dimension": "performance",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/PERF-CONCURRENT-TOOLS-CALL-LOW",
-      "evidence": {},
-      "severity": "warning",
-      "suggested_fix": "Audit concurrency limits and ensure the server is safe under bounded parallel calls.",
-      "summary": "Concurrent tools/call requests did not succeed reliably.",
-      "title": "Low concurrent tool-call success"
-    },
-    {
-      "code": "TRUST-NOT-EVALUABLE",
+      "code": "TRUST-EVIDENCE-MISSING",
       "dimension": "trust",
-      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-NOT-EVALUABLE",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-EVIDENCE-MISSING",
       "evidence": {},
-      "severity": "info",
-      "suggested_fix": "Provide --server-json and, when available, --mcpb so trust checks can run.",
-      "summary": "Trust checks could not run because the scan did not receive enough release metadata to evaluate trust.",
-      "title": "Trust not evaluable"
+      "severity": "critical",
+      "suggested_fix": "Provide --server-json (and --mcpb when available) to enable trust verification.",
+      "summary": "No server.json metadata was provided, so publisher/signature/tlog trust checks cannot run.",
+      "title": "Trust evidence missing"
+    },
+    {
+      "code": "TRUST-PUBLISHER-META-MISSING",
+      "dimension": "trust",
+      "docs_ref": "https://x07.io/docs/hardproof/findings/TRUST-PUBLISHER-META-MISSING",
+      "evidence": {},
+      "severity": "warning",
+      "suggested_fix": "Publish server.json with registry publisher metadata under _meta.",
+      "summary": "server.json does not include publisher-provided trust metadata.",
+      "title": "Publisher metadata missing"
     }
   ],
-  "gating_reasons": [
-    "TRUST-NOT-EVALUABLE",
-    "SERVER-JSON-MISSING",
-    "WEIGHT-COVERAGE-BELOW-FULL",
-    "UNKNOWN-DIMENSIONS"
-  ],
+  "gating_reasons": [],
   "generated_at": "2026-04-07T03:02:48.502480000Z",
   "methodology_version": "0.4.0",
-  "overall_score": null,
-  "overall_status": "warn",
-  "partial_reasons": [
-    "TRUST-NOT-EVALUABLE",
-    "SERVER-JSON-MISSING",
-    "WEIGHT-COVERAGE-BELOW-FULL",
-    "UNKNOWN-DIMENSIONS"
-  ],
-  "partial_score": 94,
+  "overall_score": 80,
+  "overall_status": "fail",
+  "partial_reasons": [],
+  "partial_score": 80,
   "report_digest": "2219299e1f07614bcb914dee5e038ba783a69f20579a03cc5a6036a62fcde90f",
   "report_kind": "scan",
   "run_id": "aafd25173b9701cb",
@@ -241,9 +219,9 @@
   "score_available": true,
   "score_mode": "partial",
   "score_truth_status": "partial",
-  "score_weight_present": 80,
+  "score_weight_present": 100,
   "spec_baseline": "mcp@2025-11-25",
-  "status": "warn",
+  "status": "fail",
   "target": {
     "kind": "mcp_server",
     "meta": {},
@@ -252,14 +230,12 @@
   },
   "tool": "hardproof",
   "tool_family": "hardproof",
-  "tool_version": "0.4.0-beta.3",
+  "tool_version": "0.4.0-beta.4",
   "transport": "streamable_http",
-  "unknown_dimensions": [
-    "trust"
-  ],
+  "unknown_dimensions": [],
   "usage_metrics": {
     "avg_tool_description_tokens": 3,
-    "avg_tool_description_tokens_exact": null,
+    "avg_tool_description_tokens_exact": 2,
     "avg_tool_description_tokens_observed": null,
     "estimator_confidence": "low",
     "estimator_family": "bytes_per_token_v1",
@@ -267,28 +243,28 @@
     "example_payload_est_tokens_total": 0,
     "input_schema_bytes_total": 17,
     "input_schema_est_tokens_total": 5,
-    "input_schema_tokens_exact_total": null,
+    "input_schema_tokens_exact_total": 5,
     "input_schema_tokens_observed_total": null,
     "max_tool_description_tokens": 3,
-    "max_tool_description_tokens_exact": null,
+    "max_tool_description_tokens_exact": 2,
     "max_tool_description_tokens_observed": null,
     "metadata_to_payload_ratio_pct": 391,
     "replay_transcript_est_tokens_total": 0,
     "response_payload_est_tokens_p50": 9,
     "response_payload_est_tokens_p95": 9,
-    "response_payload_tokens_exact_p50": null,
-    "response_payload_tokens_exact_p95": null,
+    "response_payload_tokens_exact_p50": 16,
+    "response_payload_tokens_exact_p95": 16,
     "response_payload_tokens_observed_p50": null,
     "response_payload_tokens_observed_p95": null,
-    "tokenizer_id": "",
+    "tokenizer_id": "openai:o200k_base",
     "tool_catalog_bytes": 141,
     "tool_catalog_est_tokens_cl100k": 36,
     "tool_catalog_est_tokens_o200k": 32,
-    "tool_catalog_tokens_exact": null,
+    "tool_catalog_tokens_exact": 39,
     "tool_catalog_tokens_observed": null,
     "tool_count": 1,
     "trace_source": "",
-    "usage_confidence": "low",
-    "usage_mode": "estimate"
+    "usage_confidence": "high",
+    "usage_mode": "tokenizer_exact"
   }
 }

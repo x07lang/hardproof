@@ -48,9 +48,9 @@
     },
     {
       "name": "ext-cli-ux",
-      "version": "0.1.6",
-      "path": ".x07/deps/ext-cli-ux/0.1.6",
-      "package_manifest_sha256": "c0ba8501168c3365e4bad70bdb0a801e8f03c9f7fee68a2aada21de8e8b2f34a",
+      "version": "0.1.7",
+      "path": ".x07/deps/ext-cli-ux/0.1.7",
+      "package_manifest_sha256": "92a672b03486ebf44aa5863b8f0ba69ef74555c020d86e691118deb77e94a22f",
       "module_root": "modules",
       "modules_sha256": {
         "std.cli.bar": "26aa3dedb543ebdb381c6262500eebbe7478348d9055f06b7262ee4b4c694000",
@@ -62,7 +62,7 @@
         "std.cli.layout": "0a47c37fac42ddf11506235083471226786de7f62e48644a811cb650686cf25b",
         "std.cli.live_table": "1562cdc551bf2915c700d713f3834022df2943b6d748e318b3fade4cae0d629e",
         "std.cli.panel": "ce9264c90a3562e61bbe31af89adcc01e2a909c22e3c4ff242b07fe54241c0ac",
-        "std.cli.profile": "78c421662ab42929eda91843475c3a475ddb3b2c36fe5e89a9bdceaf74b8a87f",
+        "std.cli.profile": "320c96c8ac93d6c35ebbfa4bec23c763631bcd4d01540fd8c2c78162037fb37c",
         "std.cli.progress": "1c19a01507c59facd1cf7db73da66ad4e6f0a651b972ce12f1a3503378d3890f",
         "std.cli.progress_stage": "71727e647edda2301f22cefaa3598b23f1df9090e5360ee2a905ac3b1d0ecacf",
         "std.cli.section": "ecbac52d335b90dc2bf0bc0c10903b45594ab15cf4169b062e609706695df28a",

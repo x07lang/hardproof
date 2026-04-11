@@ -3,6 +3,8 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${repo_root}"
+export HARDPROOF_HOME="${repo_root}"
+export HARDPROOF_TOKENIZERS_DIR="${repo_root}/tokenizers"
 
 check_mode=0
 bin_path=""
@@ -99,6 +101,12 @@ for dim in scan.get("dimensions", []):
         metrics = dim.setdefault("metrics", {})
         metrics["ping_p95_ms"] = 1
         metrics["ping_p99_ms"] = 1
+        metrics["tool_call_p95_ms"] = 1
+        metrics["tool_call_p99_ms"] = 1
+        if "throughput_calls_per_sec" in metrics:
+            metrics["throughput_calls_per_sec"] = 1000
+        if "concurrent_slots" in metrics:
+            metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -145,6 +153,15 @@ if perf_path.is_file():
             perf_samples["ping_ms"] = [1 for _ in ping_ms]
         if "ping_p99_ms" in perf_samples:
             perf_samples["ping_p99_ms"] = 1
+        tool_call_ms = perf_samples.get("tool_call_ms")
+        if isinstance(tool_call_ms, list) and tool_call_ms:
+            perf_samples["tool_call_ms"] = [1 for _ in tool_call_ms]
+        if "tool_call_p99_ms" in perf_samples:
+            perf_samples["tool_call_p99_ms"] = 1
+        if "throughput_calls_per_sec" in perf_samples:
+            perf_samples["throughput_calls_per_sec"] = 1000
+        if "concurrent_slots" in perf_samples:
+            perf_samples["concurrent_ok_n"] = perf_samples.get("concurrent_slots", 0)
         perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")
         perf_digest = hashlib.sha256(perf_path.read_bytes()).hexdigest()
 
@@ -175,6 +192,10 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         event["report_path"] = "out/scan/scan.json"
         if "events_path" in event:
             event["events_path"] = "out/scan/scan.events.jsonl"
+    if event.get("type") == "scan.check.finished" and "elapsed_ms" in event:
+        # Elapsed durations are nondeterministic across hosts/runs; normalize
+        # them so docs/examples remain stable and CI can compare exact files.
+        event["elapsed_ms"] = 0
     event_lines.append(json.dumps(event, separators=(",", ":")))
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
@@ -238,6 +259,12 @@ for dim in scan.get("dimensions", []):
         metrics = dim.setdefault("metrics", {})
         metrics["ping_p95_ms"] = 1
         metrics["ping_p99_ms"] = 1
+        metrics["tool_call_p95_ms"] = 1
+        metrics["tool_call_p99_ms"] = 1
+        if "throughput_calls_per_sec" in metrics:
+            metrics["throughput_calls_per_sec"] = 1000
+        if "concurrent_slots" in metrics:
+            metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -284,6 +311,15 @@ if perf_path.is_file():
             perf_samples["ping_ms"] = [1 for _ in ping_ms]
         if "ping_p99_ms" in perf_samples:
             perf_samples["ping_p99_ms"] = 1
+        tool_call_ms = perf_samples.get("tool_call_ms")
+        if isinstance(tool_call_ms, list) and tool_call_ms:
+            perf_samples["tool_call_ms"] = [1 for _ in tool_call_ms]
+        if "tool_call_p99_ms" in perf_samples:
+            perf_samples["tool_call_p99_ms"] = 1
+        if "throughput_calls_per_sec" in perf_samples:
+            perf_samples["throughput_calls_per_sec"] = 1000
+        if "concurrent_slots" in perf_samples:
+            perf_samples["concurrent_ok_n"] = perf_samples.get("concurrent_slots", 0)
         perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")
         perf_digest = hashlib.sha256(perf_path.read_bytes()).hexdigest()
 
@@ -314,6 +350,8 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         event["report_path"] = "out/scan/scan.json"
         if "events_path" in event:
             event["events_path"] = "out/scan/scan.events.jsonl"
+    if event.get("type") == "scan.check.finished" and "elapsed_ms" in event:
+        event["elapsed_ms"] = 0
     event_lines.append(json.dumps(event, separators=(",", ":")))
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
@@ -346,6 +384,10 @@ files=(
   "report.sarif.json"
   "terminal.svg"
 )
+optional_files=(
+  "trust/server.observed.json"
+  "trust/server.json"
+)
 
 if [[ "${check_mode}" == "1" ]]; then
   for file in "${files[@]}"; do
@@ -360,12 +402,54 @@ if [[ "${check_mode}" == "1" ]]; then
       exit 1
     fi
   done
+  for file in "${optional_files[@]}"; do
+    if [[ -f "${gen_partial_dir}/${file}" ]]; then
+      if ! cmp -s "${gen_partial_dir}/${file}" "${example_partial_dir}/${file}"; then
+        echo "ERROR: stale example artifact (partial): ${file}" >&2
+        diff -u "${example_partial_dir}/${file}" "${gen_partial_dir}/${file}" >&2 || true
+        exit 1
+      fi
+    else
+      if [[ -f "${example_partial_dir}/${file}" ]]; then
+        echo "ERROR: stale example artifact (partial): ${file} (no longer generated)" >&2
+        exit 1
+      fi
+    fi
+
+    if [[ -f "${gen_full_dir}/${file}" ]]; then
+      if ! cmp -s "${gen_full_dir}/${file}" "${example_full_dir}/${file}"; then
+        echo "ERROR: stale example artifact (full): ${file}" >&2
+        diff -u "${example_full_dir}/${file}" "${gen_full_dir}/${file}" >&2 || true
+        exit 1
+      fi
+    else
+      if [[ -f "${example_full_dir}/${file}" ]]; then
+        echo "ERROR: stale example artifact (full): ${file} (no longer generated)" >&2
+        exit 1
+      fi
+    fi
+  done
   echo "ok: example artifacts are up to date"
 else
   mkdir -p "${example_partial_dir}" "${example_full_dir}"
   for file in "${files[@]}"; do
     cp "${gen_partial_dir}/${file}" "${example_partial_dir}/${file}"
     cp "${gen_full_dir}/${file}" "${example_full_dir}/${file}"
+  done
+  for file in "${optional_files[@]}"; do
+    if [[ -f "${gen_partial_dir}/${file}" ]]; then
+      mkdir -p "$(dirname "${example_partial_dir}/${file}")"
+      cp "${gen_partial_dir}/${file}" "${example_partial_dir}/${file}"
+    else
+      rm -f "${example_partial_dir}/${file}"
+    fi
+
+    if [[ -f "${gen_full_dir}/${file}" ]]; then
+      mkdir -p "$(dirname "${example_full_dir}/${file}")"
+      cp "${gen_full_dir}/${file}" "${example_full_dir}/${file}"
+    else
+      rm -f "${example_full_dir}/${file}"
+    fi
   done
   echo "refreshed example artifacts in ${example_partial_dir} and ${example_full_dir}"
 fi

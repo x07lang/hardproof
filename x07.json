@@ -18,8 +18,8 @@
     },
     {
       "name": "ext-cli-ux",
-      "path": ".x07/deps/ext-cli-ux/0.1.6",
-      "version": "0.1.6"
+      "path": ".x07/deps/ext-cli-ux/0.1.7",
+      "version": "0.1.7"
     },
     {
       "name": "ext-crypto-rs",

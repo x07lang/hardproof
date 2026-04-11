@@ -25,7 +25,7 @@ Live rendering is enabled by default for `rich`, `compact`, `jsonl`, and `tui` o
 ## Extra scan options
 
 - `--score-preview`: emit intermediate score preview events into `scan.events.jsonl`.
-- `--score-preview` stays provisional until a full score is available. Partial runs still stream preview events with `overall_score=null`, a numeric `partial_score`, and `score_available=true`.
+- `--score-preview` stays provisional until a full score is available. Partial runs still stream preview events with a numeric effective `overall_score` (matching `partial_score`) and `score_available=true` (including when `--require-trust-for-full-score` is set).
 - `--metrics <STR>`: request extra metric payloads in `scan.events.jsonl` (example: `usage,perf`).
 - `--perf-profile <STR>`: set the workload profile for the Performance dimension (`smoke|steady_small|concurrent_small`).
 - `--max-avg-tool-description-tokens <INT>`: attach a usage-policy preview threshold to the scan invocation.
@@ -37,7 +37,7 @@ Live rendering is enabled by default for `rich`, `compact`, `jsonl`, and `tui` o
 
 `hardproof scan` accepts the usage-policy threshold flags so the same invocation surface is available in local triage. Enforcement still happens in `hardproof ci`.
 
-Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `overall_score` stays `null`, `partial_score` remains machine-readable, and `score_truth_status` plus `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a full score.
+Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `score_truth_status=partial`, and `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a publishable score. `overall_score` is still computed as the effective score (matching `partial_score`).
 
 ## Token truth modes
 
@@ -59,13 +59,14 @@ hardproof scan --usage-mode estimate
 
 Notes:
 
-- `--usage-mode exact` requires `--tokenizer`.
+- `--usage-mode exact` uses `--tokenizer` (default: `openai:o200k_base`).
 - `--usage-mode observed` requires `--token-trace`.
 - `--usage-mode auto` selects the best available truth source (tokenizer and/or trace), otherwise falls back to `estimate`.
 - Hardproof locates tokenizer tables in this order:
   - `HARDPROOF_TOKENIZERS_DIR`
   - `$XDG_DATA_HOME/hardproof/tokenizers` (fallback: `~/.local/share/hardproof/tokenizers`)
-  - `./tokenizers`
+  - `<hardproof_exe_dir>/tokenizers` (release archives ship tables next to the binary)
+  - `./tokenizers` (fallback)
 
 `--token-trace` currently expects a JSON object shaped like:
 
@@ -92,7 +93,11 @@ Notes:
 - `scan.events.jsonl` (stable JSONL event stream)
 - `conformance.summary.*` artifacts when the conformance dimension runs
 - `perf.samples.json` when the performance dimension runs (referenced via `scan.json.artifacts[]`)
+- `trust/server.observed.json` when Hardproof performs `initialize` for `--url` auto-discovery and the server returns `serverInfo` (self-reported identity snapshot)
+- `trust/server.json` when Hardproof resolves an MCP `server.json` manifest during auto-discovery (prefers `/.well-known/mcp.json`, with registry fallback)
 - other referenced artifacts as the scan grows (pinned in `scan.json.artifacts[]`)
+
+Auto-discovery is best-effort and only runs when `--server-json` is not supplied.
 
 ## Event stream (`scan.events.jsonl`)
 
@@ -103,6 +108,8 @@ Current event types include:
 - `scan.started`
 - `scan.stage.started` / `scan.stage.finished`
 - `scan.dimension.started` / `scan.dimension.finished`
+- `scan.check.started` / `scan.check.finished`
+- `scan.finding.emitted`
 - `scan.score.preview` (when `--score-preview` is enabled)
 - `scan.metrics.dimension` / `scan.metrics.usage` (when `--metrics` is enabled)
 - `scan.finished`

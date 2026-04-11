@@ -6,7 +6,7 @@ cd "${repo_root}"
 
 tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.3)" >&2
+  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.4)" >&2
   exit 2
 fi
 
@@ -40,6 +40,8 @@ readme_name="README-beta.txt"
 readme_path="${work_dir}/${readme_name}"
 tokenizers_name="tokenizers"
 tokenizers_src_dir="${repo_root}/${tokenizers_name}"
+arch_name="arch"
+arch_src_dir="${repo_root}/${arch_name}"
 
 if ! command -v cc >/dev/null 2>&1; then
   echo "ERROR: missing C compiler (cc) required for x07 bundle packaging." >&2
@@ -54,6 +56,12 @@ if ! x07 pkg lock --project x07.json --check --json=off >"${lock_log}" 2>&1; the
   echo "ERROR: x07 pkg lock failed." >&2
   cat "${lock_log}" >&2 || true
   exit 1
+fi
+
+if [[ "${platform}-${arch}" == "Linux-x86_64" ]]; then
+  # Avoid generating binaries that require newer CPU instructions.
+  # This keeps release artifacts runnable on conservative x86_64 baselines.
+  export X07_CC_ARGS="${X07_CC_ARGS:-} -march=x86-64 -mtune=generic"
 fi
 
 echo "==> bundle ${bin_name} (${artifact_suffix})"
@@ -75,11 +83,20 @@ Next:
 
 Tokenizer tables:
   Exact usage-mode requires tokenizer tables. This archive includes them under ./tokenizers/.
+
+CLI assets:
+  Rich/compact/tui output requires CLI profile assets. This archive includes them under ./arch/cli/.
 TXT
 
 version="${tag#v}"
 archive_base="hardproof_${version}_${artifact_suffix}"
 archive_path="${dist_dir}/${archive_base}.tar.gz"
+
+if [[ -d "${arch_src_dir}" ]]; then
+  echo "==> stage arch assets"
+  rm -rf "${work_dir}/${arch_name}"
+  cp -r "${arch_src_dir}" "${work_dir}/${arch_name}"
+fi
 
 if [[ -d "${tokenizers_src_dir}" ]]; then
   echo "==> stage tokenizer tables"
@@ -92,6 +109,9 @@ fi
 
 echo "==> package ${archive_path}"
 tar_items=("${bin_name}" "${readme_name}")
+if [[ -d "${work_dir}/${arch_name}" ]]; then
+  tar_items+=("${arch_name}")
+fi
 if [[ -d "${work_dir}/${tokenizers_name}" ]]; then
   tar_items+=("${tokenizers_name}")
 fi

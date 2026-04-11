@@ -157,8 +157,6 @@ def main() -> None:
                 f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
             )
     elif score_truth_status == "partial":
-        if overall_score is not None:
-            fail(f"overall_score must be null when score is partial (got {overall_score})")
         if not isinstance(partial_score, int):
             fail(f"partial_score must be integer when score is partial (got {partial_score})")
         if partial_score != computed_partial_score:
@@ -166,6 +164,23 @@ def main() -> None:
                 f"partial_score mismatch: got {partial_score}, expected {computed_partial_score} "
                 f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
             )
+        if overall_score is None:
+            # Strict modes may intentionally withhold the overall score even when a partial
+            # score is available (for example when trust evidence is required).
+            pass
+        else:
+            if not isinstance(overall_score, int):
+                fail(f"overall_score must be integer or null when score is partial (got {overall_score})")
+            if overall_score != computed_partial_score:
+                fail(
+                    f"overall_score mismatch: got {overall_score}, expected {computed_partial_score} "
+                    f"(weight_sum={score_weight_sum}, weight_total={score_weight_total})"
+                )
+            if overall_score != partial_score:
+                fail(
+                    f"overall_score must match partial_score when score is partial "
+                    f"(overall_score={overall_score}, partial_score={partial_score})"
+                )
     else:
         if overall_score is not None:
             fail(f"overall_score must be null when score is insufficient (got {overall_score})")
@@ -315,8 +330,13 @@ def main() -> None:
         for key in observed_keys:
             if usage.get(key) is not None:
                 fail(f"{key} must be null for tokenizer_exact mode (got {usage.get(key)})")
-        if usage.get("tool_catalog_tokens_exact") is None:
-            fail("tool_catalog_tokens_exact must be present for tokenizer_exact mode")
+        tool_catalog_bytes = usage.get("tool_catalog_bytes")
+        if tool_catalog_bytes is None:
+            fail("tool_catalog_bytes must be present for tokenizer_exact mode")
+        if not isinstance(tool_catalog_bytes, int) or tool_catalog_bytes < 0:
+            fail(f"usage.tool_catalog_bytes must be non-negative integer for tokenizer_exact mode (got {tool_catalog_bytes})")
+        if tool_catalog_bytes > 0 and usage.get("tool_catalog_tokens_exact") is None:
+            fail("tool_catalog_tokens_exact must be present for tokenizer_exact mode when tool_catalog_bytes > 0")
     elif usage_mode == "trace_observed":
         if usage_confidence is not None and usage_confidence == "low":
             fail(f"usage_confidence too low for trace_observed mode (got {usage_confidence})")
@@ -334,8 +354,13 @@ def main() -> None:
             fail("tokenizer_id must be present for mixed mode")
         if not trace_source:
             fail("trace_source must be present for mixed mode")
-        if usage.get("tool_catalog_tokens_exact") is None:
-            fail("tool_catalog_tokens_exact must be present for mixed mode")
+        tool_catalog_bytes = usage.get("tool_catalog_bytes")
+        if tool_catalog_bytes is None:
+            fail("tool_catalog_bytes must be present for mixed mode")
+        if not isinstance(tool_catalog_bytes, int) or tool_catalog_bytes < 0:
+            fail(f"usage.tool_catalog_bytes must be non-negative integer for mixed mode (got {tool_catalog_bytes})")
+        if tool_catalog_bytes > 0 and usage.get("tool_catalog_tokens_exact") is None:
+            fail("tool_catalog_tokens_exact must be present for mixed mode when tool_catalog_bytes > 0")
         if usage.get("tool_catalog_tokens_observed") is None:
             fail("tool_catalog_tokens_observed must be present for mixed mode")
 
