@@ -1,9 +1,13 @@
 {
-  "schema_version": "x07.project@0.4.0",
-  "world": "solve-pure",
+  "compat": "0.5",
+  "dependencies": [],
   "entry": "src/main.x07.json",
-  "operational_entry_symbol": "scan.score.overall_score_n_or_neg1_v1",
-  "module_roots": ["src", "tests"],
   "lockfile": "x07.lock.json",
-  "dependencies": []
+  "module_roots": [
+    "src",
+    "tests"
+  ],
+  "operational_entry_symbol": "scan.score.overall_score_n_or_neg1_v1",
+  "schema_version": "x07.project@0.5.0",
+  "world": "solve-pure"
 }

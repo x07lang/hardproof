@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
-CURRENT_TOOL_VERSION = "0.4.0-beta.4"
+CURRENT_TOOL_VERSION = "0.4.0-beta.5"
 
 
 def fail(message: str) -> None:

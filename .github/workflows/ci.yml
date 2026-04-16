@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  X07_TOOLCHAIN_TAG: "v0.1.108"
+  X07_TOOLCHAIN_TAG: "v0.2.3"
 
 jobs:
   check:

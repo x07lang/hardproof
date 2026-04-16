@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 env:
-  X07_TOOLCHAIN_TAG: "v0.1.110"
+  X07_TOOLCHAIN_TAG: "v0.2.3"
 
 jobs:
   build:

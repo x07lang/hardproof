@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.4.0-beta.5
+
+- Upgrade to the X07 `v0.2.3` toolchain and migrate project/lockfile formats (`x07.project@0.5.0`, `x07.lock@0.4.0`).
+- Update CLI/scan X07 sources for post-`v0.2.0` breaking changes (typed `std.parse.u32_dec`, stricter view borrows, and short-circuit boolean lint).
+- Make CI and example-artifact refresh robust to local X07 workspaces by pinning native backend resolution via `X07_WORKSPACE_ROOT`.
+
 ## v0.4.0-beta.4
 
 - Fix release packaging so human scan formats (`--format rich|compact|tui`) work from any working directory (ships `arch/cli` and resolves runtime assets relative to the executable).

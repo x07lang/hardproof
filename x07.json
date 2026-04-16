@@ -1,4 +1,5 @@
 {
+  "compat": "0.5",
   "default_profile": "os",
   "dependencies": [
     {
@@ -281,6 +282,6 @@
       "world": "run-os"
     }
   },
-  "schema_version": "x07.project@0.4.0",
+  "schema_version": "x07.project@0.5.0",
   "world": "run-os"
 }

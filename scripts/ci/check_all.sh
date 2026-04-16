@@ -6,6 +6,21 @@ cd "${repo_root}"
 
 export HARDPROOF_TOKENIZERS_DIR="${repo_root}/tokenizers"
 
+if [[ -z "${X07_WORKSPACE_ROOT:-}" ]]; then
+  x07_bin="$(command -v x07 || true)"
+  if [[ -n "${x07_bin}" ]]; then
+    x07_bin="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${x07_bin}")"
+    dir="$(dirname "${x07_bin}")"
+    for _ in 1 2 3 4 5 6 7 8; do
+      if [[ -f "${dir}/deps/x07/native_backends.json" ]]; then
+        export X07_WORKSPACE_ROOT="${dir}"
+        break
+      fi
+      dir="$(dirname "${dir}")"
+    done
+  fi
+fi
+
 echo "==> repo hygiene"
 python3 scripts/ci/check_repo_hygiene.py >/dev/null
 
