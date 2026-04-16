@@ -4,6 +4,21 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${repo_root}"
 
+if [[ -z "${X07_WORKSPACE_ROOT:-}" ]]; then
+  x07_bin="$(command -v x07 || true)"
+  if [[ -n "${x07_bin}" ]]; then
+    x07_bin="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${x07_bin}")"
+    dir="$(dirname "${x07_bin}")"
+    for _ in 1 2 3 4 5 6 7 8; do
+      if [[ -f "${dir}/deps/x07/native_backends.json" ]]; then
+        export X07_WORKSPACE_ROOT="${dir}"
+        break
+      fi
+      dir="$(dirname "${dir}")"
+    done
+  fi
+fi
+
 tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
   echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.5)" >&2
@@ -50,9 +65,25 @@ if ! command -v cc >/dev/null 2>&1; then
   exit 2
 fi
 
-echo "==> pkg lock (hydrate + check)"
+echo "==> pkg lock (hydrate deps)"
+hydrate_log="${work_dir}/pkg.lock.hydrate.log"
+if ! bash scripts/ci/hydrate_x07_deps.sh x07.json >"${hydrate_log}" 2>&1; then
+  echo "ERROR: x07 dependency hydration failed." >&2
+  cat "${hydrate_log}" >&2 || true
+  exit 1
+fi
+
+echo "==> pkg lock (patch deps)"
+patch_log="${work_dir}/pkg.lock.patch.log"
+if ! python3 scripts/ci/patch_ext_cli_ux_profile.py >"${patch_log}" 2>&1; then
+  echo "ERROR: x07 dependency patching failed." >&2
+  cat "${patch_log}" >&2 || true
+  exit 1
+fi
+
+echo "==> pkg lock (check)"
 lock_log="${work_dir}/pkg.lock.log"
-if ! x07 pkg lock --project x07.json --check --json=off >"${lock_log}" 2>&1; then
+if ! x07 pkg lock --project x07.json --check --offline --json=off >"${lock_log}" 2>&1; then
   echo "ERROR: x07 pkg lock failed." >&2
   cat "${lock_log}" >&2 || true
   exit 1

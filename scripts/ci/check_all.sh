@@ -36,14 +36,64 @@ done < <(find cli/src score_core/src score_core/tests -name '*.x07.json' -print 
 echo "==> version consistency"
 python3 scripts/ci/check_version_consistency.py >/dev/null
 
-echo "==> pkg lock"
-x07 pkg lock --project x07.json --check --json=off >/dev/null
+echo "==> pkg lock (hydrate deps)"
+hydrate_log="$(mktemp -t hardproof-pkg-lock-hydrate.XXXXXX)"
+set +e
+bash scripts/ci/hydrate_x07_deps.sh x07.json >"${hydrate_log}" 2>&1
+hydrate_exit="$?"
+set -e
+if [[ "${hydrate_exit}" != "0" ]]; then
+  echo "ERROR: x07 dependency hydration failed (exit ${hydrate_exit})." >&2
+  cat "${hydrate_log}" >&2 || true
+  rm -f "${hydrate_log}" || true
+  exit "${hydrate_exit}"
+fi
+rm -f "${hydrate_log}" || true
+
+echo "==> pkg lock (patch deps)"
+patch_log="$(mktemp -t hardproof-pkg-lock-patch.XXXXXX)"
+set +e
+python3 scripts/ci/patch_ext_cli_ux_profile.py >"${patch_log}" 2>&1
+patch_exit="$?"
+set -e
+if [[ "${patch_exit}" != "0" ]]; then
+  echo "ERROR: x07 dependency patching failed (exit ${patch_exit})." >&2
+  cat "${patch_log}" >&2 || true
+  rm -f "${patch_log}" || true
+  exit "${patch_exit}"
+fi
+rm -f "${patch_log}" || true
+
+echo "==> pkg lock (check)"
+pkg_lock_log="$(mktemp -t hardproof-pkg-lock.XXXXXX)"
+set +e
+x07 pkg lock --project x07.json --check --offline --json=off >"${pkg_lock_log}" 2>&1
+pkg_lock_exit="$?"
+set -e
+if [[ "${pkg_lock_exit}" != "0" ]]; then
+  echo "ERROR: x07 pkg lock failed (exit ${pkg_lock_exit})." >&2
+  cat "${pkg_lock_log}" >&2 || true
+  rm -f "${pkg_lock_log}" || true
+  exit "${pkg_lock_exit}"
+fi
+rm -f "${pkg_lock_log}" || true
 
 echo "==> arch check"
 x07 arch check --manifest arch/manifest.x07arch.json >/dev/null
 
 echo "==> score core: pkg lock"
-x07 pkg lock --project score_core/x07.json --check --json=off >/dev/null
+score_core_pkg_lock_log="$(mktemp -t hardproof-score-core-pkg-lock.XXXXXX)"
+set +e
+x07 pkg lock --project score_core/x07.json --check --json=off >"${score_core_pkg_lock_log}" 2>&1
+score_core_pkg_lock_exit="$?"
+set -e
+if [[ "${score_core_pkg_lock_exit}" != "0" ]]; then
+  echo "ERROR: x07 pkg lock failed for score_core (exit ${score_core_pkg_lock_exit})." >&2
+  cat "${score_core_pkg_lock_log}" >&2 || true
+  rm -f "${score_core_pkg_lock_log}" || true
+  exit "${score_core_pkg_lock_exit}"
+fi
+rm -f "${score_core_pkg_lock_log}" || true
 
 echo "==> score core: arch check"
 (cd score_core && x07 arch check --manifest arch/manifest.x07arch.json >/dev/null)
