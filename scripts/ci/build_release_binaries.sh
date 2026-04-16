@@ -21,7 +21,7 @@ fi
 
 tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.5)" >&2
+  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.6)" >&2
   exit 2
 fi
 

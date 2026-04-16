@@ -2,7 +2,7 @@
 
 This directory contains sample artifacts that website/docs/announcements can embed directly.
 
-Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.5`.
+Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.6`.
 
 The sample target produces a partial score: core quality dimensions pass, but Trust evidence is missing, so `score_truth_status` is `partial` and the Trust dimension fails deterministically. `overall_score` is still computed as the effective score (matching `partial_score`), but the score is not publishable yet.
 

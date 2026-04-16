@@ -30,21 +30,21 @@ Hardproof uses `score_truth_status` to distinguish publishable (“full”) scor
 
 ## Install
 
-Release artifacts are published from tags such as `v0.4.0-beta.5`.
+Release artifacts are published from tags such as `v0.4.0-beta.6`.
 
 ### Install script
 
 Each beta release publishes an installer script that downloads the correct archive, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.5/install.sh" \
-  | bash -s -- --tag "v0.4.0-beta.5"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.6/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.6"
 ```
 
 To resolve the latest beta tag automatically:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.5/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.6/install.sh" \
   | bash -s -- --tag latest-beta
 ```
 
@@ -162,7 +162,7 @@ hardproof bundle verify --server-json server.json --mcpb server.mcpb
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.5
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.6
   with:
     url: http://127.0.0.1:3000/mcp
 ```
