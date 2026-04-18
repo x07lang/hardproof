@@ -62,6 +62,8 @@ Notes:
 - `--usage-mode exact` uses `--tokenizer` (default: `openai:o200k_base`).
 - `--usage-mode observed` requires `--token-trace`.
 - `--usage-mode auto` selects the best available truth source (tokenizer and/or trace), otherwise falls back to `estimate`.
+- When `--usage-mode exact` is explicitly requested and exact accounting cannot be produced, the scan fails non-zero instead of emitting ambiguous zero-ish metrics.
+- `scan.json.usage_metrics` records `requested_usage_mode`, `usage_status` (`ok|fallback|error`), `usage_error_code`, and `usage_fallback_reason`.
 - Hardproof locates tokenizer tables in this order:
   - `HARDPROOF_TOKENIZERS_DIR`
   - `$XDG_DATA_HOME/hardproof/tokenizers` (fallback: `~/.local/share/hardproof/tokenizers`)

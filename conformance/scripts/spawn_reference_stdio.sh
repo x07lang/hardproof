@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-TARGET_ID="${1:?missing target id (good-stdio|broken-stdio)}"
+TARGET_ID="${1:?missing target id (good-stdio|broken-stdio|meta-risk-stdio)}"
 
 case "${TARGET_ID}" in
   good-stdio)
@@ -10,6 +10,9 @@ case "${TARGET_ID}" in
     ;;
   broken-stdio)
     exec python3 "${ROOT}/scripts/ci/fixtures/mcp_stdio_fixture_server.py" --fixture-id broken-stdio
+    ;;
+  meta-risk-stdio)
+    exec python3 "${ROOT}/scripts/ci/fixtures/mcp_stdio_fixture_server.py" --fixture-id meta-risk-stdio
     ;;
   *)
     echo "ERROR: unknown target id: ${TARGET_ID}" >&2

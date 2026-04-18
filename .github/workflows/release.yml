@@ -95,9 +95,12 @@ jobs:
           tar -xzf "${archive}" -C "${tmp_dir}"
           "${tmp_dir}/hardproof" --help >/dev/null
           "${tmp_dir}/hardproof" doctor --help >/dev/null
-          "${tmp_dir}/hardproof" scan --help >/dev/null
-          "${tmp_dir}/hardproof" ci --help >/dev/null
-          "${tmp_dir}/hardproof" ci validate-json --help >/dev/null
+
+          "${tmp_dir}/hardproof" scan --help | grep -q -- '--url'
+          "${tmp_dir}/hardproof" trust verify --help | grep -q -- '--server-json'
+          "${tmp_dir}/hardproof" bundle verify --help | grep -q -- '--mcpb'
+          "${tmp_dir}/hardproof" ci --help | grep -q -- '--min-score'
+          "${tmp_dir}/hardproof" ci validate-json --help | grep -q -- '--schema'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

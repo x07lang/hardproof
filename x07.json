@@ -14,8 +14,8 @@
     },
     {
       "name": "ext-cli",
-      "path": ".x07/deps/ext-cli/0.1.15",
-      "version": "0.1.15"
+      "path": ".x07/deps/ext-cli/0.1.17",
+      "version": "0.1.17"
     },
     {
       "name": "ext-cli-ux",

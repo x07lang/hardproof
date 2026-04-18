@@ -5,12 +5,7 @@
       "id": "cli_ux_v1",
       "profile_path": "arch/budgets/profiles/cli_ux_v1.budget.json",
       "enforce": "error",
-      "selectors": [
-        {
-          "module_prefix": "std.cli.profile",
-          "fn": "from_arch_v1"
-        }
-      ],
+      "selectors": [],
       "worlds_allowed": [
         "solve-pure",
         "solve-fs",

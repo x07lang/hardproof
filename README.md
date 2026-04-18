@@ -30,21 +30,21 @@ Hardproof uses `score_truth_status` to distinguish publishable (“full”) scor
 
 ## Install
 
-Release artifacts are published from tags such as `v0.4.0-beta.6`.
+Release artifacts are published from tags such as `v0.4.0-beta.7`.
 
 ### Install script
 
 Each beta release publishes an installer script that downloads the correct archive, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.6/install.sh" \
-  | bash -s -- --tag "v0.4.0-beta.6"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.7/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.7"
 ```
 
 To resolve the latest beta tag automatically:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.6/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.7/install.sh" \
   | bash -s -- --tag latest-beta
 ```
 
@@ -133,6 +133,11 @@ hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode exa
 hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode observed --token-trace trace.json
 ```
 
+Notes:
+
+- `--usage-mode exact` is strict: if exact accounting cannot be produced, the scan fails non-zero instead of emitting ambiguous zero-ish metrics.
+- `scan.json.usage_metrics` records `requested_usage_mode`, `usage_status` (`ok|fallback|error`), `usage_error_code`, and `usage_fallback_reason`.
+
 Tokenizer tables are resolved in this order:
 
 - `HARDPROOF_TOKENIZERS_DIR`
@@ -162,7 +167,7 @@ hardproof bundle verify --server-json server.json --mcpb server.mcpb
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.6
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.7
   with:
     url: http://127.0.0.1:3000/mcp
 ```

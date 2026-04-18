@@ -191,6 +191,10 @@
         "response_payload_est_tokens_p50",
         "response_payload_est_tokens_p95",
         "metadata_to_payload_ratio_pct",
+        "requested_usage_mode",
+        "usage_status",
+        "usage_error_code",
+        "usage_fallback_reason",
         "estimator_family",
         "estimator_version",
         "estimator_confidence"
@@ -219,6 +223,10 @@
         "response_payload_tokens_observed_p50": { "type": ["integer", "null"], "minimum": 0 },
         "response_payload_tokens_observed_p95": { "type": ["integer", "null"], "minimum": 0 },
         "metadata_to_payload_ratio_pct": { "type": "integer", "minimum": 0 },
+        "requested_usage_mode": { "type": "string", "enum": ["auto", "exact", "estimate", "observed"] },
+        "usage_status": { "type": "string", "enum": ["ok", "fallback", "error"] },
+        "usage_error_code": { "type": "integer", "minimum": 0 },
+        "usage_fallback_reason": { "type": "string" },
         "usage_mode": {
           "type": "string",
           "enum": ["estimate", "tokenizer_exact", "trace_observed", "mixed"]

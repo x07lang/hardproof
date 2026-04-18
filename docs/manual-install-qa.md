@@ -36,11 +36,15 @@ Record:
 
 - [ ] `hardproof doctor` works
 - [ ] `hardproof doctor --machine json` works
+- [ ] `hardproof doctor --cmd 'bash conformance/scripts/spawn_reference_stdio.sh good-stdio'` agrees with running the same stdio target via `hardproof scan --cmd ... --transport stdio`
 
 ### 3) Conformance (smoke)
 
 - [ ] target URL reachable (or stdio command runnable)
-- [ ] run `hardproof scan --help`
+- [ ] run `hardproof scan --help` (verify it lists `--url` and/or `--cmd`)
+- [ ] run `hardproof trust verify --help` (verify it lists `--server-json`)
+- [ ] run `hardproof bundle verify --help` (verify it lists `--mcpb`)
+- [ ] run `hardproof ci validate-json --help` (verify it lists `--schema` and `--input`)
 - [ ] run `hardproof scan --url "<URL>" --out out/scan --machine json`
 - [ ] outputs produced:
   - `scan.json`

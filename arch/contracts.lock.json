@@ -36,7 +36,7 @@
   },
   "indexes": {
     "arch/budgets/index.x07budgets.json": {
-      "jcs_sha256_hex": "cef68f5e1a4021679ed5e24478925b2969b231d1c9f779609eb3b7dcd153c059"
+      "jcs_sha256_hex": "264234556faed072f0015e379f26023d57771d5db5355cc140871cc7f67ac837"
     },
     "arch/sm/index.x07sm.json": {
       "jcs_sha256_hex": "18c864132b3219a1b36026449659f4db07e2edbb47afba058d408795d4c1947a"

@@ -44,6 +44,13 @@
       "returns": "bytes_status_v1"
     },
     {
+      "id": "cli/scan_performance_profile/throughput_denominator_distinction",
+      "world": "solve-pure",
+      "entry": "tests.scan_performance_profile.throughput_denominator_distinction_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
       "id": "cli/scan_mcp_batch/result_count_range",
       "world": "solve-pure",
       "entry": "tests.scan_mcp_batch.result_count_range_v1",
@@ -111,6 +118,34 @@
       "id": "cli/scan_score_truth/status_and_availability",
       "world": "solve-pure",
       "entry": "tests.scan_score_truth.status_and_availability_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/app_help/command_help_markers",
+      "world": "solve-pure",
+      "entry": "tests.app_help.command_help_markers_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/scan_usage_truth/usage_truth_cases",
+      "world": "run-os",
+      "entry": "tests.scan_usage_truth.usage_truth_cases_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/doctor_exec_resolution/path_policy_regression",
+      "world": "run-os",
+      "entry": "tests.doctor_exec_resolution.path_policy_regression_v1",
+      "expect": "pass",
+      "returns": "bytes_status_v1"
+    },
+    {
+      "id": "cli/corpus_out_paths/out_dir_acceptance",
+      "world": "run-os",
+      "entry": "tests.corpus_out_paths.out_dir_acceptance_v1",
       "expect": "pass",
       "returns": "bytes_status_v1"
     },

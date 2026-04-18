@@ -14,5 +14,9 @@
   "metadata_to_payload_ratio_pct": 400,
   "estimator_family": "bytes_per_token_v1",
   "estimator_version": "v1",
-  "estimator_confidence": "low"
+  "estimator_confidence": "low",
+  "requested_usage_mode": "auto",
+  "usage_status": "ok",
+  "usage_error_code": 0,
+  "usage_fallback_reason": ""
 }

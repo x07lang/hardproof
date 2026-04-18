@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1110" viewBox="0 0 960 1110">
-  <rect width="960" height="1110" rx="12" fill="#0b0e14" />
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1150" viewBox="0 0 960 1150">
+  <rect width="960" height="1150" rx="12" fill="#0b0e14" />
   <circle cx="24" cy="22" r="6" fill="#ff5f56" />
   <circle cx="44" cy="22" r="6" fill="#ffbd2e" />
   <circle cx="64" cy="22" r="6" fill="#27c93f" />
@@ -44,8 +44,10 @@
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20"></tspan>
     <tspan x="24" dy="20">== Usage ==</tspan>
+    <tspan x="24" dy="20">requested: auto</tspan>
     <tspan x="24" dy="20">mode: tokenizer_exact</tspan>
     <tspan x="24" dy="20">confidence: high</tspan>
+    <tspan x="24" dy="20">status: ok</tspan>
     <tspan x="24" dy="20">tokenizer: openai:o200k_base</tspan>
     <tspan x="24" dy="20">catalog_tokens: 39 (exact)</tspan>
     <tspan x="24" dy="20">response_p95_tokens: 16 (exact)</tspan>

@@ -22,6 +22,7 @@ Each `targets[]` entry captures:
 
 `hardproof corpus run --manifest <FILE> --out <DIR>` writes:
 
+- `<DIR>` may be relative or absolute.
 - `<DIR>/index.json` (`x07.mcp.corpus.summary@0.1.0`)
 - `<DIR>/<server_id>/result.json` (`x07.mcp.corpus.result@0.1.0`)
 - `<DIR>/<server_id>/summary.json` (`x07.mcp.conformance.summary@0.2.0`)

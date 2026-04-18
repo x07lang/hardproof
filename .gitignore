@@ -1,6 +1,7 @@
 .DS_Store
 .x07/
 dist/
+deps/
 out/
 tmp/
 .tmp/

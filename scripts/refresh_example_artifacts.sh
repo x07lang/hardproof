@@ -120,6 +120,10 @@ for dim in scan.get("dimensions", []):
         metrics["tool_call_p99_ms"] = 1
         if "throughput_calls_per_sec" in metrics:
             metrics["throughput_calls_per_sec"] = 1000
+        if "concurrent_batch_elapsed_ms" in metrics:
+            metrics["concurrent_batch_elapsed_ms"] = 4
+        if "concurrent_slot_total_elapsed_ms" in metrics:
+            metrics["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in metrics:
             metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
 
@@ -175,6 +179,10 @@ if perf_path.is_file():
             perf_samples["tool_call_p99_ms"] = 1
         if "throughput_calls_per_sec" in perf_samples:
             perf_samples["throughput_calls_per_sec"] = 1000
+        if "concurrent_batch_elapsed_ms" in perf_samples:
+            perf_samples["concurrent_batch_elapsed_ms"] = 4
+        if "concurrent_slot_total_elapsed_ms" in perf_samples:
+            perf_samples["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in perf_samples:
             perf_samples["concurrent_ok_n"] = perf_samples.get("concurrent_slots", 0)
         perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")
@@ -278,6 +286,10 @@ for dim in scan.get("dimensions", []):
         metrics["tool_call_p99_ms"] = 1
         if "throughput_calls_per_sec" in metrics:
             metrics["throughput_calls_per_sec"] = 1000
+        if "concurrent_batch_elapsed_ms" in metrics:
+            metrics["concurrent_batch_elapsed_ms"] = 4
+        if "concurrent_slot_total_elapsed_ms" in metrics:
+            metrics["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in metrics:
             metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
 
@@ -333,6 +345,10 @@ if perf_path.is_file():
             perf_samples["tool_call_p99_ms"] = 1
         if "throughput_calls_per_sec" in perf_samples:
             perf_samples["throughput_calls_per_sec"] = 1000
+        if "concurrent_batch_elapsed_ms" in perf_samples:
+            perf_samples["concurrent_batch_elapsed_ms"] = 4
+        if "concurrent_slot_total_elapsed_ms" in perf_samples:
+            perf_samples["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in perf_samples:
             perf_samples["concurrent_ok_n"] = perf_samples.get("concurrent_slots", 0)
         perf_path.write_text(json.dumps(perf_samples, separators=(",", ":")) + "\n", encoding="utf-8")

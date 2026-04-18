@@ -32,7 +32,7 @@
       "match": { "module_prefixes": [], "path_globs": ["cli/src/**/*.x07.json"] },
       "world": "run-os",
       "trust_zone": "untrusted",
-      "visibility": { "mode": "public", "visible_to": [] },
+      "visibility": { "mode": "restricted", "visible_to": ["cli_os", "cli_helper_tests"] },
       "imports": { "deny_prefixes": [], "allow_prefixes": [] }
     },
     {
@@ -41,7 +41,10 @@
       "world": "run-os",
       "trust_zone": "test_only",
       "visibility": { "mode": "restricted", "visible_to": [] },
-      "imports": { "deny_prefixes": ["std.os."], "allow_prefixes": ["scan", "std.", "ext.", "tests.", "util"] }
+      "imports": {
+        "deny_prefixes": [],
+        "allow_prefixes": ["commands.", "runtime.", "scan", "spec", "std.", "ext.", "tests.", "util"]
+      }
     }
   ],
   "rules": [
@@ -50,9 +53,9 @@
   "checks": {
     "deny_cycles": true,
     "deny_orphans": true,
-    "enforce_visibility": false,
+    "enforce_visibility": true,
     "enforce_world_caps": true,
-    "brand_boundary_v1": { "enabled": false }
+    "brand_boundary_v1": { "enabled": true }
   },
   "tool_budgets": {
     "max_modules": 2000,
@@ -69,7 +72,7 @@
     "budgets": {
       "index_path": "arch/budgets/index.x07budgets.json",
       "gen_dir": "arch/budgets/gen",
-      "require_scopes": false
+      "require_scopes": true
     },
     "canonical_json": { "mode": "jcs_rfc8785_v1" }
   }

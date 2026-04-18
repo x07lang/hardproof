@@ -9,7 +9,7 @@
     },
     {
       "content_type": "application/json",
-      "digest": "ceab7bf39a337982e3849910f039068f75882768bcbceb256035edc68fe0d26e",
+      "digest": "01bf6b80c329ea359554d3e3f5fb6d3c1119bd6e342523da76fce93b01d543ba",
       "id": "perf.samples.json",
       "kind": "report",
       "path": "perf.samples.json"
@@ -112,6 +112,7 @@
         "budget_fuel_discover": 10000000,
         "budget_fuel_ping_samples": 10000000,
         "budget_fuel_tool_call_samples": 10000000,
+        "concurrent_batch_elapsed_ms": 4,
         "concurrent_ok_n": 4,
         "concurrent_slots": 4,
         "ping_p95_ms": 1,
@@ -230,7 +231,7 @@
   },
   "tool": "hardproof",
   "tool_family": "hardproof",
-  "tool_version": "0.4.0-beta.6",
+  "tool_version": "0.4.0-beta.7",
   "transport": "streamable_http",
   "unknown_dimensions": [],
   "usage_metrics": {
@@ -250,6 +251,7 @@
     "max_tool_description_tokens_observed": null,
     "metadata_to_payload_ratio_pct": 391,
     "replay_transcript_est_tokens_total": 0,
+    "requested_usage_mode": "auto",
     "response_payload_est_tokens_p50": 9,
     "response_payload_est_tokens_p95": 9,
     "response_payload_tokens_exact_p50": 16,
@@ -265,6 +267,9 @@
     "tool_count": 1,
     "trace_source": "",
     "usage_confidence": "high",
-    "usage_mode": "tokenizer_exact"
+    "usage_error_code": 0,
+    "usage_fallback_reason": "",
+    "usage_mode": "tokenizer_exact",
+    "usage_status": "ok"
   }
 }
