@@ -126,6 +126,33 @@ for dim in scan.get("dimensions", []):
             metrics["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in metrics:
             metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
+        dim["status"] = "pass"
+        dim["score"] = 100
+        dim["finding_refs"] = []
+
+scan["findings"] = [f for f in scan.get("findings", []) if f.get("dimension") != "performance"]
+
+weights_pct = {
+    "conformance": 30,
+    "security": 20,
+    "performance": 15,
+    "trust": 20,
+    "reliability": 15,
+}
+score_weight_total = 0
+score_weight_sum = 0
+for dim in scan.get("dimensions", []):
+    name = dim.get("name")
+    score = dim.get("score")
+    w_pct = weights_pct.get(name)
+    if w_pct is None or score is None:
+        continue
+    score_weight_total += w_pct
+    score_weight_sum += w_pct * score
+computed_score = None if score_weight_total <= 0 else score_weight_sum // score_weight_total
+if scan.get("score_truth_status") in {"publishable", "partial"}:
+    scan["overall_score"] = computed_score
+    scan["partial_score"] = computed_score
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -201,7 +228,7 @@ for artifact in artifacts:
 scan_path.write_text(json.dumps(scan, indent=2) + "\n", encoding="utf-8")
 
 events_path = gen_dir / "scan.events.jsonl"
-event_lines = []
+events = []
 for raw_line in events_path.read_text(encoding="utf-8").splitlines():
     if not raw_line.strip():
         continue
@@ -215,11 +242,26 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         event["report_path"] = "out/scan/scan.json"
         if "events_path" in event:
             event["events_path"] = "out/scan/scan.events.jsonl"
+        for key in ("score_available", "score_truth_status", "status", "overall_score", "partial_score"):
+            if key in event:
+                event[key] = scan.get(key)
     if event.get("type") == "scan.check.finished" and "elapsed_ms" in event:
         # Elapsed durations are nondeterministic across hosts/runs; normalize
         # them so docs/examples remain stable and CI can compare exact files.
         event["elapsed_ms"] = 0
-    event_lines.append(json.dumps(event, separators=(",", ":")))
+    if event.get("phase") == "findings" and event.get("dimension") == "performance":
+        continue
+    if event.get("type") == "scan.check.finished" and event.get("dimension") == "performance":
+        event["status"] = "pass"
+    if event.get("type") == "scan.dimension.finished" and event.get("dimension") == "performance":
+        event["status"] = "unknown"
+    events.append(event)
+
+for idx, event in enumerate(events):
+    if "seq" in event:
+        event["seq"] = idx
+
+event_lines = [json.dumps(event, separators=(",", ":")) for event in events]
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
 
@@ -292,6 +334,33 @@ for dim in scan.get("dimensions", []):
             metrics["concurrent_slot_total_elapsed_ms"] = 4
         if "concurrent_slots" in metrics:
             metrics["concurrent_ok_n"] = metrics.get("concurrent_slots", 0)
+        dim["status"] = "pass"
+        dim["score"] = 100
+        dim["finding_refs"] = []
+
+scan["findings"] = [f for f in scan.get("findings", []) if f.get("dimension") != "performance"]
+
+weights_pct = {
+    "conformance": 30,
+    "security": 20,
+    "performance": 15,
+    "trust": 20,
+    "reliability": 15,
+}
+score_weight_total = 0
+score_weight_sum = 0
+for dim in scan.get("dimensions", []):
+    name = dim.get("name")
+    score = dim.get("score")
+    w_pct = weights_pct.get(name)
+    if w_pct is None or score is None:
+        continue
+    score_weight_total += w_pct
+    score_weight_sum += w_pct * score
+computed_score = None if score_weight_total <= 0 else score_weight_sum // score_weight_total
+if scan.get("score_truth_status") == "publishable":
+    scan["overall_score"] = computed_score
+    scan["partial_score"] = computed_score
 
 summary_path = gen_dir / "conformance.summary.json"
 summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -367,7 +436,7 @@ for artifact in artifacts:
 scan_path.write_text(json.dumps(scan, indent=2) + "\n", encoding="utf-8")
 
 events_path = gen_dir / "scan.events.jsonl"
-event_lines = []
+events = []
 for raw_line in events_path.read_text(encoding="utf-8").splitlines():
     if not raw_line.strip():
         continue
@@ -381,9 +450,24 @@ for raw_line in events_path.read_text(encoding="utf-8").splitlines():
         event["report_path"] = "out/scan/scan.json"
         if "events_path" in event:
             event["events_path"] = "out/scan/scan.events.jsonl"
+        for key in ("score_available", "score_truth_status", "status", "overall_score", "partial_score"):
+            if key in event:
+                event[key] = scan.get(key)
     if event.get("type") == "scan.check.finished" and "elapsed_ms" in event:
         event["elapsed_ms"] = 0
-    event_lines.append(json.dumps(event, separators=(",", ":")))
+    if event.get("phase") == "findings" and event.get("dimension") == "performance":
+        continue
+    if event.get("type") == "scan.check.finished" and event.get("dimension") == "performance":
+        event["status"] = "pass"
+    if event.get("type") == "scan.dimension.finished" and event.get("dimension") == "performance":
+        event["status"] = "unknown"
+    events.append(event)
+
+for idx, event in enumerate(events):
+    if "seq" in event:
+        event["seq"] = idx
+
+event_lines = [json.dumps(event, separators=(",", ":")) for event in events]
 events_path.write_text("\n".join(event_lines) + "\n", encoding="utf-8")
 PY
 
