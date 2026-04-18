@@ -235,7 +235,7 @@ echo "==> download ${asset_name}"
 curl -fSL \
   --connect-timeout 10 \
   --max-time 600 \
-  --retry 3 \
+  --retry 8 \
   --retry-delay 2 \
   --retry-all-errors \
   --output "${archive_path}" \
@@ -245,7 +245,7 @@ echo "==> download checksums.txt"
 curl -fSL \
   --connect-timeout 10 \
   --max-time 600 \
-  --retry 3 \
+  --retry 8 \
   --retry-delay 2 \
   --retry-all-errors \
   --output "${checksums_path}" \
