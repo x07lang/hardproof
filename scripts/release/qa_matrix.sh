@@ -101,11 +101,12 @@ if ! conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp >/dev/null;
   exit 1
 fi
 
-run_scan "http-good" --url http://127.0.0.1:18080/mcp --transport http
+run_scan "http-good" --url http://127.0.0.1:18080/mcp --allow-private-targets --transport http
 
 echo "==> http trust-evaluable"
 run_scan "http-trust-full" \
   --url http://127.0.0.1:18080/mcp \
+  --allow-private-targets \
   --transport http \
   --server-json trust/fixtures/server-good.json \
   --mcpb trust/fixtures/bundle-good.mcpb

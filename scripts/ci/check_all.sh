@@ -36,6 +36,43 @@ done < <(find cli/src score_core/src score_core/tests -name '*.x07.json' -print 
 echo "==> version consistency"
 python3 scripts/ci/check_version_consistency.py >/dev/null
 
+echo "==> schema derive (check)"
+schema_derive_log="$(mktemp -t hardproof-schema-derive.XXXXXX)"
+set +e
+x07 schema derive \
+  --input arch/schemas/scan_report_manifest.x07schema.json \
+  --out-dir gen/report_manifest \
+  --check \
+  --json=off >"${schema_derive_log}" 2>&1
+schema_derive_exit="$?"
+set -e
+if [[ "${schema_derive_exit}" != "0" ]]; then
+  echo "ERROR: x07 schema derive check failed (exit ${schema_derive_exit})." >&2
+  cat "${schema_derive_log}" >&2 || true
+  rm -f "${schema_derive_log}" || true
+  exit "${schema_derive_exit}"
+fi
+rm -f "${schema_derive_log}" || true
+
+echo "==> SM gen (check)"
+sm_gen_log="$(mktemp -t hardproof-sm-gen.XXXXXX)"
+set +e
+x07 sm gen \
+  --input arch/sm/specs/scan_lifecycle.sm.json \
+  --out cli/src/gen/sm \
+  --check \
+  --repo-root "${repo_root}" \
+  --json=off >"${sm_gen_log}" 2>&1
+sm_gen_exit="$?"
+set -e
+if [[ "${sm_gen_exit}" != "0" ]]; then
+  echo "ERROR: x07 sm gen check failed (exit ${sm_gen_exit})." >&2
+  cat "${sm_gen_log}" >&2 || true
+  rm -f "${sm_gen_log}" || true
+  exit "${sm_gen_exit}"
+fi
+rm -f "${sm_gen_log}" || true
+
 echo "==> pkg lock (hydrate deps)"
 hydrate_log="$(mktemp -t hardproof-pkg-lock-hydrate.XXXXXX)"
 set +e
@@ -291,6 +328,8 @@ grep -q -- '--max-tool-count' "${ci_help_out}"
 grep -q -- '--min-dimension' "${ci_help_out}"
 grep -q -- '--policy' "${ci_help_out}"
 grep -q -- '--perf-profile' "${ci_help_out}"
+grep -q -- '--server-json' "${ci_help_out}"
+grep -q -- '--mcpb' "${ci_help_out}"
 grep -q -- '--tokenizer' "${ci_help_out}"
 grep -q -- '--usage-mode' "${ci_help_out}"
 grep -q -- '--token-trace' "${ci_help_out}"
@@ -403,6 +442,7 @@ run_cli_regression_smoke() (
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --transport http \
     --out "${abs_scan_out}" \
     --format json >"${tmp_dir}/scan.abs.stdout.json"
@@ -421,6 +461,7 @@ run_cli_regression_smoke() (
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --transport http \
     --out "${abs_exact_usage_out}" \
     --usage-mode exact \
@@ -463,6 +504,7 @@ PY
     cd "${abs_isolated_cwd}"
     HARDPROOF_TOKENIZERS_DIR="" XDG_DATA_HOME="${abs_xdg_data_home}" "${bin_path}" scan \
       --url http://127.0.0.1:18080/mcp \
+      --allow-private-targets \
       --transport http \
       --out "${abs_xdg_usage_out}" \
       --usage-mode exact \
@@ -498,6 +540,7 @@ PY
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --transport http \
     --full-suite \
     --out "${abs_full_suite_out}" \
@@ -527,6 +570,7 @@ PY
   set +e
   "${bin_path}" conformance run \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${abs_conformance_out}" \
     --machine json >"${tmp_dir}/conformance.abs.stdout.json"
   local conformance_abs_exit="$?"
@@ -543,6 +587,7 @@ PY
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-thresholds" \
     --min-score 50 \
     --max-critical 0 \
@@ -571,6 +616,7 @@ PY
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-allow-partial" \
     --min-score 50 \
     --max-critical 0 \
@@ -599,6 +645,7 @@ JSON
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-policy" \
     --policy "${ci_policy_path}" \
     --machine json >"${tmp_dir}/ci.policy.stdout.json"
@@ -615,6 +662,7 @@ JSON
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-min-dimension-pass" \
     --min-score 0 \
     --max-critical 100 \
@@ -634,6 +682,7 @@ JSON
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-min-dimension-fail" \
     --min-score 0 \
     --max-critical 100 \
@@ -656,6 +705,7 @@ JSON
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${scan_require_trust_out}" \
     --require-trust-for-full-score \
     --machine json >"${tmp_dir}/scan.require_trust.stdout.json"
@@ -694,6 +744,7 @@ PY
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --server-json trust/fixtures/server-good.json \
     --mcpb trust/fixtures/bundle-good.mcpb \
     --out "${scan_full_score_out}" \
@@ -726,6 +777,7 @@ PY
   set +e
   "${bin_path}" scan \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${scan_perf_profile_out}" \
     --perf-profile smoke \
     --machine json >"${tmp_dir}/scan.perf_profile.stdout.json"
@@ -759,6 +811,7 @@ PY
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-new-usage-thresholds" \
     --min-score 50 \
     --max-critical 0 \
@@ -796,6 +849,7 @@ PY
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-require-pass" \
     --min-score 50 \
     --max-critical 0 \
@@ -814,6 +868,7 @@ PY
   set +e
   "${bin_path}" ci \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${tmp_dir}/ci-require-full-score" \
     --min-score 50 \
     --max-critical 0 \
@@ -984,6 +1039,7 @@ run_conformance_fixture() (
   set +e
   "${bin_path}" scan \
     --url "${fixture_url}" \
+    --allow-private-targets \
     --baseline conformance/pinned/conformance-baseline.yml \
     --out "${fixture_out_dir}" \
     --machine json >"${fixture_out_dir}/summary.stdout.json"
@@ -1044,6 +1100,7 @@ PY
     set +e
     "${bin_path}" ci \
       --url "${fixture_url}" \
+      --allow-private-targets \
       --min-score 70 \
       --allow-partial-score \
       --baseline conformance/pinned/conformance-baseline.yml \
@@ -1071,6 +1128,7 @@ PY
     set +e
     "${bin_path}" scan \
       --url "${fixture_url}" \
+      --allow-private-targets \
       --baseline conformance/pinned/conformance-baseline.yml \
       --out "${overlay_out_dir}" \
       --machine json \
@@ -1144,6 +1202,7 @@ run_security_fixture() (
   set +e
   "${bin_path}" scan \
     --url "${fixture_url}" \
+    --allow-private-targets \
     --baseline conformance/pinned/conformance-baseline.yml \
     --out "${fixture_out_dir}" \
     --machine json >"${fixture_out_dir}/summary.stdout.json"
@@ -1306,6 +1365,7 @@ run_replay_good() (
 
   "${bin_path}" replay record \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --scenario smoke/basic \
     --sanitize auth,token \
     --auth-bearer test-token \
@@ -1320,6 +1380,7 @@ run_replay_good() (
   "${bin_path}" replay verify \
     --session "${record_session}" \
     --url http://127.0.0.1:18080/mcp \
+    --allow-private-targets \
     --out "${verify_out_dir}" \
     --machine json >"${tmp_dir}/replay.verify.good.stdout.json"
 
@@ -1350,6 +1411,7 @@ run_replay_broken() (
   "${bin_path}" replay verify \
     --session "${record_session}" \
     --url http://127.0.0.1:18082/mcp \
+    --allow-private-targets \
     --machine json >"${tmp_dir}/replay.verify.broken.stdout.json"
   local broken_exit="$?"
   set -e

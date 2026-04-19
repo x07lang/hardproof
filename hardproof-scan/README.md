@@ -25,9 +25,10 @@ jobs:
 
       - name: Run Hardproof scan
         id: mcp
-        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.7
+        uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.8
         with:
           url: http://127.0.0.1:3000/mcp
+          allow-private-targets: "true"
           threshold: "85"
           full-suite: "false"
           sarif: "true"
@@ -47,7 +48,7 @@ jobs:
 ```yaml
 - name: Run Hardproof scan (stdio)
   id: mcp
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.7
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.8
   with:
     cmd: ./server --stdio
     cwd: servers/my-mcp
@@ -59,6 +60,7 @@ jobs:
 ## Inputs
 
 - `url` (required unless `cmd`): MCP HTTP URL (example: `http://127.0.0.1:3000/mcp`)
+- `allow-private-targets` (optional): `"true"` to allow localhost/private IPs for `url`
 - `cmd` (required unless `url`): MCP stdio command (example: `./server --stdio`)
 - `cwd` (optional): working directory for `cmd`
 - `env-file` (optional): env file to load for `cmd`
@@ -92,7 +94,7 @@ uses: x07lang/hardproof/action@v0.1.0-alpha.9
 Switch to:
 
 ```yaml
-uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.7
+uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.8
 ```
 
 The `action/` path remains available during the beta transition.

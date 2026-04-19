@@ -30,21 +30,21 @@ Hardproof uses `score_truth_status` to distinguish publishable (“full”) scor
 
 ## Install
 
-Release artifacts are published from tags such as `v0.4.0-beta.7`.
+Release artifacts are published from tags such as `v0.4.0-beta.8`.
 
 ### Install script
 
 Each beta release publishes an installer script that downloads the correct archive, verifies it via `checksums.txt`, and installs `hardproof` to `~/.local/bin`:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.7/install.sh" \
-  | bash -s -- --tag "v0.4.0-beta.7"
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.8/install.sh" \
+  | bash -s -- --tag "v0.4.0-beta.8"
 ```
 
 To resolve the latest beta tag automatically:
 
 ```bash
-curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.7/install.sh" \
+curl -fsSL "https://github.com/x07lang/hardproof/releases/download/v0.4.0-beta.8/install.sh" \
   | bash -s -- --tag latest-beta
 ```
 
@@ -70,6 +70,7 @@ Then scan an MCP endpoint:
 ```bash
 hardproof scan \
   --url "http://127.0.0.1:3000/mcp" \
+  --allow-private-targets \
   --out out/scan \
   --format rich
 ```
@@ -77,7 +78,7 @@ hardproof scan \
 For an alternate-screen live UI:
 
 ```bash
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --ui tui
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --ui tui
 ```
 
 Review the result:
@@ -91,7 +92,7 @@ hardproof report summary --input out/scan/scan.json --ui rich
 ### Local triage
 
 ```bash
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --format rich
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --format rich
 hardproof report html --input out/scan/scan.json > out/scan/report.html
 hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
 ```
@@ -101,6 +102,7 @@ hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
 ```bash
 hardproof ci \
   --url "http://127.0.0.1:3000/mcp" \
+  --allow-private-targets \
   --min-score 80 \
   --min-dimension conformance=85 \
   --max-critical 0
@@ -111,6 +113,7 @@ Usage-budget gates are available too:
 ```bash
 hardproof ci \
   --url "http://127.0.0.1:3000/mcp" \
+  --allow-private-targets \
   --max-avg-tool-description-tokens 500 \
   --max-tool-count 50 \
   --max-metadata-to-payload-ratio-pct 500
@@ -128,9 +131,9 @@ Hardproof labels token metrics by truth class:
 Examples:
 
 ```bash
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode estimate
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode exact --tokenizer openai:o200k_base
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --usage-mode observed --token-trace trace.json
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --usage-mode estimate
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --usage-mode exact --tokenizer openai:o200k_base
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --usage-mode observed --token-trace trace.json
 ```
 
 Notes:
@@ -157,8 +160,8 @@ hardproof report sarif --input out/scan/scan.json > out/scan/report.sarif.json
 ### Replay, trust, and bundle verification
 
 ```bash
-hardproof replay record --url "http://127.0.0.1:3000/mcp" --out out/replay.session.json --scenario smoke/basic
-hardproof replay verify --session out/replay.session.json --url "http://127.0.0.1:3000/mcp" --out out/replay-verify
+hardproof replay record --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/replay.session.json --scenario smoke/basic
+hardproof replay verify --session out/replay.session.json --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/replay-verify
 hardproof trust verify --server-json server.json
 hardproof bundle verify --server-json server.json --mcpb server.mcpb
 ```
@@ -167,9 +170,10 @@ hardproof bundle verify --server-json server.json --mcpb server.mcpb
 
 ```yaml
 - name: Run Hardproof scan
-  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.7
+  uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.8
   with:
     url: http://127.0.0.1:3000/mcp
+    allow-private-targets: "true"
 ```
 
 ## Outputs

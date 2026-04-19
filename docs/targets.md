@@ -15,7 +15,9 @@ The verifier treats MCP targets as an explicit **transport + reference** pair:
 Commands that operate on a running MCP server accept exactly one of:
 
 - `--url <URL>` (Streamable HTTP)
-- `--cmd <STR>` (stdio)
+- `--allow-private-targets` can be used with `--url` to allow localhost and private IP targets.
+- `--cmd <STR>` (stdio, via shell)
+- `--cmd-argv <JSON>` (stdio, argv array without a shell)
 
 Additional stdio-only flags:
 

@@ -2,7 +2,7 @@
   "schema_version": "x07.mcp.scan.report@0.4.0",
   "tool": "hardproof",
   "tool_family": "hardproof",
-  "tool_version": "0.4.0-beta.7",
+  "tool_version": "0.4.0-beta.8",
   "report_kind": "scan",
   "target": {
     "kind": "mcp_server",
@@ -19,7 +19,7 @@
   "score_mode": "partial",
   "score_truth_status": "partial",
   "score_weight_present": 80,
-  "overall_score": null,
+  "overall_score": 90,
   "partial_score": 90,
   "dimension_coverage": {
     "conformance": true,

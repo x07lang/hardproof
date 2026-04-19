@@ -14,7 +14,7 @@ Usage:
   install.sh --tag latest-alpha
 
 Options:
-  --tag <TAG>         Git tag to install from (example: v0.4.0-beta.7, latest-beta, v0.1.0-alpha.9, latest-alpha)
+  --tag <TAG>         Git tag to install from (example: v0.4.0-beta.8, latest-beta, v0.1.0-alpha.9, latest-alpha)
   --install-dir <DIR> Install directory (default: ~/.local/bin)
 
 Notes:
@@ -293,4 +293,4 @@ echo
 echo "Next:"
 echo "  hardproof --help"
 echo "  hardproof doctor"
-echo "  hardproof scan --url \"http://127.0.0.1:3000/mcp\" --out out/scan --machine json"
+echo "  hardproof scan --url \"http://127.0.0.1:3000/mcp\" --allow-private-targets --out out/scan --machine json"

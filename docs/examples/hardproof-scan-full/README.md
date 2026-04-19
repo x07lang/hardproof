@@ -2,7 +2,7 @@
 
 This directory contains sample artifacts that website/docs/announcements can embed directly.
 
-Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.3`, with Trust inputs provided (`--server-json` + `--mcpb`) to unlock a publishable full score.
+Generated from the `good-http` fixture target using `hardproof v0.4.0-beta.8`, with Trust inputs provided (`--server-json` + `--mcpb`) to unlock a publishable full score.
 
 ## Contents
 

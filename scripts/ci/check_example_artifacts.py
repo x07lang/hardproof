@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
-CURRENT_TOOL_VERSION = "0.4.0-beta.7"
+CURRENT_TOOL_VERSION = "0.4.0-beta.8"
 
 
 def fail(message: str) -> None:
@@ -108,10 +108,19 @@ def main() -> None:
                 fail(f"{example_name}: expected trust dimension_coverage=true")
 
         report_html = scan_html_path.read_text(encoding="utf-8")
-        match = re.search(r"<pre>(.*)</pre>", report_html, re.DOTALL)
-        if match is None:
-            fail(f"{example_name}: report.html is missing the embedded JSON body")
-        embedded_scan = json.loads(html.unescape(match.group(1)))
+        embedded_scan = None
+        for raw_block in re.findall(r"<pre>(.*?)</pre>", report_html, re.DOTALL):
+            candidate_text = html.unescape(raw_block).strip()
+            if not candidate_text.startswith("{"):
+                continue
+            try:
+                embedded_scan = json.loads(candidate_text)
+            except json.JSONDecodeError:
+                embedded_scan = None
+                continue
+            break
+        if embedded_scan is None:
+            fail(f"{example_name}: report.html is missing an embedded scan.json payload")
         if embedded_scan != scan:
             fail(f"{example_name}: report.html does not embed the current scan.json payload")
 

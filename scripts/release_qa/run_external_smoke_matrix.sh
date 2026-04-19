@@ -154,6 +154,20 @@ run_logged_allow_fail "stdio.scan" "${hardproof_bin}" scan \
   --machine json
 
 note ""
+note "== STDIO smoke: package server (npx) =="
+stdio_pkg_out="${evidence_root}/stdio-npx-server-github"
+rm -rf "${stdio_pkg_out}"
+mkdir -p "${stdio_pkg_out}"
+
+run_logged_allow_fail "stdio.npx.github.scan" "${hardproof_bin}" scan \
+  --cmd-argv '["npx","-y","@modelcontextprotocol/server-github"]' \
+  --transport stdio \
+  --out "${stdio_pkg_out}/scan" \
+  --machine json
+
+test -s "${stdio_pkg_out}/scan/scan.json"
+
+note ""
 note "== HTTP smoke: postgres-mcp demo (partial scan) =="
 demo_root="${x07_mcp_root}/demos/postgres-public-beta"
 run_logged bash "${demo_root}/scripts/run_demo.sh" --deps-only
@@ -191,6 +205,7 @@ rm -f "${server_log}"
 
   run_logged_allow_fail "http.postgres.partial.scan" "${hardproof_bin}" scan \
     --url "http://127.0.0.1:8403/mcp" \
+    --allow-private-targets \
     --out "${http_partial_out}/scan" \
     --machine json
 
@@ -275,6 +290,7 @@ def corpus_summary(path: Path):
     }
 
 stdio = scan_summary(root / "stdio-x07lang-mcp" / "scan" / "scan.json")
+stdio_npx_github = scan_summary(root / "stdio-npx-server-github" / "scan" / "scan.json")
 http_partial = scan_summary(root / "http-postgres-mcp-partial" / "scan" / "scan.json")
 http_full = scan_summary(root / "http-postgres-mcp-full" / "scan" / "scan.json")
 corpus = corpus_summary(root / "corpus" / "index.json")
@@ -308,6 +324,7 @@ def add_block(title: str, data):
     lines.append("")
 
 add_block("STDIO: x07lang-mcp", stdio)
+add_block("STDIO: server-github (npx)", stdio_npx_github)
 add_block("HTTP: postgres-mcp demo (partial)", http_partial)
 add_block("Trust-evaluable: postgres-mcp demo (full)", http_full)
 

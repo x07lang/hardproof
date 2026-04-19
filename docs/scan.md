@@ -5,10 +5,30 @@
 ## Quickstart
 
 ```sh
-hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan
+hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan
 hardproof report summary --input out/scan/scan.json --ui rich
-hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --max-critical 0
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-private-targets --min-score 80 --max-critical 0
 ```
+
+By default, `--url` rejects localhost and private IP targets. Use `--allow-private-targets` for local dev URLs.
+
+For stdio targets, prefer `--cmd-argv` to avoid invoking a shell:
+
+```sh
+hardproof scan --cmd-argv '["npx","-y","@modelcontextprotocol/server-github"]' --transport stdio --out out/scan
+```
+
+## Scoring
+
+Hardproof aggregates the five dimensions with fixed weights:
+
+- Conformance: 30%
+- Security: 20%
+- Performance: 15%
+- Trust: 20%
+- Reliability: 15%
+
+`overall_score` is the weighted effective score. When a scan is not eligible for a publishable result, Hardproof still reports an effective score as `partial_score`, and (when `score_available=true`) sets `overall_score` to the same effective value.
 
 ## Output modes
 
@@ -140,10 +160,10 @@ hardproof explain <FINDING_CODE>
 Common gates:
 
 ```sh
-hardproof ci --url "http://127.0.0.1:3000/mcp" --min-score 80 --min-dimension conformance=85 --max-critical 0
-hardproof ci --url "http://127.0.0.1:3000/mcp" --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000
-hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-partial-score --max-tool-count 50
-hardproof ci --url "http://127.0.0.1:3000/mcp" --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-private-targets --min-score 80 --min-dimension conformance=85 --max-critical 0
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-private-targets --max-tool-catalog-tokens 2000 --max-response-p95-tokens 2000
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-private-targets --allow-partial-score --max-tool-count 50
+hardproof ci --url "http://127.0.0.1:3000/mcp" --allow-private-targets --max-avg-tool-description-tokens 500 --max-tool-count 50 --max-metadata-to-payload-ratio-pct 500
 ```
 
 `hardproof ci` fails on `score_mode=partial` by default. Use `--allow-partial-score` only when you want threshold checks to accept a partial result.

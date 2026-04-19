@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## v0.4.0-beta.8
+
+- Default URL targets now reject localhost/private IPs unless `--allow-private-targets` is set (applies to `scan`, `ci`, `doctor`, and replay flows).
+- Add `--cmd-argv` for shell-free stdio targets (argv array without a shell).
+- When `score_mode="partial"` but `score_available=true`, hardproof now reports the effective score in both `overall_score` and `partial_score` (docs/examples refreshed).
+
+## v0.4.0-beta.7
+
+- Improve installer robustness by retrying GitHub asset downloads.
+- Stabilize CI by normalizing reliability artifacts and example-artifact regeneration.
+
+## v0.4.0-beta.6
+
+- Stabilize CI by hydrating X07 deps and applying the pinned `ext-cli-ux` profile patch.
+
 ## v0.4.0-beta.5
 
 - Upgrade to the X07 `v0.2.3` toolchain and migrate project/lockfile formats (`x07.project@0.5.0`, `x07.lock@0.4.0`).
@@ -33,7 +48,7 @@
 
 ## v0.4.0-beta.1
 
-- Complete the remaining M2.5b.1 beta gaps: spec-aligned trust reason codes, scan-side usage threshold flags, and branded report boundary types.
+- Complete the remaining beta gaps: spec-aligned trust reason codes, scan-side usage threshold flags, and branded report boundary types.
 - Deepen the scan coverage with score-truth regressions, security subfamily fixtures, usage duplication findings, and p99 performance metrics.
 - Tighten score semantics so full scores require Trust plus at least 85% weighted coverage, while partial scores render as withheld in rich output.
 - Make `hardproof ci` fail on partial scores by default and add `--allow-partial-score` for explicit opt-in.

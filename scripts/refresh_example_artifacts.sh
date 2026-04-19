@@ -79,6 +79,7 @@ mkdir -p "${gen_partial_dir}"
 
 "${bin_path}" scan \
   --url http://127.0.0.1:18080/mcp \
+  --allow-private-targets \
   --out "${gen_partial_dir}" \
   --format rich >"${tmp_dir}/scan.partial.rich.txt"
 
@@ -306,6 +307,7 @@ mkdir -p "${gen_full_dir}"
 
 "${bin_path}" scan \
   --url http://127.0.0.1:18080/mcp \
+  --allow-private-targets \
   --server-json trust/fixtures/server-good.json \
   --mcpb trust/fixtures/bundle-good.mcpb \
   --out "${gen_full_dir}" \

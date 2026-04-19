@@ -15,6 +15,7 @@ run_case() (
     HARDPROOF_ACTION_CMD="${HARDPROOF_ACTION_CMD:-}" \
     HARDPROOF_ACTION_FULL_SUITE="${HARDPROOF_ACTION_FULL_SUITE:-false}" \
     HARDPROOF_ACTION_SARIF="${HARDPROOF_ACTION_SARIF:-false}" \
+    HARDPROOF_ACTION_ALLOW_PRIVATE_TARGETS="${HARDPROOF_ACTION_ALLOW_PRIVATE_TARGETS:-false}" \
     "$@" 2>&1
   )"
   local got="$?"
@@ -48,3 +49,7 @@ HARDPROOF_ACTION_URL="" \
 HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
   HARDPROOF_ACTION_SARIF="nope" \
   run_case "bad-sarif" 2 bash "${script}"
+
+HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
+  HARDPROOF_ACTION_ALLOW_PRIVATE_TARGETS="nope" \
+  run_case "bad-allow-private-targets" 2 bash "${script}"

@@ -90,7 +90,7 @@ if ! command -v "${hardproof_bin}" >/dev/null 2>&1; then
   exit 2
 fi
 
-args=(scan --url "${URL}" --baseline "${BASELINE}" --out "${OUT_DIR}" --machine json)
+args=(scan --url "${URL}" --allow-private-targets --baseline "${BASELINE}" --out "${OUT_DIR}" --machine json)
 if [[ "${FULL_SUITE}" == "1" ]]; then
   args+=(--full-suite)
 fi

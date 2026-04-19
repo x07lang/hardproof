@@ -21,7 +21,7 @@ fi
 
 tag="${HARDPROOF_TAG:-${GITHUB_REF_NAME:-}}"
 if [[ -z "${tag}" ]]; then
-  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.7)" >&2
+  echo "ERROR: missing release tag; set HARDPROOF_TAG (example: v0.4.0-beta.8)" >&2
   exit 2
 fi
 
@@ -110,7 +110,7 @@ Hardproof beta
 Next:
   ./hardproof --help
   ./hardproof doctor
-  ./hardproof scan --url "http://127.0.0.1:3000/mcp" --out out/scan --machine json
+  ./hardproof scan --url "http://127.0.0.1:3000/mcp" --allow-private-targets --out out/scan --machine json
 
 Tokenizer tables:
   Exact usage-mode requires tokenizer tables. This archive includes them under ./tokenizers/.

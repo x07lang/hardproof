@@ -6,6 +6,10 @@ inputs:
     description: "MCP server base URL (example: http://127.0.0.1:3000/mcp)"
     required: false
     default: ""
+  allow-private-targets:
+    description: "Allow localhost and private IP targets for url (default false)"
+    required: false
+    default: "false"
   cmd:
     description: "MCP stdio command (example: ./server)"
     required: false
@@ -43,7 +47,7 @@ inputs:
     required: false
     default: "80"
   version:
-    description: "Hardproof release tag (example: v0.4.0-beta.7) or latest-beta"
+    description: "Hardproof release tag (example: v0.4.0-beta.8) or latest-beta"
     required: false
     default: latest-beta
 
@@ -112,6 +116,7 @@ runs:
         HARDPROOF_ACTION_FULL_SUITE: ${{ inputs.full-suite }}
         HARDPROOF_ACTION_SARIF: ${{ inputs.sarif }}
         HARDPROOF_ACTION_ALLOW_PARTIAL_SCORE: ${{ inputs.allow-partial-score }}
+        HARDPROOF_ACTION_ALLOW_PRIVATE_TARGETS: ${{ inputs.allow-private-targets }}
         HARDPROOF_ACTION_THRESHOLD: ${{ inputs.threshold }}
         HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE: ${{ inputs.require-trust-for-full-score }}
       run: |
@@ -129,11 +134,15 @@ runs:
         mkdir -p "${out_dir}"
 
         url="${{ inputs.url }}"
+        allow_private_targets="${{ inputs.allow-private-targets }}"
         cmd="${{ inputs.cmd }}"
         cwd="${{ inputs.cwd }}"
         env_file="${{ inputs.env-file }}"
 
         args=(ci --out "${out_dir}" --machine json --threshold "${{ inputs.threshold }}")
+        if [[ "${allow_private_targets}" == "true" ]]; then
+          args+=(--allow-private-targets)
+        fi
         if [[ -n "${url}" ]]; then
           args+=(--url "${url}")
         fi

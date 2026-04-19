@@ -15,7 +15,7 @@ Type "conformance/scripts/wait_for_http.sh http://127.0.0.1:18080/mcp"
 Enter
 Wait+Screen@30s /Server is responding/
 
-Type "./out/vhs/hardproof scan --url http://127.0.0.1:18080/mcp --server-json trust/fixtures/server-good.json --mcpb trust/fixtures/bundle-good.mcpb --out out/vhs/scan-full --ui tui --score-preview --metrics usage,perf --perf-profile steady_small"
+Type "./out/vhs/hardproof scan --url http://127.0.0.1:18080/mcp --allow-private-targets --server-json trust/fixtures/server-good.json --mcpb trust/fixtures/bundle-good.mcpb --out out/vhs/scan-full --ui tui --score-preview --metrics usage,perf --perf-profile steady_small"
 Enter
 
 Wait+Screen@90s /Hardproof -/

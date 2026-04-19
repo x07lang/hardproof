@@ -89,6 +89,7 @@ def main() -> None:
         repo_root / "hardproof-scan" / "README.md",
         repo_root / "hardproof-scan" / "action.yml",
         repo_root / "docs" / "examples" / "hardproof-scan" / "README.md",
+        repo_root / "docs" / "examples" / "hardproof-scan-full" / "README.md",
         repo_root / "tests" / "scan_contracts.x07.json",
     ]
 
