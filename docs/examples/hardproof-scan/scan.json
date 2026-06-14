@@ -78,6 +78,9 @@
         "auth_challenge_status_code": 0,
         "auth_expectation_mismatch": false,
         "auth_protection_status": "missing",
+        "capability_external_comms": 0,
+        "capability_private_data": 0,
+        "capability_untrusted_input": 0,
         "command_risk_pattern_count": 0,
         "descriptor_bytes": 141,
         "excessive_agency_tool_count": 0,
@@ -104,9 +107,10 @@
         },
         "host_origin_guard_ok": true,
         "injection_pattern_count": 0,
+        "lethal_trifecta": 0,
         "metadata_drift_kind": "none",
         "remote_http_without_tls": false,
-        "ruleset_version": "hardproof.secrules@0.2.0"
+        "ruleset_version": "hardproof.secrules@0.3.0"
       },
       "name": "security",
       "score": 100,

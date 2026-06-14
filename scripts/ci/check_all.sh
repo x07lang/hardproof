@@ -1007,6 +1007,9 @@ bash scripts/ci/scan_failed_artifact_regression.sh "${bin_path}"
 echo "==> security depth regression (scope-creep + OWASP tags + precise secret regex)"
 bash scripts/ci/security_depth_regression.sh "${bin_path}"
 
+echo "==> lethal trifecta regression (config policy / Rule-of-Two)"
+bash scripts/ci/lethal_trifecta_regression.sh "${bin_path}"
+
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"
 "${bin_path}" doctor --machine json >"${ok_json}"

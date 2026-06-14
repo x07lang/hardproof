@@ -214,8 +214,9 @@ The Security dimension applies a deterministic, versioned screening ruleset (`se
 - `SEC-COMMAND-RISK-PATTERN` (MCP: Command Injection) — shell/command execution surfaces.
 - `SEC-SECRET-EXPOSURE` (MCP: Sensitive Information Disclosure) — credential-like tokens. Structured tokens (GitHub `ghp_`/`github_pat_`, AWS `AKIA`, Slack `xox[bp]-`) are matched by **precise anchored regex** on the full token shape, so prose mentions of a prefix do not false-positive.
 - `SEC-EXCESSIVE-AGENCY` (MCP: Excessive Agency) — tools that declare both `destructiveHint` and `openWorldHint`, combining irreversible effects with open-ended reach (`security.metrics.excessive_agency_tool_count`).
+- `SEC-LETHAL-TRIFECTA` (MCP: Excessive Agency) — a **config-policy** check: the server's tool catalog spans all three lethal-trifecta legs — untrusted input (`fetch`/`browse`/…), private-data access (`secret`/`credential`/`filesystem`/…), and external communication (`send_email`/`webhook`/`upload`/…) — so a prompt injection in untrusted content could exfiltrate sensitive data. By the *Rule of Two*, at most two of these should co-occur within one trust boundary. The three capability flags are reported in `security.metrics.capability_untrusted_input` / `capability_private_data` / `capability_external_comms`, and `security.metrics.lethal_trifecta` is `1` when all three are present.
 
-Regex matching is bounded to simple anchored patterns over the (bounded) tool metadata, so it stays linear and cannot be turned into a scan-time DoS by adversarial server content.
+Regex matching is bounded to simple anchored patterns over the (bounded) tool metadata, so it stays linear and cannot be turned into a scan-time DoS by adversarial server content. The lethal-trifecta capability classifier is a deterministic keyword heuristic over tool names/descriptions; like the rest of the ruleset it is a screening signal, versioned via `security.metrics.ruleset_version`.
 
 ### Replay, trust, and bundle verification
 
