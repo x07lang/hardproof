@@ -25,7 +25,7 @@ echo "==> repo hygiene"
 python3 scripts/ci/check_repo_hygiene.py >/dev/null
 
 echo "==> action contract"
-bash action/tests/test_validate_inputs.sh >/dev/null
+bash hardproof-scan/tests/test_validate_inputs.sh >/dev/null
 test -s hardproof-scan/action.yml
 
 echo "==> fmt"

@@ -121,7 +121,7 @@ runs:
         HARDPROOF_ACTION_REQUIRE_TRUST_FOR_FULL_SCORE: ${{ inputs.require-trust-for-full-score }}
       run: |
         set -euo pipefail
-        bash "${GITHUB_ACTION_PATH}/../action/validate_inputs.sh"
+        bash "${GITHUB_ACTION_PATH}/validate_inputs.sh"
 
     - name: Hardproof CI
       id: scan

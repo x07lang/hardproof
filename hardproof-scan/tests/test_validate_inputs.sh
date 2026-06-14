@@ -28,7 +28,7 @@ run_case() (
   fi
 )
 
-script="${repo_root}/action/validate_inputs.sh"
+script="${repo_root}/hardproof-scan/validate_inputs.sh"
 
 HARDPROOF_ACTION_URL="http://127.0.0.1:3000/mcp" \
   HARDPROOF_ACTION_CMD="" \

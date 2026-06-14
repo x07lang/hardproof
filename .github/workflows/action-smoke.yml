@@ -54,7 +54,7 @@ jobs:
 
       - name: Run Hardproof Action
         if: steps.beta.outputs.found == 'true'
-        uses: ./action
+        uses: ./hardproof-scan
         with:
           url: http://127.0.0.1:18080/mcp
           allow-private-targets: "true"

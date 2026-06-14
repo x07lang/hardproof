@@ -84,8 +84,6 @@ def main() -> None:
         repo_root / "scripts" / "ci" / "build_release_binaries.sh",
         repo_root / "scripts" / "install.sh",
         repo_root / "README.md",
-        repo_root / "action" / "README.md",
-        repo_root / "action" / "action.yml",
         repo_root / "hardproof-scan" / "README.md",
         repo_root / "hardproof-scan" / "action.yml",
         repo_root / "docs" / "examples" / "hardproof-scan" / "README.md",

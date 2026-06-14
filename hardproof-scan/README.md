@@ -97,6 +97,6 @@ Switch to:
 uses: x07lang/hardproof/hardproof-scan@v0.4.0-beta.8
 ```
 
-The `action/` path remains available during the beta transition.
+The legacy `action/` alias has been removed; reference `hardproof-scan` directly.
 
 By default, the Action now fails when the scan only reaches `score_mode=partial`.
