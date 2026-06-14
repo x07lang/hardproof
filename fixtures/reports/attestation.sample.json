@@ -1,0 +1,15 @@
+{
+  "schema_version": "hardproof.attestation@0.2.0",
+  "run_id": "05eed2f95fc2f159",
+  "report_digest": "553e35879af061125bf09c73b551dec6732e02aecf93770d594657777ac35deb",
+  "generated_at": "2026-06-14T02:04:03.743144000Z",
+  "tool": "hardproof",
+  "tool_version": "0.4.0-beta.8",
+  "methodology_version": "0.4.0",
+  "scan_json_sha256": "6e84375ff7aa952da074ad5b0a83628d592c3872707f8d67b3ebbc53ce19b680",
+  "scan_events_jsonl_sha256": "22dc2e3615b9f8772a01b889ee4ea589b0c5ec3e35a5ed57ce27dcbb9d3269a1",
+  "prev_hash": "",
+  "record_hash": "030c51d7dfddfafa9d9f36759c7e6ceb5632d4a55d763c17f8a7e0bc8682426c",
+  "signature": "7c68ccc1cb65ac55e5c4e578aff4956317faba387909cc1ed61e3390664a13e7",
+  "signature_alg": "hmac-sha256"
+}

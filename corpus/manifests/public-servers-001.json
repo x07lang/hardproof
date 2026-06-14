@@ -1,0 +1,67 @@
+{
+  "schema_version": "x07.mcp.report.manifest@0.1.0",
+  "report_id": "public-servers-001",
+  "targets": [
+    {
+      "id": "server-everything",
+      "source": { "repo": "https://github.com/modelcontextprotocol/servers", "version": "latest" },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "stdio",
+        "ref": "npx -y @modelcontextprotocol/server-everything",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    },
+    {
+      "id": "server-memory",
+      "source": { "repo": "https://github.com/modelcontextprotocol/servers", "version": "latest" },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "stdio",
+        "ref": "npx -y @modelcontextprotocol/server-memory",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    },
+    {
+      "id": "server-filesystem",
+      "source": { "repo": "https://github.com/modelcontextprotocol/servers", "version": "latest" },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "stdio",
+        "ref": "npx -y @modelcontextprotocol/server-filesystem /tmp",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    },
+    {
+      "id": "server-sequential-thinking",
+      "source": { "repo": "https://github.com/modelcontextprotocol/servers", "version": "latest" },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "stdio",
+        "ref": "npx -y @modelcontextprotocol/server-sequential-thinking",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    },
+    {
+      "id": "server-github",
+      "source": { "repo": "https://github.com/modelcontextprotocol/servers", "version": "latest" },
+      "target": {
+        "kind": "mcp_server",
+        "transport": "stdio",
+        "ref": "npx -y @modelcontextprotocol/server-github",
+        "meta": {}
+      },
+      "assumptions": { "auth_mode": "none" },
+      "exclusions": { "skip_scenarios": [] }
+    }
+  ],
+  "notes": "Curated public-benchmark target list of popular reference MCP servers (stdio/npx). This manifest is NOT run by CI (it fetches third-party packages over the network and is non-deterministic); generate the public quality dataset manually with `hardproof corpus run --manifest corpus/manifests/public-servers-001.json --out out/public`. The hermetic CI smoke uses quality-report-001.json (local fixtures) instead."
+}

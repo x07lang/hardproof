@@ -17,5 +17,6 @@ CI enforces this with `python3 scripts/ci/assert_scan_report_consistency.py`.
 ## Schema-scoped samples
 
 Other files in this directory are schema-scoped objects (for example a single finding, a single
-dimension, usage metrics, corpus summaries, SARIF, replay sessions). They are validated by
-`hardproof ci validate-fixtures` and are not expected to satisfy scan-report consistency rules.
+dimension, usage metrics, corpus summaries, SARIF, replay sessions, the scan attestation). They are
+validated by `hardproof ci validate-fixtures` and are not expected to satisfy scan-report
+consistency rules.

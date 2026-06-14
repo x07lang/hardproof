@@ -1,0 +1,62 @@
+name: Corpus
+
+# Scheduled, deterministic corpus run over the hermetic fixture manifest
+# (local good-http reference server; no network/third-party fetch). Produces the
+# full five-dimension corpus dataset (index.json @0.2.0 + per-target scans +
+# rendered report) and uploads it as a build artifact. The public real-server
+# dataset (corpus/manifests/public-servers-001.json) is generated manually,
+# off this CI path, because it fetches third-party packages over the network.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  X07_TOOLCHAIN_TAG: "v0.2.3"
+
+jobs:
+  corpus:
+    name: corpus / fixture dataset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install system deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential pkg-config libssl-dev libcurl4-openssl-dev unzip
+      - name: Cache X07 toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.x07
+          key: x07-${{ runner.os }}-${{ env.X07_TOOLCHAIN_TAG }}
+      - name: Install X07 (pinned)
+        shell: bash
+        run: ./scripts/ci/install_x07_toolchain.sh
+      - name: Build hardproof
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.x07/bin:$PATH"
+          bash scripts/ci/hydrate_x07_deps.sh x07.json
+          python3 scripts/ci/patch_ext_cli_ux_profile.py
+          x07 pkg lock --project x07.json --check --offline --json=off
+          x07 bundle --project x07.json --profile os --json=off --out out/hardproof
+      - name: Generate fixture corpus dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.x07/bin:$PATH"
+          bash scripts/ci/generate_corpus_sample.sh "$PWD/out/hardproof" out/corpus-sample
+      - name: Upload corpus dataset
+        uses: actions/upload-artifact@v4
+        with:
+          name: corpus-dataset
+          path: out/corpus-sample

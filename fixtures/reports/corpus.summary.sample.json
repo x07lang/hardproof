@@ -1,23 +1,41 @@
 {
-  "schema_version": "x07.mcp.corpus.summary@0.1.0",
-  "generated_at": "2026-03-31T00:00:00Z",
+  "schema_version": "x07.mcp.corpus.summary@0.2.0",
+  "generated_at": "2026-01-01T00:00:00Z",
   "tool": "hardproof",
   "tool_version": "0.4.0-beta.8",
-  "target": { "kind": "file", "transport": "file", "ref": "corpus/manifests/quality-report-001.json", "meta": {} },
-  "ok": false,
-  "errors": [{ "id": "corpus.stub", "message": "corpus run is a placeholder (not implemented yet)" }],
-  "warnings": [],
+  "ok": true,
   "details": {
     "report_id": "quality-report-001",
     "results": [
       {
         "server_id": "good-http",
-        "status": "stub",
-        "ok": false,
-        "result_path": "out/corpus/quality-report-001/good-http/result.json",
-        "out_dir": "out/corpus/quality-report-001/good-http"
+        "ok": true,
+        "status": "warn",
+        "score_truth_status": "publishable",
+        "scores": {
+          "conformance": 100,
+          "security": 100,
+          "performance": 100,
+          "trust": 80,
+          "reliability": 100,
+          "overall": 96
+        },
+        "result_path": "out/good-http/result.json",
+        "out_dir": "out/good-http"
       }
     ],
-    "counts": { "total": 1, "ok": 0, "failed": 1, "stub": 1 }
+    "counts": {
+      "total": 1,
+      "ok": 1,
+      "failed": 0
+    },
+    "dimension_averages": {
+      "conformance": 100,
+      "security": 100,
+      "performance": 100,
+      "trust": 80,
+      "reliability": 100,
+      "overall": 96
+    }
   }
 }

@@ -1,28 +1,29 @@
 {
-  "schema_version": "x07.mcp.corpus.result@0.1.0",
-  "generated_at": "2026-03-31T00:00:00Z",
+  "schema_version": "x07.mcp.corpus.result@0.2.0",
+  "generated_at": "2026-01-01T00:00:00Z",
   "tool": "hardproof",
   "tool_version": "0.4.0-beta.8",
-  "target": {
-    "kind": "mcp_server",
-    "transport": "streamable_http",
-    "ref": "http://127.0.0.1:18080/mcp",
-    "meta": {}
-  },
-  "ok": false,
-  "errors": [{ "id": "corpus.stub", "message": "corpus run is a placeholder (not implemented yet)" }],
-  "warnings": [],
+  "ok": true,
   "details": {
     "report_id": "quality-report-001",
     "server_id": "good-http",
-    "status": "stub",
-    "source": { "repo": "https://github.com/example/mcp-server", "version": "v1.2.3" },
-    "outputs": {
-      "out_dir": "out/corpus/quality-report-001/good-http",
-      "summary_json": "out/corpus/quality-report-001/good-http/summary.json",
-      "junit_xml": "out/corpus/quality-report-001/good-http/summary.junit.xml",
-      "html": "out/corpus/quality-report-001/good-http/summary.html",
-      "sarif": "out/corpus/quality-report-001/good-http/summary.sarif.json"
+    "status": "warn",
+    "score_truth_status": "publishable",
+    "source": {
+      "repo": "https://github.com/x07lang/hardproof",
+      "version": "fixtures"
+    },
+    "scores": {
+      "conformance": 100,
+      "security": 100,
+      "performance": 100,
+      "trust": 80,
+      "reliability": 100,
+      "overall": 96
     }
+  },
+  "outputs": {
+    "out_dir": "out/good-http",
+    "scan_json": "out/good-http/scan.json"
   }
 }

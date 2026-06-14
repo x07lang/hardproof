@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://x07.io/schemas/x07.mcp.scan.failed.schema.json",
+  "title": "x07.mcp.scan.failed@0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "error_code", "reason", "tool", "tool_version"],
+  "properties": {
+    "schema_version": { "const": "hardproof.scan.failed@0.1.0" },
+    "status": { "const": "failed" },
+    "error_code": { "type": "integer", "minimum": 0 },
+    "reason": { "type": "string", "minLength": 1 },
+    "tool": { "const": "hardproof" },
+    "tool_version": { "type": "string", "minLength": 1 }
+  }
+}

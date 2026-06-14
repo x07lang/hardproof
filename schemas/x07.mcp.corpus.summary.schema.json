@@ -1,86 +1,64 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://x07.io/schemas/x07.mcp.corpus.summary.schema.json",
-  "title": "x07.mcp.corpus.summary@0.1.0",
+  "title": "x07.mcp.corpus.summary@0.2.0",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema_version",
-    "generated_at",
-    "tool",
-    "tool_version",
-    "target",
-    "ok",
-    "errors",
-    "warnings",
-    "details"
-  ],
+  "required": ["schema_version", "generated_at", "tool", "tool_version", "ok", "details"],
   "properties": {
-    "schema_version": { "const": "x07.mcp.corpus.summary@0.1.0" },
-    "generated_at": { "type": "string", "format": "date-time" },
-    "tool": { "type": "string", "minLength": 1 },
-    "tool_version": { "type": "string", "minLength": 1 },
-    "target": { "$ref": "#/$defs/target" },
+    "schema_version": { "const": "x07.mcp.corpus.summary@0.2.0" },
+    "generated_at": { "type": "string" },
+    "tool": { "type": "string" },
+    "tool_version": { "type": "string" },
     "ok": { "type": "boolean" },
-    "errors": { "type": "array", "items": { "$ref": "#/$defs/msg" } },
-    "warnings": { "type": "array", "items": { "$ref": "#/$defs/msg" } },
-    "details": { "$ref": "#/$defs/corpus_summary_details" }
+    "details": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_id", "results", "counts", "dimension_averages"],
+      "properties": {
+        "report_id": { "type": "string" },
+        "results": { "type": "array", "items": { "$ref": "#/$defs/result_ref" } },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total", "ok", "failed"],
+          "properties": {
+            "total": { "type": "integer", "minimum": 0 },
+            "ok": { "type": "integer", "minimum": 0 },
+            "failed": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "dimension_averages": { "$ref": "#/$defs/dim_scores" }
+      }
+    }
   },
   "$defs": {
-    "target": {
+    "dim_scores": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "transport", "ref", "meta"],
+      "required": ["conformance", "security", "performance", "trust", "reliability", "overall"],
       "properties": {
-        "kind": { "enum": ["mcp_server", "file"] },
-        "transport": { "enum": ["streamable_http", "stdio", "file"] },
-        "ref": { "type": "string", "minLength": 1 },
-        "meta": { "type": "object", "additionalProperties": true }
-      }
-    },
-    "msg": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "message"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "message": { "type": "string", "minLength": 1 },
-        "details": { "type": "object", "additionalProperties": true }
+        "conformance": { "type": ["integer", "null"] },
+        "security": { "type": ["integer", "null"] },
+        "performance": { "type": ["integer", "null"] },
+        "trust": { "type": ["integer", "null"] },
+        "reliability": { "type": ["integer", "null"] },
+        "overall": { "type": ["integer", "null"] }
       }
     },
     "result_ref": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["server_id", "status", "ok", "result_path", "out_dir"],
+      "required": ["server_id", "ok", "status", "score_truth_status", "scores", "result_path", "out_dir"],
       "properties": {
-        "server_id": { "type": "string", "minLength": 1 },
-        "status": { "enum": ["stub", "complete"] },
+        "server_id": { "type": "string" },
         "ok": { "type": "boolean" },
-        "result_path": { "type": "string", "minLength": 1 },
-        "out_dir": { "type": "string", "minLength": 1 }
-      }
-    },
-    "counts": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["total", "ok", "failed", "stub"],
-      "properties": {
-        "total": { "type": "integer", "minimum": 0 },
-        "ok": { "type": "integer", "minimum": 0 },
-        "failed": { "type": "integer", "minimum": 0 },
-        "stub": { "type": "integer", "minimum": 0 }
-      }
-    },
-    "corpus_summary_details": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["report_id", "results", "counts"],
-      "properties": {
-        "report_id": { "type": "string", "minLength": 1 },
-        "results": { "type": "array", "items": { "$ref": "#/$defs/result_ref" } },
-        "counts": { "$ref": "#/$defs/counts" }
+        "status": { "type": "string" },
+        "score_truth_status": { "type": "string" },
+        "scores": { "$ref": "#/$defs/dim_scores" },
+        "result_path": { "type": "string" },
+        "out_dir": { "type": "string" }
       }
     }
   }
 }
-

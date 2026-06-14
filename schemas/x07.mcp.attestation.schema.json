@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://x07.io/schemas/x07.mcp.attestation.schema.json",
+  "title": "x07.mcp.attestation@0.2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "report_digest",
+    "generated_at",
+    "tool",
+    "tool_version",
+    "methodology_version",
+    "scan_json_sha256",
+    "scan_events_jsonl_sha256",
+    "prev_hash",
+    "record_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "hardproof.attestation@0.2.0" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "report_digest": { "$ref": "#/$defs/sha256_hex" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "tool": { "const": "hardproof" },
+    "tool_version": { "type": "string", "minLength": 1 },
+    "methodology_version": { "type": "string", "minLength": 1 },
+    "scan_json_sha256": { "$ref": "#/$defs/sha256_hex" },
+    "scan_events_jsonl_sha256": { "$ref": "#/$defs/sha256_hex" },
+    "prev_hash": {
+      "description": "record_hash of the prior ledger entry (empty for a standalone or first-in-chain attestation)",
+      "type": "string",
+      "pattern": "^$|^[0-9a-f]{64}$"
+    },
+    "record_hash": {
+      "description": "sha256(run_id:report_digest:scan_json_sha256:scan_events_jsonl_sha256:prev_hash)",
+      "$ref": "#/$defs/sha256_hex"
+    },
+    "signature": {
+      "description": "HMAC-SHA256 over the record's chain input (present only when signed)",
+      "$ref": "#/$defs/sha256_hex"
+    },
+    "signature_alg": { "const": "hmac-sha256" }
+  },
+  "$defs": {
+    "sha256_hex": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

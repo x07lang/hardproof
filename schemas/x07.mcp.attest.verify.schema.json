@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://x07.io/schemas/x07.mcp.attest.verify.schema.json",
+  "title": "x07.mcp.attest.verify@0.2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ok", "scan_json_match", "events_match", "record_hash_match", "signature_match", "chain_match"],
+  "properties": {
+    "schema_version": { "const": "hardproof.attest.verify@0.2.0" },
+    "ok": { "type": "boolean" },
+    "scan_json_match": { "type": "boolean" },
+    "events_match": { "type": "boolean" },
+    "record_hash_match": { "type": "boolean" },
+    "signature_match": {
+      "description": "true/false when --attest-key given; null when not checked",
+      "type": ["boolean", "null"]
+    },
+    "chain_match": {
+      "description": "true/false when --attest-ledger given; null when not checked",
+      "type": ["boolean", "null"]
+    }
+  }
+}

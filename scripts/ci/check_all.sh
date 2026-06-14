@@ -949,17 +949,22 @@ test -s "${corpus_out}/good-http/result.json"
   --schema schemas/x07.mcp.corpus.result.schema.json \
   --input "${corpus_out}/good-http/result.json"
 
-test -s "${corpus_out}/good-http/summary.json"
+test -s "${corpus_out}/good-http/scan.json"
+"${bin_path}" ci validate-json \
+  --schema schemas/x07.mcp.scan.report.schema.json \
+  --input "${corpus_out}/good-http/scan.json"
+test -s "${corpus_out}/good-http/tools.pin.json"
+test -s "${corpus_out}/good-http/conformance.summary.json"
 "${bin_path}" ci validate-json \
   --schema schemas/x07.mcp.conformance.summary.schema.json \
-  --input "${corpus_out}/good-http/summary.json"
-test -s "${corpus_out}/good-http/summary.junit.xml"
-python3 scripts/ci/assert_junit_xml.py "${corpus_out}/good-http/summary.junit.xml"
-test -s "${corpus_out}/good-http/summary.html"
-test -s "${corpus_out}/good-http/summary.sarif.json"
+  --input "${corpus_out}/good-http/conformance.summary.json"
+test -s "${corpus_out}/good-http/conformance.summary.junit.xml"
+python3 scripts/ci/assert_junit_xml.py "${corpus_out}/good-http/conformance.summary.junit.xml"
+test -s "${corpus_out}/good-http/conformance.summary.html"
+test -s "${corpus_out}/good-http/conformance.summary.sarif.json"
 "${bin_path}" ci validate-json \
   --schema schemas/x07.mcp.sarif.schema.json \
-  --input "${corpus_out}/good-http/summary.sarif.json"
+  --input "${corpus_out}/good-http/conformance.summary.sarif.json"
 
 echo "==> corpus render smoke"
 corpus_render_out="${corpus_out}/report.html"
@@ -980,6 +985,27 @@ fi
 
 test -s "${corpus_render_out}"
 grep -q '<h1>Hardproof corpus report</h1>' "${corpus_render_out}"
+
+echo "==> reliability stdio regression (resilient vs crash fixtures)"
+bash scripts/ci/reliability_stdio_regression.sh "${bin_path}"
+
+echo "==> tool-pin drift regression (rug-pull detection)"
+bash scripts/ci/tool_pin_drift_regression.sh "${bin_path}"
+
+echo "==> attest tamper regression (tamper-evident attestation)"
+bash scripts/ci/attest_tamper_regression.sh "${bin_path}"
+
+echo "==> probe timeout regression (HARDPROOF_PROBE_TIMEOUT_MS bounds hung servers)"
+bash scripts/ci/probe_timeout_regression.sh "${bin_path}"
+
+echo "==> score clamp regression (upper-bound clamp present + scores in range)"
+bash scripts/ci/score_clamp_regression.sh "${bin_path}"
+
+echo "==> scan failed-artifact regression (scan.failed.json on failure paths)"
+bash scripts/ci/scan_failed_artifact_regression.sh "${bin_path}"
+
+echo "==> security depth regression (scope-creep + OWASP tags + precise secret regex)"
+bash scripts/ci/security_depth_regression.sh "${bin_path}"
 
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"

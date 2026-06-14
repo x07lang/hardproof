@@ -28,7 +28,15 @@ Hardproof aggregates the five dimensions with fixed weights:
 - Trust: 20%
 - Reliability: 15%
 
-`overall_score` is the weighted effective score. When a scan is not eligible for a publishable result, Hardproof still reports an effective score as `partial_score`, and (when `score_available=true`) sets `overall_score` to the same effective value.
+`overall_score` is the weighted effective score. The rich/TUI view presents this weighted result as the **AI Infrastructure Score**, alongside a `Score Truth` badge reflecting `score_truth_status` (below).
+
+Every dimension is scored by deterministic rules and measurements — there is no LLM-as-judge anywhere — so a score is reproducible and auditable.
+
+Hardproof distinguishes three score-truth states (`score_truth_status`):
+
+- **full** (`publishable`): all four core dimensions present and weighted coverage ≥ 85%; `overall_score` is populated and publishable.
+- **partial**: some dimensions could be scored; `overall_score` is still computed as the effective score (matching `partial_score`), with `partial_reasons` / `gating_reasons` explaining why it is not publishable.
+- **insufficient**: no dimensions could be evaluated (weighted coverage 0%, e.g. the target was unreachable); no numeric score is published and the rich UI renders `INSUFFICIENT SCORE`.
 
 ## Output modes
 
@@ -58,6 +66,18 @@ Live rendering is enabled by default for `rich`, `compact`, `jsonl`, and `tui` o
 `hardproof scan` accepts the usage-policy threshold flags so the same invocation surface is available in local triage. Enforcement still happens in `hardproof ci`.
 
 Partial scans are explicit in `v0.4.0`: `score_mode=partial`, `score_truth_status=partial`, and `partial_reasons` / `gating_reasons` explain why the scan is not eligible for a publishable score. `overall_score` is still computed as the effective score (matching `partial_score`).
+
+## Probe timeouts
+
+Each probe spawns the target (stdio) or issues an HTTP request with a bounded timeout, so a hung server cannot block a probe forever. The defaults are 20s per stdio process and 30s per HTTP read.
+
+`HARDPROOF_PROBE_TIMEOUT_MS` overrides both, in milliseconds, for the whole scan:
+
+```bash
+HARDPROOF_PROBE_TIMEOUT_MS=5000 hardproof scan --cmd "npx -y some-mcp-server"
+```
+
+A server that passes discovery but then hangs on later dimension probes would otherwise incur one timeout per probe; lowering this bounds the worst-case scan time (for example, CI can set a few seconds to fail fast). The timeout governs only how long a hang waits — it never changes scores for a healthy server, so scans stay deterministic. The HTTP read timeout is derived as `ms / 1000` seconds (integer floor, minimum 1s).
 
 ## Token truth modes
 
@@ -113,6 +133,9 @@ Notes:
 - `<DIR>` may be relative or absolute.
 - `scan.json` (schema: `x07.mcp.scan.report@0.4.0`)
 - `scan.events.jsonl` (stable JSONL event stream)
+- `tools.pin.json` (`hardproof.tools.pin@0.1.0`): content-addressed pin of the tool catalog for rug-pull detection (pass back via `--tool-baseline`)
+- `attestation.json` (`hardproof.attestation@0.2.0`): SHA-256 digests of `scan.json` and `scan.events.jsonl` plus a `record_hash` self-hash (and a `prev_hash` link + optional HMAC `signature`); verify with `hardproof attest verify --attestation <DIR>/attestation.json --out-dir <DIR>` (add `--attest-key`/`--attest-ledger` to also check the signature/hash-chain)
+- `scan.failed.json` (`hardproof.scan.failed@0.1.0`): written **only** when a run reaches target resolution but cannot produce `scan.json` (conflicting target flags, or an I/O fault mid-scan); carries `status`, `error_code`, and `reason`. Guarantees that no such invocation exits without a structured artifact. Never written alongside a `scan.json`.
 - `conformance.summary.*` artifacts when the conformance dimension runs
 - `perf.samples.json` when the performance dimension runs (referenced via `scan.json.artifacts[]`)
 - `trust/server.observed.json` when Hardproof performs `initialize` for `--url` auto-discovery and the server returns `serverInfo` (self-reported identity snapshot)

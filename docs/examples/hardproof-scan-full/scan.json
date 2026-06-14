@@ -9,6 +9,13 @@
     },
     {
       "content_type": "application/json",
+      "digest": "b52df4030657dc81b2fed02b94e9f719ca908bd4fdb065d55f50515dbcc6c200",
+      "id": "security.tools.pin",
+      "kind": "report",
+      "path": "tools.pin.json"
+    },
+    {
+      "content_type": "application/json",
       "digest": "01bf6b80c329ea359554d3e3f5fb6d3c1119bd6e342523da76fce93b01d543ba",
       "id": "perf.samples.json",
       "kind": "report",
@@ -63,7 +70,9 @@
       "weight": 0.3
     },
     {
-      "artifact_refs": [],
+      "artifact_refs": [
+        "security.tools.pin"
+      ],
       "finding_refs": [],
       "metrics": {
         "auth_challenge_status_code": 0,
@@ -71,6 +80,7 @@
         "auth_protection_status": "missing",
         "command_risk_pattern_count": 0,
         "descriptor_bytes": 141,
+        "excessive_agency_tool_count": 0,
         "families": {
           "auth_exposure": {
             "auth_protection_status": "missing",
@@ -95,7 +105,8 @@
         "host_origin_guard_ok": true,
         "injection_pattern_count": 0,
         "metadata_drift_kind": "none",
-        "remote_http_without_tls": false
+        "remote_http_without_tls": false,
+        "ruleset_version": "hardproof.secrules@0.2.0"
       },
       "name": "security",
       "score": 100,

@@ -24,7 +24,10 @@ x07.mcp.<artifact>@<semver>
 - `x07.mcp.replay.verify@0.2.0`
 - `x07.mcp.trust.summary@0.2.0`
 - `x07.mcp.bundle.verify@0.2.0`
+- `x07.mcp.attestation@0.2.0`
+- `x07.mcp.attest.verify@0.2.0`
+- `x07.mcp.scan.failed@0.1.0`
 - `x07.mcp.report.manifest@0.1.0`
-- `x07.mcp.corpus.result@0.1.0`
-- `x07.mcp.corpus.summary@0.1.0`
+- `x07.mcp.corpus.result@0.2.0`
+- `x07.mcp.corpus.summary@0.2.0`
 - `x07.mcp.sarif@0.1.0` (SARIF 2.1.0 payloads)
