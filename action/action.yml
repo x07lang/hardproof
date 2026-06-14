@@ -6,6 +6,10 @@ inputs:
     description: "MCP server base URL (example: http://127.0.0.1:3000/mcp)"
     required: false
     default: ""
+  allow-private-targets:
+    description: "Allow localhost and private IP targets for url (default false)"
+    required: false
+    default: "false"
   cmd:
     description: "MCP stdio command (example: ./server --stdio)"
     required: false
@@ -86,6 +90,7 @@ runs:
       uses: ./hardproof-scan
       with:
         url: ${{ inputs.url }}
+        allow-private-targets: ${{ inputs.allow-private-targets }}
         cmd: ${{ inputs.cmd }}
         cwd: ${{ inputs.cwd }}
         env-file: ${{ inputs.env-file }}
