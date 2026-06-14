@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://x07.io/schemas/x07.mcp.a2a.verify.schema.json",
+  "title": "x07.mcp.a2a.verify@0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ok", "name", "url", "version", "capabilities", "skills_valid", "provider_present", "signed"],
+  "properties": {
+    "schema_version": { "const": "hardproof.a2a.verify@0.1.0" },
+    "ok": { "type": "boolean", "description": "true if the card is structurally valid (required fields + skills)" },
+    "name": { "type": "boolean" },
+    "url": { "type": "boolean" },
+    "version": { "type": "boolean" },
+    "capabilities": { "type": "boolean" },
+    "skills_valid": { "type": "boolean" },
+    "provider_present": { "type": "boolean", "description": "identity claim: provider.organization present" },
+    "signed": { "type": "boolean", "description": "a non-empty signatures[] is present (presence only; cryptographic JWS verification is not yet performed)" }
+  }
+}

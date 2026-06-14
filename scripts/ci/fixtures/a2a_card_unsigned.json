@@ -1,0 +1,8 @@
+{
+  "name": "Plain Agent",
+  "description": "no provider, no signature.",
+  "url": "https://plain.example/a2a",
+  "version": "1.0.0",
+  "capabilities": { "streaming": false },
+  "skills": [ { "id": "echo", "name": "Echo" } ]
+}

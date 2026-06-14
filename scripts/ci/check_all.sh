@@ -296,6 +296,7 @@ run_help_smoke "corpus run --help" corpus run --help
 run_help_smoke "corpus render --help" corpus render --help
 run_help_smoke "trust verify --help" trust verify --help
 run_help_smoke "bundle verify --help" bundle verify --help
+run_help_smoke "a2a verify --help" a2a verify --help
 
 scan_help_out="${tmp_dir}/scan.help.txt"
 "${bin_path}" scan --help >"${scan_help_out}"
@@ -1012,6 +1013,9 @@ bash scripts/ci/lethal_trifecta_regression.sh "${bin_path}"
 
 echo "==> tool shadowing regression (cross-server name collisions in corpus)"
 bash scripts/ci/tool_shadowing_regression.sh "${bin_path}"
+
+echo "==> a2a verify regression (A2A agent-card verification)"
+bash scripts/ci/a2a_verify_regression.sh "${bin_path}"
 
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"

@@ -26,6 +26,7 @@ x07.mcp.<artifact>@<semver>
 - `x07.mcp.bundle.verify@0.2.0`
 - `x07.mcp.attestation@0.2.0`
 - `x07.mcp.attest.verify@0.2.0`
+- `x07.mcp.a2a.verify@0.1.0`
 - `x07.mcp.scan.failed@0.1.0`
 - `x07.mcp.report.manifest@0.1.0`
 - `x07.mcp.corpus.result@0.2.0`

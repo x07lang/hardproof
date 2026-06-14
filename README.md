@@ -227,6 +227,17 @@ hardproof trust verify --server-json server.json
 hardproof bundle verify --server-json server.json --mcpb server.mcpb
 ```
 
+### A2A agent-card verification (prototype)
+
+`hardproof a2a verify --card agent-card.json` runs deterministic checks over an [A2A](https://a2a-protocol.org) Agent Card: required structure (`name`, `url`, `version`, `capabilities`, well-formed `skills`), the publisher identity claim (`provider.organization`), and signature **presence** (`signatures[]`).
+
+```bash
+hardproof a2a verify --card agent-card.json
+hardproof a2a verify --machine json --card agent-card.json
+```
+
+Exit `0` means the card is structurally valid (`--machine json` reports per-field booleans plus `provider_present` and `signed`); exit `1` means required fields are missing/malformed; exit `2` means a missing or unreadable card. This is an early prototype — it validates structure, identity claims, and signature presence; full cryptographic JWS verification (resolving the signing JWK) is not yet performed.
+
 ### GitHub Action
 
 ```yaml
@@ -275,6 +286,7 @@ Related stable schemas include:
 - `x07.mcp.bundle.verify@0.2.0`
 - `x07.mcp.attestation@0.2.0`
 - `x07.mcp.attest.verify@0.2.0`
+- `x07.mcp.a2a.verify@0.1.0`
 - `x07.mcp.scan.failed@0.1.0`
 - `x07.mcp.sarif@0.1.0`
 

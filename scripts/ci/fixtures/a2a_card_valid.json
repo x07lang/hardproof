@@ -1,0 +1,15 @@
+{
+  "name": "Recipe Agent",
+  "description": "Suggests recipes from ingredients.",
+  "url": "https://agent.example/a2a",
+  "version": "1.0.0",
+  "protocolVersion": "0.2.0",
+  "capabilities": { "streaming": true, "pushNotifications": false },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    { "id": "suggest", "name": "Suggest recipe", "description": "Suggest a recipe", "tags": ["food"] }
+  ],
+  "provider": { "organization": "Example Inc", "url": "https://example.com" },
+  "signatures": [ { "protected": "eyJhbGciOiJFUzI1NiJ9", "signature": "c2ln" } ]
+}
