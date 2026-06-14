@@ -1010,6 +1010,9 @@ bash scripts/ci/security_depth_regression.sh "${bin_path}"
 echo "==> lethal trifecta regression (config policy / Rule-of-Two)"
 bash scripts/ci/lethal_trifecta_regression.sh "${bin_path}"
 
+echo "==> tool shadowing regression (cross-server name collisions in corpus)"
+bash scripts/ci/tool_shadowing_regression.sh "${bin_path}"
+
 echo "==> doctor smoke"
 ok_json="${tmp_dir}/doctor.ok.json"
 "${bin_path}" doctor --machine json >"${ok_json}"

@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://x07.io/schemas/x07.mcp.corpus.summary.schema.json",
-  "title": "x07.mcp.corpus.summary@0.2.0",
+  "title": "x07.mcp.corpus.summary@0.3.0",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "generated_at", "tool", "tool_version", "ok", "details"],
   "properties": {
-    "schema_version": { "const": "x07.mcp.corpus.summary@0.2.0" },
+    "schema_version": { "const": "x07.mcp.corpus.summary@0.3.0" },
     "generated_at": { "type": "string" },
     "tool": { "type": "string" },
     "tool_version": { "type": "string" },
@@ -14,7 +14,7 @@
     "details": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["report_id", "results", "counts", "dimension_averages"],
+      "required": ["report_id", "results", "counts", "dimension_averages", "tool_shadowing"],
       "properties": {
         "report_id": { "type": "string" },
         "results": { "type": "array", "items": { "$ref": "#/$defs/result_ref" } },
@@ -28,7 +28,17 @@
             "failed": { "type": "integer", "minimum": 0 }
           }
         },
-        "dimension_averages": { "$ref": "#/$defs/dim_scores" }
+        "dimension_averages": { "$ref": "#/$defs/dim_scores" },
+        "tool_shadowing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["collision_count", "tools"],
+          "description": "cross-server tool-name collisions across the corpus targets (a shadowing risk if wired into one agent)",
+          "properties": {
+            "collision_count": { "type": "integer", "minimum": 0 },
+            "tools": { "type": "array", "items": { "type": "string" } }
+          }
+        }
       }
     }
   },

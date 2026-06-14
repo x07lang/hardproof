@@ -1,5 +1,5 @@
 {
-  "schema_version": "x07.mcp.corpus.summary@0.2.0",
+  "schema_version": "x07.mcp.corpus.summary@0.3.0",
   "generated_at": "2026-01-01T00:00:00Z",
   "tool": "hardproof",
   "tool_version": "0.4.0-beta.8",
@@ -36,6 +36,10 @@
       "trust": 80,
       "reliability": 100,
       "overall": 96
+    },
+    "tool_shadowing": {
+      "collision_count": 0,
+      "tools": []
     }
   }
 }

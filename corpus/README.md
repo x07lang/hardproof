@@ -23,7 +23,7 @@ Each `targets[]` entry captures:
 `hardproof corpus run --manifest <FILE> --out <DIR>` writes:
 
 - `<DIR>` may be relative or absolute.
-- `<DIR>/index.json` (`x07.mcp.corpus.summary@0.2.0`) — per-target `scores` (conformance/security/performance/trust/reliability/overall), `score_truth_status`, `counts`, and corpus-wide `dimension_averages`
+- `<DIR>/index.json` (`x07.mcp.corpus.summary@0.3.0`) — per-target `scores` (conformance/security/performance/trust/reliability/overall), `score_truth_status`, `counts`, corpus-wide `dimension_averages`, and `tool_shadowing` (`collision_count` + the tool names appearing in more than one target's catalog — a cross-server shadowing risk if those servers are wired into one agent)
 - `<DIR>/<server_id>/result.json` (`x07.mcp.corpus.result@0.2.0`) — the target's dimension `scores` plus pointers to its scan outputs
 - `<DIR>/<server_id>/scan.json` (`x07.mcp.scan.report@0.4.0`) — the full scan report for the target
 - `<DIR>/<server_id>/tools.pin.json` (`hardproof.tools.pin@0.1.0`) — the tool-catalog pin for rug-pull tracking
