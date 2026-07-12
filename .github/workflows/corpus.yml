@@ -1,6 +1,6 @@
 name: Corpus
 
-# Scheduled, deterministic corpus run over the hermetic fixture manifest
+# Deterministic corpus run over the hermetic fixture manifest
 # (local good-http reference server; no network/third-party fetch). Produces the
 # full five-dimension corpus dataset (index.json @0.2.0 + per-target scans +
 # rendered report) and uploads it as a build artifact. The public real-server
@@ -8,8 +8,6 @@ name: Corpus
 # off this CI path, because it fetches third-party packages over the network.
 
 on:
-  schedule:
-    - cron: "0 6 * * 1"
   workflow_dispatch:
 
 permissions:
